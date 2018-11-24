@@ -7,6 +7,7 @@ configuration:
 
 platform:
   - Win32
+  - x64
 
 build_script:
 - cmd: >-
