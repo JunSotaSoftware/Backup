@@ -48,8 +48,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.15b")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x010f0200      /* バージョン */
+#define PROGRAM_VERSION         _T("1.15")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x010f0000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
