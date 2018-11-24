@@ -13,11 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// “ú–{Œê (“ú–{) resources
+// æ—¥æœ¬èª (æ—¥æœ¬) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)
+#pragma code_page(65001)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -36,12 +36,12 @@ notify2_icon            ICON                    "ico00001.ico"
 
 IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
 
-#endif    // “ú–{Œê (“ú–{) resources
+#endif    // æ—¥æœ¬èª (æ—¥æœ¬) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// ‰pŒê (•Ä‘) resources
+// è‹±èª (ç±³å›½) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -1214,7 +1214,7 @@ BEGIN
     0
 END
 
-#endif    // ‰pŒê (•Ä‘) resources
+#endif    // è‹±èª (ç±³å›½) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
