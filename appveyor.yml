@@ -1,0 +1,15 @@
+version: 0.0.{build}
+image: Visual Studio 2017
+
+configuration:
+  - Release
+  - Debug
+
+platform:
+  - Win32
+
+build_script:
+- cmd: >-
+    call build-sln.bat %PLATFORM% %CONFIGURATION%
+
+    call build-chm.bat
