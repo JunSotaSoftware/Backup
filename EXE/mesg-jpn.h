@@ -158,3 +158,8 @@
 #define MSGJPN_134  _T("%d時間%d分%d秒")
 #define MSGJPN_135  _T("処理時間：%s")
 #define MSGJPN_136  _T("バッテリーの閾値が指定されていません")
+#if USE_SAME_AS_SUCCESS
+#define MSGJPN_137  _T("成功時と同じ")
+#endif /* USE_SAME_AS_SUCCESS */
+#define MSGJPN_138  _T("スキップします (%s)")
+#define MSGJPN_139  _T("スキップ (エラー %d, 総エラー %d) (作成 %d, 削除 %d, 複写 %d)")

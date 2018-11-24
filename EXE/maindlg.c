@@ -58,6 +58,7 @@ static void DeletePatList(COPYPATLIST **Top);
 static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void DispSrcAndDest(HWND hDlg, COPYPATLIST *Pat, int Num);
 static BOOL CheckNullPat(int Num);
+static BOOL CheckValidPat(int Num);
 static void DispCommentToWin(HWND hDlg);
 static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -67,7 +68,7 @@ extern SIZE MainDlgSize;
 extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
 extern int ShowComment;     /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
-extern int AutoClose;
+extern AUTOCLOSE AutoClose;
 extern int ExecOption;
 extern int Sound;
 extern _TCHAR SoundFile[MY_MAX_PATH+1];
@@ -187,6 +188,76 @@ HWND GetMainDlgHwnd(void)
     return(hWndMainDlg);
 }
 
+#ifdef _DEBUG
+/*----- テキストをトレース --------------------------
+*
+*   Parameter
+*       TCHAR* text : トレースするテキスト
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+void Trace2(TCHAR * text)
+{
+    TCHAR temp[1024] = TEXT("");
+    _stprintf(temp, TEXT("%20s: "), text);
+    OutputDebugString(temp);
+}
+
+/*----- オーナードローの項目をトレース --------------------------
+*
+*   Parameter
+*       TCHAR* sItem : リストボックスのアイテムのテキスト
+*       DRAWITEMSTRUCT* pDrawItem : オーナードローの項目
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+void Trace(TCHAR * sItem, DRAWITEMSTRUCT * pDrawItem)
+{
+    TCHAR temp[1024] = TEXT("");
+    _stprintf(temp, TEXT("%2d: [%3d, %3d, %3d, %3d] "),
+        pDrawItem->itemID,
+        pDrawItem->rcItem.left,
+        pDrawItem->rcItem.top,
+        pDrawItem->rcItem.right,
+        pDrawItem->rcItem.bottom);
+    OutputDebugString(temp);
+
+    _stprintf(temp, TEXT("%20s: "), sItem);
+    OutputDebugString(temp);
+    if (pDrawItem->itemAction & ODA_DRAWENTIRE)
+    {
+        Trace2(TEXT("ODA_DRAWENTIRE"));
+    }
+    if (pDrawItem->itemAction & ODA_FOCUS)
+    {
+        Trace2(TEXT("ODA_FOCUS"));
+    }
+    if (pDrawItem->itemAction & ODA_SELECT)
+    {
+        Trace2(TEXT("ODA_SELECT"));
+    }
+
+    if (pDrawItem->itemState & ODS_SELECTED)
+    {
+        Trace2(TEXT("ODS_SELECTED"));
+    }
+    else
+    {
+        Trace2(TEXT("Not ODS_SELECTED"));
+    }
+    if (pDrawItem->itemState & ODS_FOCUS)
+    {
+        Trace2(TEXT("ODS_FOCUS"));
+    }
+    else
+    {
+        Trace2(TEXT("Not ODS_FOCUS"));
+    }
+    OutputDebugString(TEXT("\n"));
+}
+#endif /* end of _DEBUG */
 
 /*----- メインダイアログのメッセージ処理 --------------------------------------
 *
@@ -482,6 +553,58 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
             SetWindowPos(hDlg, NULL, 0, 0, pRect->right - pRect->left, pRect->bottom - pRect->top, SWP_NOMOVE|SWP_NOZORDER);
             DlgSizeChange(hDlg, &MainDlgSizeInfo, pRect, (int)wParam);
             free((void*)lParam);
+            break;
+
+        case WM_DRAWITEM:
+            {
+                DRAWITEMSTRUCT * pDrawItem;
+                TCHAR sItem[1024] = TEXT("");
+                pDrawItem = (DRAWITEMSTRUCT *)lParam;
+
+                if (pDrawItem->itemID == -1)
+                {
+                    break;
+                }
+                if (pDrawItem->itemID >= (UINT)SendMessage(pDrawItem->hwndItem, LB_GETCOUNT, 0, 0))
+                {
+                    /* 何故か分からないが、 main_comment_dlg で不正な ID で呼ばれるので無視する */
+#ifdef _DEBUG
+                    Trace(TEXT("Invalid Item"), pDrawItem);
+#endif /* end of _DEBUG */
+                    break;
+                }
+                if (SendMessage(pDrawItem->hwndItem, LB_GETTEXT, pDrawItem->itemID, (LPARAM)sItem) != LB_ERR)
+                {
+                    if (pDrawItem->itemAction == ODA_DRAWENTIRE ||
+                        pDrawItem->itemAction == ODA_SELECT ||
+                        pDrawItem->itemAction == ODA_FOCUS)
+                    {
+                        BOOL Enabled = CheckValidPat(pDrawItem->itemID);
+                        int ColorIndex = Enabled ? COLOR_WINDOWTEXT : COLOR_GRAYTEXT;
+#ifdef _DEBUG
+                        Trace(sItem, pDrawItem);
+#endif /* end of _DEBUG */
+
+                        if (pDrawItem->itemState & ODS_SELECTED)
+                        {
+                            FillRect(pDrawItem->hDC, &pDrawItem->rcItem, GetSysColorBrush(COLOR_HIGHLIGHT));
+                            SetBkColor(pDrawItem->hDC, GetSysColor(COLOR_HIGHLIGHT));
+                        }
+                        else
+                        {
+                            FillRect(pDrawItem->hDC, &pDrawItem->rcItem, GetSysColorBrush(COLOR_WINDOW));
+                            SetBkColor(pDrawItem->hDC, GetSysColor(COLOR_WINDOW));
+                        }
+                        SetTextColor(pDrawItem->hDC, GetSysColor(ColorIndex));
+                        DrawText(pDrawItem->hDC, sItem, -1, &pDrawItem->rcItem, DT_LEFT);
+
+                        if (pDrawItem->itemAction == ODA_FOCUS)
+                        {
+                            DrawFocusRect(pDrawItem->hDC, &pDrawItem->rcItem);
+                        }
+                    }
+                }
+            }
             break;
     }
     return(FALSE);
@@ -820,6 +943,29 @@ static BOOL CheckNullPat(int Num)
     return(Sts);
 }
 
+/*----- パターンか有効化かチェック --------------------------
+*
+*   Parameter
+*       int Num : 設定値号番号
+*
+*   Return Value
+*       BOOL ステータス
+*           TRUE/FALSE
+*----------------------------------------------------------------------------*/
+static BOOL CheckValidPat(int Num)
+{
+    COPYPATLIST *Pos;
+    if ((Num >= 0) && (Num < Patterns))
+    {
+        Pos = PatListTop;
+        for (; Num > 0; Num--)
+            Pos = Pos->Next;
+
+        if (Pos->Set.Enabled)
+            return(TRUE);
+    }
+    return(FALSE);
+}
 
 
 /*----- 設定値リストからコメントを取り出す ------------------------------------
@@ -928,6 +1074,7 @@ LPTSTR GetPatComment(int Num)
 
 void CopyDefaultPat(COPYPAT *Set)
 {
+    Set->Enabled = 1;
     _tcscpy(Set->Name, _T(""));
     _tcscpy(Set->Comment, _T(""));
     memcpy(Set->Src, _T("\0\0"), 2 * sizeof(_TCHAR));
@@ -948,7 +1095,8 @@ void CopyDefaultPat(COPYPAT *Set)
     Set->ChkVolLabel = NO;
     Set->UseTrashCan = NO;
     Set->Tolerance = 2;
-    Set->AutoClose = 0;
+    Set->AutoClose.Success = AUTOCLOSE_ACTION_DEFAULT_SUCCESS;
+    Set->AutoClose.Error = AUTOCLOSE_ACTION_DEFAULT_ERROR;
     Set->IgnSystemFile = NO;
     Set->IgnHiddenFile = NO;
     Set->IgnBigFile = NO;
@@ -1186,9 +1334,14 @@ int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
     Sts = YES;
 
     if(ExecOption & OPT_CLOSE)
-        AutoClose = 1;
+    {
+        AutoClose.Success = AUTOCLOSE_ACTION_EXIT;
+        AutoClose.Error = AUTOCLOSE_ACTION_EXIT;
+    }
     else
+    {
         AutoClose = Pat->Set.AutoClose;
+    }
 
     Sound = Pat->Set.Sound;
     _tcscpy(SoundFile, Pat->Set.SoundFile);
@@ -1206,7 +1359,7 @@ int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
 /*----- バックアップ開始確認ダイアログのメッセージ処理 ------------------------
 *
 *   Parameter
-*       HWND hWnd : ウインドウハンドル
+*       HWND hDlg : ウインドウハンドル
 *       UINT message  : メッセージ番号
 *       WPARAM wParam : メッセージの WPARAM 引数
 *       LPARAM lParam : メッセージの LPARAM 引数
@@ -1218,7 +1371,9 @@ int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
 static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static int CurNum;
-
+#if USE_SAME_AS_SUCCESS
+    static int IndexSameAsOnSuccess = -1;
+#endif
     switch (message)
     {
         case WM_INITDIALOG :
@@ -1233,7 +1388,24 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
             SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
             SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
             SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_SETCURSEL, AutoClose, 0);
+            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_SETCURSEL, AutoClose.Success, 0);
+
+            DuplicateComboBox(hDlg, TRNOT_SYSTEM, TRNOT_SYSTEM_ERROR);
+#if USE_SAME_AS_SUCCESS
+            IndexSameAsOnSuccess = SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
+#endif /* USE_SAME_AS_SUCCESS */
+            if (AutoClose.Error >= 0)
+            {
+                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, AutoClose.Error, 0);
+            }
+            else
+            {
+#if USE_SAME_AS_SUCCESS
+                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
+#else
+                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
+#endif /* USE_SAME_AS_SUCCESS */
+            }
 
             /* ダイアログサイズの初期化 */
             DlgSizeInit(hDlg, &NotifyDlgSizeInfo, &NotifyDlgSize, TRUE);
@@ -1243,7 +1415,14 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case IDOK :
-                    AutoClose = SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_GETCURSEL, 0, 0);
+                    AutoClose.Success = SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_GETCURSEL, 0, 0);
+                    AutoClose.Error = SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
+#if USE_SAME_AS_SUCCESS
+                    if (AutoClose.Error == IndexSameAsOnSuccess)
+                    {
+                        AutoClose.Error = AUTOCLOSE_ACTION_SAME_AS_SUCCESS;
+                    }
+#endif /* USE_SAME_AS_SUCCESS */
                     AskDlgSize(&NotifyDlgSizeInfo, &NotifyDlgSize);
                     EndDialog(hDlg, YES);
                     break;

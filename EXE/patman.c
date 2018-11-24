@@ -37,6 +37,7 @@
 #include <windowsx.h>
 #include <commctrl.h>
 #include <htmlhelp.h>
+#include <VersionHelpers.h>
 
 #include "common.h"
 #include "resource.h"
@@ -295,6 +296,7 @@ static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
     switch (message)
     {
         case WM_INITDIALOG :
+            SendDlgItemMessage(hDlg, PATSET_ENABLE, BM_SETCHECK, TmpPat.Enabled ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hDlg, PATSET_NAME, EM_LIMITTEXT, (WPARAM)PATNAME_LEN, 0);
             SendDlgItemMessage(hDlg, PATSET_NAME, WM_SETTEXT, 0, (LPARAM)TmpPat.Name);
             SendDlgItemMessage(hDlg, PATSET_COMMENT, EM_LIMITTEXT, (WPARAM)COMMENT_LEN, 0);
@@ -307,6 +309,14 @@ static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
+                    if (SendDlgItemMessage(hDlg, PATSET_ENABLE, BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    {
+                        TmpPat.Enabled = 1;
+                    }
+                    else
+                    {
+                        TmpPat.Enabled = 0;
+                    }
                     SendDlgItemMessage(hDlg, PATSET_NAME, WM_GETTEXT, PATNAME_LEN+1, (LPARAM)TmpPat.Name);
                     SendDlgItemMessage(hDlg, PATSET_COMMENT, WM_GETTEXT, COMMENT_LEN+1, (LPARAM)TmpPat.Comment);
                     TmpPat.ShowComment = SendDlgItemMessage(hDlg, PATSET_SHOW_COMMENT, BM_GETCHECK, 0, 0);
@@ -1834,7 +1844,9 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
 {
     NMHDR *pnmhdr;
     _TCHAR Tmp[MY_MAX_PATH+1];
-    OSVERSIONINFO osvi;
+#if USE_SAME_AS_SUCCESS
+    static int IndexSameAsOnSuccess = -1;
+#endif /* USE_SAME_AS_SUCCESS */
 
     switch (message)
     {
@@ -1842,9 +1854,7 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
             SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_93);
             SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_94);
             SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_95);
-            osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-            GetVersionEx(&osvi);
-            if(osvi.dwMajorVersion >= WINDOWS_VISTA_VERSION)
+            if(IsWindowsVistaOrGreater())
             {
                 SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_120);
                 SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
@@ -1858,7 +1868,24 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
                 SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
                 SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
             }
-            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_SETCURSEL, TmpPat.AutoClose, 0);
+            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_SETCURSEL, TmpPat.AutoClose.Success, 0);
+
+            DuplicateComboBox(hDlg, PATSET_SYSTEM, PATSET_SYSTEM_ERROR);
+#if USE_SAME_AS_SUCCESS
+            IndexSameAsOnSuccess = SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
+#endif /* USE_SAME_AS_SUCCESS */
+            if (TmpPat.AutoClose.Error >= 0)
+            {
+                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, TmpPat.AutoClose.Error, 0);
+            }
+            else
+            {
+#if USE_SAME_AS_SUCCESS
+                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
+#else
+                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
+#endif /* USE_SAME_AS_SUCCESS */
+            }
 
             SendDlgItemMessage(hDlg, PATSET_SOUND, BM_SETCHECK, TmpPat.Sound, 0);
             SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
@@ -1876,7 +1903,14 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    TmpPat.AutoClose = SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_GETCURSEL, 0, 0);
+                    TmpPat.AutoClose.Success = SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_GETCURSEL, 0, 0);
+                    TmpPat.AutoClose.Error = SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
+#if USE_SAME_AS_SUCCESS
+                    if (TmpPat.AutoClose.Error == IndexSameAsOnSuccess)
+                    {
+                        TmpPat.AutoClose.Error = AUTOCLOSE_ACTION_SAME_AS_SUCCESS;
+                    }
+#endif /* USE_SAME_AS_SUCCESS */
                     TmpPat.Sound = SendDlgItemMessage(hDlg, PATSET_SOUND, BM_GETCHECK, 0, 0);
                     SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.SoundFile);
                     break;

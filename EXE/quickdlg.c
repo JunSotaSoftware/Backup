@@ -56,6 +56,7 @@ static HWND hWndQuickPat;
 static WNDPROC QuickSrcProcPtr;
 static WNDPROC QuickDstProcPtr;
 static COPYPAT OrgPat = {
+    1,          /* 有効/無効 */
 	_T(""),		/* パターン名 */
 	_T(""),		/* コメント */
 	_T("\0"),	/* バックアップ元 (マルチ文字列) */
@@ -76,7 +77,10 @@ static COPYPAT OrgPat = {
 	0,		/* ボリュームラベルをチェックする */
 	0,		/* ごみ箱を使用する */
 	2,		/* タイムスタンプの許容誤差 */
-	0,		/* バックアップ後の処理 (0=何もしない, 1=プログラム終了, 2=Windows終了) */
+    {
+        AUTOCLOSE_ACTION_DEFAULT_SUCCESS,   /* 成功終了時の処理 */
+        AUTOCLOSE_ACTION_DEFAULT_ERROR,     /* エラー終了時の処理 */
+    }, /* バックアップ後の処理 */
 	0,		/* システムファイルは除外 */
 	0,		/* 隠しファイルは除外 */
 	0,		/* 大きなファイルは除外 */

@@ -36,6 +36,7 @@
 #include <tchar.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#include <VersionHelpers.h>
 
 #include "common.h"
 #include "resource.h"
@@ -48,12 +49,11 @@ BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 /*-----------------------------------------------------------------------------
  名前	:	ChangeSystemPowerMode
  説明	:	Windowsのパワーステートを変更する
- 引数	:	State	ステート (2=シャットダウン, 3=スタンバイ, 4=休止, 5=スタンバイ, 6=休止)
+ 引数	:	State	ステート
  戻り値 :	BOOL	ステータス (TRUE=成功)
 -----------------------------------------------------------------------------*/
-BOOL ChangeSystemPowerMode(int State)
+BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 {
-	OSVERSIONINFO		osvi;
 	HANDLE				hToken;
 	TOKEN_PRIVILEGES	TokenPri;
 	BOOL				Sts;
@@ -61,27 +61,18 @@ BOOL ChangeSystemPowerMode(int State)
 	LPTSTR 				lpBuffer;
 
 	Sts = FALSE;
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-	GetVersionEx(&osvi);
-	if(osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken) == TRUE)
 	{
-		if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken) == TRUE)
+		if(LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &TokenPri.Privileges[0].Luid) == TRUE)
 		{
-			if(LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &TokenPri.Privileges[0].Luid) == TRUE)
+			TokenPri.PrivilegeCount = 1;
+			TokenPri.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+			AdjustTokenPrivileges(hToken, FALSE, &TokenPri, 0, NULL, 0);
+			/* AdjustTokenPrivileges は常に TRUE を返す? */
+			Err = GetLastError();
+			if(Err == ERROR_SUCCESS)
 			{
-				TokenPri.PrivilegeCount = 1;
-				TokenPri.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-				AdjustTokenPrivileges(hToken, FALSE, &TokenPri, 0, NULL, 0);
-				/* AdjustTokenPrivileges は常に TRUE を返す? */
-				Err = GetLastError();
-				if(Err == ERROR_SUCCESS)
-				{
-					Sts = TRUE;
-				}
-			}
-			else
-			{
-				Err = GetLastError();
+				Sts = TRUE;
 			}
 		}
 		else
@@ -91,35 +82,27 @@ BOOL ChangeSystemPowerMode(int State)
 	}
 	else
 	{
-		Sts = TRUE;
+		Err = GetLastError();
 	}
 
 	if(Sts == TRUE)
 	{
 		switch(State)
 		{
-			case 2 :
-				if(osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-				{
-					Sts = ExitWindowsEx(EWX_POWEROFF, 0);
-				}
-				else
-				{
-					/* Windows98,MeではEWX_POWEROFFだとうまくいかない */
-					Sts = ExitWindowsEx(EWX_SHUTDOWN, 0);
-				}
+			case AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS: /* 2 */
+				Sts = ExitWindowsEx(EWX_POWEROFF, 0);
 				break;
 
-			case 3 :
-			case 5 :
+			case AUTOCLOSE_ACTION_STANBY: /* 3 */
+			case AUTOCLOSE_ACTION_EXIT_AND_STANBY: /* 5 */
 				if(SetSystemPowerState(TRUE, FALSE) == 0)
 				{
 					Sts = FALSE;
 				}
 				break;
 
-			case 4 :
-			case 6 :
+			case AUTOCLOSE_ACTION_HIBERNATE: /* 4 */
+			case AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE: /* 6 */
 				if(SetSystemPowerState(FALSE, FALSE) == 0)
 				{
 					Sts = FALSE;
@@ -156,10 +139,10 @@ BOOL ChangeSystemPowerMode(int State)
 /*-----------------------------------------------------------------------------
  名前	:	DoCountDown
  説明	:	シャットダウン前のカウントダウンウインドウ
- 引数	:	State	ステート（2＝シャットダウン, 3=スタンバイ, 4=休止, 5=スタンバイ, 6=休止)
+ 引数	:	State	ステート
  戻り値 :	int	ステータス (YES=シャットダウンする)
 -----------------------------------------------------------------------------*/
-int DoCountDown(int State)
+int DoCountDown(AUTOCLOSE_ACTION State)
 {
 	return(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(countdown_dlg), GetDesktopWindow(), CountDownDialogProc, State));
 }
@@ -179,24 +162,30 @@ BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	static int		Count;
 	static UINT		TimerID;
 	_TCHAR			Tmp[20];
-	OSVERSIONINFO	osvi;
+    AUTOCLOSE_ACTION action;
 
 	switch (message)
 	{
 		case WM_INITDIALOG :
 			Count = SHUTDOWN_PERIOD;
-			if(lParam == 2)
-				SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_98);
-			else if((lParam == 3) || (lParam == 5))
-			{
-				GetVersionEx(&osvi);
-				if(osvi.dwMajorVersion >= WINDOWS_VISTA_VERSION)
-					SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_122);
-				else
-					SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_99);
-			}
-			else if((lParam == 4) || (lParam == 6))
-				SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_100);
+            action = (AUTOCLOSE_ACTION)lParam;
+            switch (action)
+            {
+            case AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS:
+                SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_98);
+                break;
+            case AUTOCLOSE_ACTION_STANBY:
+            case AUTOCLOSE_ACTION_EXIT_AND_STANBY:
+                if (IsWindowsVistaOrGreater())
+                    SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_122);
+                else
+                    SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_99);
+                break;
+            case AUTOCLOSE_ACTION_HIBERNATE:
+            case AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE:
+                SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_100);
+                break;
+            }
 			_stprintf(Tmp, MSGJPN_92, Count);
 			SendDlgItemMessage(hDlg, CDOWN_MSG, WM_SETTEXT, 0, (LPARAM)Tmp);
 			TimerID = SetTimer(hDlg, TIMER_COUNTDOWN, 1000, NULL);

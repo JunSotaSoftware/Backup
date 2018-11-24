@@ -129,7 +129,7 @@ static int NoMakeTopDir;
 static int MoveInsteadDelete;
 static LPTSTR MoveToFolder;
 
-static int ErrorCount;
+int ErrorCount = 0;
 static int TotalErrorCount = 0;
 static int MkDirCount;
 static int RmFileCount;
@@ -432,6 +432,17 @@ static int BackupProc(COPYPATLIST *Pat)
 
         SetTaskMsg(TASKMSG_NOR, _T("=============================================="));
         SetTaskMsg(TASKMSG_NOR, MSGJPN_125);
+
+        if (Pat->Set.Enabled == 0)
+        {
+            SetTaskMsg(TASKMSG_NOR, MSGJPN_138, Pat->Set.Name);
+            SetTaskMsg(TASKMSG_NOR, MSGJPN_139, ErrorCount, TotalErrorCount, MkDirCount, RmFileCount, CopyFileCount);
+            WriteEndTimeToLogfile();
+            CloseLogfile();
+            CloseErrorLogfile();
+            Pat = Pat->Next;
+            continue;
+        }
 
         /* バックアップ先の正規化のタイプをチェック */
         // NormalizationType = CheckNormlization(Pat->Set.NextDst);

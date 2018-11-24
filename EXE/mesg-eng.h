@@ -158,3 +158,8 @@
 #define MSGJPN_134  _T("%d:%d:%d")
 #define MSGJPN_135  _T("Process TimeÅF%s")
 #define MSGJPN_136  _T("Battery threshold not specified.")
+#if USE_SAME_AS_SUCCESS
+#define MSGJPN_137  _T("Same as on success")
+#endif /* USE_SAME_AS_SUCCESS */
+#define MSGJPN_138  _T("Skip (%s)")
+#define MSGJPN_139  _T("Skip. (Error:%d, Total Errors:%d) (Create:%d, Delete:%d, Copy:%d)")

@@ -64,7 +64,7 @@ static HWND hWndBup = NULL;
 
 LONGLONG ExecOption = 0;
 int ExecBatteryLevel = 0;
-int AutoClose = 0;
+AUTOCLOSE AutoClose = { AUTOCLOSE_ACTION_DEFAULT_SUCCESS, AUTOCLOSE_ACTION_DEFAULT_ERROR};
 static int NoNotify = NO;
 int Sound;
 _TCHAR SoundFile[MY_MAX_PATH+1];
@@ -76,6 +76,8 @@ static int SaveExit = YES;
 static _TCHAR HelpPath[MY_MAX_PATH+1];
 static _TCHAR IniPath[MY_MAX_PATH+1];
 static int TmpTrayIcon;
+
+extern int ErrorCount;
 
 static const int IconData[] = {
     /* 静止時用 */
@@ -337,7 +339,10 @@ static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryL
                 cInfo.Set.IgnoreErr = (Option & OPT_NOERROR) ? 1 : 0;
                 cInfo.Set.NotifyDel = (Option & OPT_NO_NOTIFY_DEL) ? 0 : 1;
                 if(Option & OPT_CLOSE)
-                    cInfo.Set.AutoClose = 1;
+                {
+                    cInfo.Set.AutoClose.Success = AUTOCLOSE_ACTION_EXIT;
+                    cInfo.Set.AutoClose.Error = AUTOCLOSE_ACTION_EXIT;
+                }
                 cInfo.Next = NULL;
                 if(NotifyBackup(GetMainDlgHwnd(), &cInfo) == YES)
                 {
@@ -400,9 +405,20 @@ HINSTANCE GetBupInst(void)
 *       int オートクローズかどうか (YES/NO
 *----------------------------------------------------------------------------*/
 
-int AskAutoClose(void)
+AUTOCLOSE_ACTION AskAutoClose(void)
 {
-    return(AutoClose);
+    if (ErrorCount == 0)
+    {
+        return AutoClose.Success;
+    }
+    else if (AutoClose.Error >= 0)
+    {
+        return AutoClose.Error;
+    }
+    else
+    {
+        return AutoClose.Success;
+    }
 }
 
 
@@ -495,6 +511,38 @@ static void DeleteAllObject(void)
     return;
 }
 
+/*----- バックアップ終了時の処理 --------------------------------------
+*
+*   Parameter
+*       HWND hWnd : ウインドウハンドル
+*       AUTOCLOSE_ACTION action  : バックアップ終了時の処理
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+
+static void RunTask(HWND hWnd, AUTOCLOSE_ACTION action)
+{
+    if (action == AUTOCLOSE_ACTION_EXIT)
+    {
+        PostMessage(hWnd, WM_CLOSE, 0, 0L);
+    }
+    else if (action >= AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS)
+    {
+        if (DoCountDown(action) == YES)
+        {
+            ChangeSystemPowerMode(action);
+            switch (action)
+            {
+            case AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS:
+            case AUTOCLOSE_ACTION_EXIT_AND_STANBY:
+            case AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE:
+                PostMessage(hWnd, WM_CLOSE, 0, 0L);
+                break;
+            }
+        }
+    }
+}
 
 /*----- メインウインドウのメッセージ処理 --------------------------------------
 *
@@ -592,17 +640,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
         case WM_BACKUP_END :
         case WM_BACKUP_ERROR :
-            if(AutoClose == 1)
-                PostMessage(hWnd, WM_CLOSE, 0, 0L);
-            else if(AutoClose >= 2)
-            {
-                if(DoCountDown(AutoClose) == YES)
-                {
-                    ChangeSystemPowerMode(AutoClose);
-                    if((AutoClose == 2) || (AutoClose == 5) || (AutoClose == 6))
-                        PostMessage(hWnd, WM_CLOSE, 0, 0L);
-                }
-            }
+            RunTask(hWnd, AskAutoClose());
             break;
 
         case WM_CLICK_ICON :

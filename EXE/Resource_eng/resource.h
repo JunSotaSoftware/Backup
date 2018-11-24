@@ -248,11 +248,14 @@
 #define TRNOT_MSG2                      1172
 #define TRNOT_MSG3                      1173
 #define PATSET_SHUTDOWN                 1174
+#define TRNOT_MSG5                      1174
 #define TRNOT_MSG4                      1175
 #define CDOWN_MSG                       1176
 #define TRNOT_SYSTEM                    1177
 #define PATSET_SYSTEM                   1178
+#define TRNOT_SYSTEM_ERROR              1178
 #define NOBACK_DIR_LIST                 1179
+#define PATSET_SYSTEM_ERROR             1179
 #define CDOWN_MSG2                      1180
 #define NOBACK_DIR_ADD                  1181
 #define NOBACK_DIR_DEL                  1182
@@ -289,6 +292,7 @@
 #define MISC_SUPPRESS_AC                1208
 #define PATSET_SHOW_COMMENT             1209
 #define NOBACK_SIZE_FLG                 1210
+#define PATSET_ENABLE                   1210
 #define NOBACK_BIG_FILE                 1211
 #define NOBACK_FILE_DOWN                1212
 #define DELNOT_MESSAGE                  1213

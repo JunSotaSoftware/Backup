@@ -26,6 +26,8 @@
 / THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /============================================================================*/
 
+#define USE_SAME_AS_SUCCESS 1
+
 #ifndef ENGLISH
 #include "mesg-jpn.h"
 #else
@@ -48,8 +50,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.17")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x01110000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.18")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01120000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -182,14 +184,37 @@
 
 #define SHUTDOWN_PERIOD 6           /* 秒 */
 
+/* 現在の状態 */
+typedef enum {
+    AUTOCLOSE_ACTION_DO_NOTHING,            /* そのまま待機 */
+    AUTOCLOSE_ACTION_EXIT,                  /* プログラムを閉じる */
+    AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS,      /* Windowsをシャットダウンする */
+    AUTOCLOSE_ACTION_STANBY,                /* Windowsをスタンバイにする */
+    AUTOCLOSE_ACTION_HIBERNATE,             /* Windowsを休止状態にする */
+    AUTOCLOSE_ACTION_EXIT_AND_STANBY,       /* 閉じる+Windowsをスタンバイにする */
+    AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE,    /* 閉じる+Windowsを休止状態にする */
+#if USE_SAME_AS_SUCCESS
+    AUTOCLOSE_ACTION_SAME_AS_SUCCESS = -1,  /* 成功時と同じ */
+#endif /* USE_SAME_AS_SUCCESS */
 
-/*===== Windowsのバージョン =====*/
+    AUTOCLOSE_ACTION_DEFAULT_SUCCESS = AUTOCLOSE_ACTION_DO_NOTHING,
+#if USE_SAME_AS_SUCCESS
+    AUTOCLOSE_ACTION_DEFAULT_ERROR = AUTOCLOSE_ACTION_SAME_AS_SUCCESS,
+#else
+    AUTOCLOSE_ACTION_DEFAULT_ERROR = AUTOCLOSE_ACTION_DO_NOTHING,
+#endif /* USE_SAME_AS_SUCCESS */
+} AUTOCLOSE_ACTION;
 
-#define WINDOWS_VISTA_VERSION       6
+/*===== バックアップ後の処理 =====*/
+typedef struct {
+    AUTOCLOSE_ACTION Success;
+    AUTOCLOSE_ACTION Error;
+} AUTOCLOSE;
 
 /*===== バックアップパターン =====*/
 
 typedef struct {
+    int Enabled;                    /* 有効 */
     _TCHAR Name[PATNAME_LEN+1];     /* パターン名 */
     _TCHAR Comment[COMMENT_LEN+1];  /* コメント */
     _TCHAR Src[SRC_PATH_LEN+1];     /* バックアップ元 (マルチ文字列) */
@@ -210,7 +235,7 @@ typedef struct {
     int ChkVolLabel;                /* ボリュームラベルをチェックする */
     int UseTrashCan;                /* ごみ箱を使用する */
     int Tolerance;                  /* タイムスタンプの許容誤差 */
-    int AutoClose;                  /* バックアップ後の処理 (0=何もしない, 1=プログラム終了, 2=Windows終了) */
+    AUTOCLOSE AutoClose;            /* バックアップ後の処理 */
     int IgnSystemFile;              /* システムファイルは除外 */
     int IgnHiddenFile;              /* 隠しファイルは除外 */
     int IgnBigFile;                 /* 大きなファイルは除外 */
@@ -279,7 +304,7 @@ typedef struct {
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int cmdShow);
 HWND GetMainHwnd(void);
 HINSTANCE GetBupInst(void);
-int AskAutoClose(void);
+AUTOCLOSE_ACTION AskAutoClose(void);
 int AskNoNotify(void);
 LPTSTR AskHelpFilePath(void);
 LPTSTR AskIniFilePath(void);
@@ -407,6 +432,7 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 void ExecViewer(LPTSTR Fname, LPTSTR App);
 void CheckRange2(int *Cur, int Max, int Min);
 void FileTime2TimeString(FILETIME *Time, LPTSTR Buf);
+void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo);
 
 /* wildcard.c */
 
@@ -439,5 +465,5 @@ void SaveUpdateBellInfo(void);
 
 
 /* shutdown.c */
-BOOL ChangeSystemPowerMode(int State);
+BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State);
 int DoCountDown(int State);

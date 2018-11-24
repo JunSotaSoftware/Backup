@@ -1078,3 +1078,68 @@ void FileTime2TimeString(FILETIME *Time, LPTSTR Buf)
 }
 
 
+/*----- コンボボックスをクリアする  ------------------------
+*
+*   Parameter
+*       HWND hDlg : ウインドウハンドル
+*       int idComboBox  : クリアする対象のID
+*
+*   Return Value
+*       メッセージに対応する戻り値
+*----------------------------------------------------------------------------*/
+static void ClearComboBox(HWND hDlg, int idComboBox)
+{
+    /* CB_RESETCONTENT は Vista 以降しか使えないので一個ずつ消す */
+    int i;
+    int count = SendDlgItemMessage(hDlg, idComboBox, CB_GETCOUNT, 0, 0);
+    for (i = 0; i < count; i++)
+    {
+        SendDlgItemMessage(hDlg, idComboBox, CB_DELETESTRING, 0, 0);
+    }
+}
+
+/*----- コンボボックスの内容を別のコンボボックスに複製する  ------------------------
+*
+*   Parameter
+*       HWND hDlg : ウインドウハンドル
+*       int idCopyFrom  : コピー元ID
+*       int idCopyTo : コピー先ID
+*
+*   Return Value
+*       メッセージに対応する戻り値
+*----------------------------------------------------------------------------*/
+void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
+{
+    int ItemCount;
+    int MaxLength = 0;
+    int i;
+    TCHAR * buffer = NULL;
+
+    /* コピー先のコンボボックスをクリアする */
+    ClearComboBox(hDlg, idCopyTo);
+
+    ItemCount = SendDlgItemMessage(hDlg, idCopyFrom, CB_GETCOUNT, 0, 0);
+    for (i = 0; i < ItemCount; i++)
+    {
+        int ItemLength = SendDlgItemMessage(hDlg, idCopyFrom, CB_GETLBTEXTLEN, i, 0);
+        if (MaxLength < ItemLength)
+        {
+            MaxLength = ItemLength;
+        }
+    }
+
+    buffer = (TCHAR*)malloc((MaxLength + 1) * sizeof(TCHAR));
+    if (buffer == NULL)
+    {
+        return;
+    }
+
+    for (i = 0; i < ItemCount; i++)
+    {
+        if (SendDlgItemMessage(hDlg, idCopyFrom, CB_GETLBTEXT, i, (LPARAM)buffer) != CB_ERR)
+        {
+            SendDlgItemMessage(hDlg, idCopyTo, CB_ADDSTRING, 0, (LPARAM)buffer);
+        }
+    }
+    free(buffer);
+}

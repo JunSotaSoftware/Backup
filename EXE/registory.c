@@ -160,6 +160,7 @@ int SaveRegistory(void)
                     _stprintf(Str, _T("Pat%d"), i);
                     if(CreateSubKey(hKey4, Str, &hKey5) == SUCCESS)
                     {
+                        WriteIntValueToReg(hKey5, _T("Enabled"), Pat.Enabled);
                         WriteStringToReg(hKey5, _T("Name"), Pat.Name);
                         WriteStringToReg(hKey5, _T("Comment"), Pat.Comment);
                         WriteMultiStringToReg(hKey5, _T("Src"), Pat.Src);
@@ -191,7 +192,8 @@ int SaveRegistory(void)
                         WriteIntValueToReg(hKey5, _T("Wait"), Pat.Wait);
                         WriteStringToReg(hKey5, _T("Label"), Pat.VolLabel);
                         WriteIntValueToReg(hKey5, _T("Tole"), Pat.Tolerance);
-                        WriteIntValueToReg(hKey5, _T("Close"), Pat.AutoClose);
+                        WriteIntValueToReg(hKey5, _T("Close"), Pat.AutoClose.Success);
+                        WriteIntValueToReg(hKey5, _T("CloseError"), Pat.AutoClose.Error);
                         WriteStringToReg(hKey5, _T("Sound"), Pat.SoundFile);
                         WriteIntValueToReg(hKey5, _T("Interval"), Pat.IntervalTime);
                         WriteIntValueToReg(hKey5, _T("Big"), Pat.IgnBigSize);
@@ -311,6 +313,7 @@ int LoadRegistory(void)
                 {
                     CopyDefaultPat(&Pat);
                     Pat.PatNum = i;
+                    ReadIntValueFromReg(hKey5, _T("Enabled"), &Pat.Enabled);
                     ReadStringFromReg(hKey5, _T("Name"), Pat.Name, PATNAME_LEN+1);
                     ReadStringFromReg(hKey5, _T("Comment"), Pat.Comment, COMMENT_LEN+1);
                     ReadMultiStringFromReg(hKey5, _T("Src"), Pat.Src, SRC_PATH_LEN+1);
@@ -349,7 +352,8 @@ int LoadRegistory(void)
                     ReadIntValueFromReg(hKey5, _T("Wait"), &Pat.Wait);
                     ReadStringFromReg(hKey5, _T("Label"), Pat.VolLabel, MY_MAX_PATH+1);
                     ReadIntValueFromReg(hKey5, _T("Tole"), &Pat.Tolerance);
-                    ReadIntValueFromReg(hKey5, _T("Close"), &Pat.AutoClose);
+                    ReadIntValueFromReg(hKey5, _T("Close"), (int*)&Pat.AutoClose.Success);
+                    ReadIntValueFromReg(hKey5, _T("CloseError"), (int*)&Pat.AutoClose.Error);
                     ReadStringFromReg(hKey5, _T("Sound"), Pat.SoundFile, MY_MAX_PATH+1);
                     if((ReadIntValueFromReg(hKey5, _T("Interval"), &Pat.IntervalTime) == FAIL) &&
                        (OldIntervalTimeFlg == SUCCESS))
