@@ -1,0 +1,15 @@
+*.$HP
+*.CHM
+*.KHP
+*.VIX
+*.aps
+*.exe
+*.ilk
+*.pdb
+*.res
+.vs
+Backup.LOG
+Debug
+Debug_English
+Release
+Release_English
