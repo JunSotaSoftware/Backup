@@ -1,5 +1,5 @@
-/*=============================================================================
-/                                   ÉÅÉbÉZÅ[ÉW
+Ôªø/*=============================================================================
+/                                   „É°„ÉÉ„Çª„Éº„Ç∏
 /
 /============================================================================
 / Copyright (C) 1997-2017 Sota. All rights reserved.
@@ -154,9 +154,9 @@
 #define MSGJPN_130  _T("Deletion file move to")
 #define MSGJPN_131  _T("   --> Move file to %s")
 #define MSGJPN_132  _T("ERROR: File move error (%s -> %s)")
-#define MSGJPN_133  _T("Pattern NameÅF%s")
+#define MSGJPN_133  _T("Pattern NameÔºö%s")
 #define MSGJPN_134  _T("%d:%d:%d")
-#define MSGJPN_135  _T("Process TimeÅF%s")
+#define MSGJPN_135  _T("Process TimeÔºö%s")
 #define MSGJPN_136  _T("Battery threshold not specified.")
 #if USE_SAME_AS_SUCCESS
 #define MSGJPN_137  _T("Same as on success")

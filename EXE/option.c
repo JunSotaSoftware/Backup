@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                               ƒIƒvƒVƒ‡ƒ“İ’è
+/                               ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š
 /
 /============================================================================
 / Copyright (C) 1997-2018 Sota. All rights reserved.
@@ -42,18 +42,18 @@
 #include "resource.h"
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-/*===== ƒ[ƒJƒ‹‚Èƒ[ƒN ======*/
+/*===== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
 static int Apply;
 
-/*===== ŠO•”QÆ =====*/
+/*===== å¤–éƒ¨å‚ç…§ =====*/
 
-/* İ’è’l */
+/* è¨­å®šå€¤ */
 extern int LogSwitch;
 extern int LogLimit;
 extern int LogUnicode;
@@ -65,21 +65,21 @@ extern int SaveWinPos;
 extern int TrayIcon;
 extern int RegType;
 extern int ExitOnEsc;
-extern int ShowComment;     /* 0=•\¦‚µ‚È‚¢,1=ƒc[ƒ‹ƒ`ƒbƒv‚Å•\¦A2=ƒEƒCƒ“ƒhƒE‚Å•\¦ */
+extern int ShowComment;     /* 0=è¡¨ç¤ºã—ãªã„,1=ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã§è¡¨ç¤ºã€2=ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§è¡¨ç¤º */
 extern int AuthDialog;
 extern int SleepSuppressAC;
 extern int SleepSuppressBattery;
 extern int SleepSuppressBatteryPercent;
 extern int ListWindowType;
 
-/*----- ƒIƒvƒVƒ‡ƒ“İ’è --------------------------------------------------------
+/*----- ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š --------------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : eƒEƒCƒ“ƒhƒE‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       HWND hWnd : è¦ªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
-*           YES/NO=æ‚èÁ‚µ
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*           YES/NO=å–ã‚Šæ¶ˆã—
 *----------------------------------------------------------------------------*/
 
 int SetOption(HWND hWnd)
@@ -125,16 +125,16 @@ int SetOption(HWND hWnd)
 }
 
 
-/*----- ƒƒOİ’èƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ------------------------------------
+/*----- ãƒ­ã‚°è¨­å®šã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -284,16 +284,16 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
 }
 
 
-/*----- ‚»‚Ì‘¼İ’èƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ----------------------------------
+/*----- ãã®ä»–è¨­å®šã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ----------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                               “]‘—ƒ_ƒCƒAƒƒO
+/                               è»¢é€ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
 /
 /============================================================================
 / Copyright (C) 1997-2015 Sota. All rights reserved.
@@ -46,12 +46,12 @@
 #define TASK_BUFSIZE    (16*1024)
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-/*===== ƒ[ƒJƒ‹‚Èƒ[ƒN ======*/
+/*===== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
 static HWND hWndTransDlg = NULL;
 static RECT RectPar;
@@ -70,25 +70,25 @@ static DIALOGSIZE DlgSize = {
     { 0, 0 }
 };
 
-/*===== ƒOƒ[ƒoƒ‹‚Èƒ[ƒN ======*/
+/*===== ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
 extern int Sound;
 extern _TCHAR SoundFile[MY_MAX_PATH+1];
 
-/* Ý’è */
+/* è¨­å®š */
 extern int IntervalTime;
 extern SIZE TransDlgSize;
 extern int ExitOnEsc;
 
 
 
-/*----- “]‘—’†ƒ_ƒCƒAƒƒO‚ðì¬‚·‚é --------------------------------------------
+/*----- è»¢é€ä¸­ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ä½œæˆã™ã‚‹ --------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -108,13 +108,13 @@ int MakeTransferDialog(void)
 }
 
 
-/*----- “]‘—’†ƒ_ƒCƒAƒƒO‚ÌƒŠƒ\[ƒX‚ð”jŠü‚·‚é ----------------------------------
+/*----- è»¢é€ä¸­ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒªã‚½ãƒ¼ã‚¹ã‚’ç ´æ£„ã™ã‚‹ ----------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void DeleteTransferDialogResources(void)
@@ -130,13 +130,13 @@ void DeleteTransferDialogResources(void)
 }
 
 
-/*----- “]‘—’†ƒEƒCƒ“ƒhƒE‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹‚ð•Ô‚· ----------------------------
+/*----- è»¢é€ä¸­ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ ----------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       HWND ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       HWND ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
 *----------------------------------------------------------------------------*/
 
 HWND GetTransDlgHwnd(void)
@@ -145,13 +145,13 @@ HWND GetTransDlgHwnd(void)
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒv‚ðŠJŽn‚·‚é ------------------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’é–‹å§‹ã™ã‚‹ ------------------------------------------------
 *
 *   Parameter
-*       COPYPATLIST *Pat : ƒoƒbƒNƒAƒbƒvƒpƒ^[ƒ“
+*       COPYPATLIST *Pat : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ‘ã‚¿ãƒ¼ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX (=SUCCESS)
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (=SUCCESS)
 *----------------------------------------------------------------------------*/
 
 int StartBackup(COPYPATLIST *Pat)
@@ -168,14 +168,14 @@ int StartBackup(COPYPATLIST *Pat)
     return(SUCCESS);
 }
 
-/*----- ”FØƒ_ƒCƒAƒƒO‚ðo‚· ------------------------------------------------
+/*----- èªè¨¼ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’å‡ºã™ ------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       LPCTSTR lpRemoteName : ƒŠƒ‚[ƒgƒTƒCƒg
+*       HWND hWnd : ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       LPCTSTR lpRemoteName : ãƒªãƒ¢ãƒ¼ãƒˆã‚µã‚¤ãƒˆ
 *
 *   Return Value
-*       DWORD ƒXƒe[ƒ^ƒX (=SUCCESS)
+*       DWORD ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (=SUCCESS)
 *----------------------------------------------------------------------------*/
 DWORD ShowWNetUseConnection(HWND hWnd, LPTSTR lpRemoteName)
 {
@@ -191,26 +191,26 @@ DWORD ShowWNetUseConnection(HWND hWnd, LPTSTR lpRemoteName)
     nr.dwType = RESOURCETYPE_DISK;
 
     lResult = WNetUseConnection(
-        hWnd,                               // ƒI[ƒi[ƒEƒBƒ“ƒhƒE
-        &nr,                                // Ú‘±‚ÌÚ×
-        NULL,                               // ƒ†[ƒU[–¼‚Ì•¶Žš—ñ
-        NULL,                               // ƒpƒXƒ[ƒh‚Ì•¶Žš—ñ
-        CONNECT_INTERACTIVE|CONNECT_PROMPT, // Ú‘±ƒIƒvƒVƒ‡ƒ“
-        AccessName,                         // ƒVƒXƒeƒ€—v‹‚ð•ÛŽ‚·‚éƒoƒbƒtƒ@
-        &BufferSize,                        // ƒoƒbƒtƒ@ƒTƒCƒY
-        &Result                             // Ú‘±î•ñ‚ðŽó‚¯Žæ‚é
+        hWnd,                               // ã‚ªãƒ¼ãƒŠãƒ¼ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
+        &nr,                                // æŽ¥ç¶šã®è©³ç´°
+        NULL,                               // ãƒ¦ãƒ¼ã‚¶ãƒ¼åã®æ–‡å­—åˆ—
+        NULL,                               // ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®æ–‡å­—åˆ—
+        CONNECT_INTERACTIVE|CONNECT_PROMPT, // æŽ¥ç¶šã‚ªãƒ—ã‚·ãƒ§ãƒ³
+        AccessName,                         // ã‚·ã‚¹ãƒ†ãƒ è¦æ±‚ã‚’ä¿æŒã™ã‚‹ãƒãƒƒãƒ•ã‚¡
+        &BufferSize,                        // ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚º
+        &Result                             // æŽ¥ç¶šæƒ…å ±ã‚’å—ã‘å–ã‚‹
     );
     return lResult;
 }
 
-/*----- ”FØƒ_ƒCƒAƒƒO‚ðo‚· ------------------------------------------------
+/*----- èªè¨¼ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’å‡ºã™ ------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       _TCHAR *Path : ƒAƒNƒZƒX‚·‚éƒpƒX
+*       HWND hWnd : ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       _TCHAR *Path : ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãƒ‘ã‚¹
 *
 *   Return Value
-*       DWORD ƒXƒe[ƒ^ƒX (=SUCCESS)
+*       DWORD ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (=SUCCESS)
 *----------------------------------------------------------------------------*/
 
 static int ShowAuthDialog(HWND hWnd, _TCHAR *Path)
@@ -223,7 +223,7 @@ static int ShowAuthDialog(HWND hWnd, _TCHAR *Path)
         if( GetFileAttributes_My2( Path, &lastError ) == 0xffffffff )
         {
             if( (lastError == ERROR_LOGON_FAILURE) ||
-				(lastError == ERROR_NOT_SUPPORTED))		/* ‚±‚ê‚ð•Ô‚·ê‡‚ª‚ ‚éBVista‚ÅŒoŒ± */
+				(lastError == ERROR_NOT_SUPPORTED))		/* ã“ã‚Œã‚’è¿”ã™å ´åˆãŒã‚ã‚‹ã€‚Vistaã§çµŒé¨“ */
             {
                 ret = ShowWNetUseConnection(hWnd, Path);
             }
@@ -232,14 +232,14 @@ static int ShowAuthDialog(HWND hWnd, _TCHAR *Path)
     return ret;
 }
 
-/*----- ”FØƒ_ƒCƒAƒƒO‚ðo‚· ------------------------------------------------
+/*----- èªè¨¼ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’å‡ºã™ ------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       COPYPATLIST *Pat : ƒoƒbƒNƒAƒbƒvƒpƒ^[ƒ“
+*       HWND hWnd : ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       COPYPATLIST *Pat : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ‘ã‚¿ãƒ¼ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX (=SUCCESS)
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (=SUCCESS)
 *----------------------------------------------------------------------------*/
 
 int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat)
@@ -269,23 +269,23 @@ int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat)
     return(SUCCESS);
 }
 
-/*----- PathIsUNCServerShare‚Ì•ÏX”Å ------------------------------------------------
+/*----- PathIsUNCServerShareã®å¤‰æ›´ç‰ˆ ------------------------------------------------
 *
 *   Parameter
-*       _TCHAR* str : ƒpƒX–¼
+*       _TCHAR* str : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       int UNC‚©‚Ç‚¤‚© (0=UNC‚Å‚È‚¢A1=UNC‚Å‚ ‚é)
+*       int UNCã‹ã©ã†ã‹ (0=UNCã§ãªã„ã€1=UNCã§ã‚ã‚‹)
 *
 *	Note
-*		PathIsUNCServerShare‚Í \\server\share ‚ÍUNC‚Æ‚Ý‚È‚·‚ª \\server\share\aaa ‚ð
-*		UNC‚Æ‚Ý‚È‚³‚È‚¢B
-*		PathIsUNC‚Í \\server ‚àUNC‚Æ‚Ý‚È‚µ‚Ä‚µ‚Ü‚¤B
-*		‚±‚ÌŠÖ”‚ÍˆÈ‰º‚Ì’l‚ð•Ô‚·
-*			D:\home                 –ß‚è’l=0
-*			\\server                –ß‚è’l=0
-*			\\server\share          –ß‚è’l=1
-*			\\server\share\aaa      –ß‚è’l=1
+*		PathIsUNCServerShareã¯ \\server\share ã¯UNCã¨ã¿ãªã™ãŒ \\server\share\aaa ã‚’
+*		UNCã¨ã¿ãªã•ãªã„ã€‚
+*		PathIsUNCã¯ \\server ã‚‚UNCã¨ã¿ãªã—ã¦ã—ã¾ã†ã€‚
+*		ã“ã®é–¢æ•°ã¯ä»¥ä¸‹ã®å€¤ã‚’è¿”ã™
+*			D:\home                 æˆ»ã‚Šå€¤=0
+*			\\server                æˆ»ã‚Šå€¤=0
+*			\\server\share          æˆ»ã‚Šå€¤=1
+*			\\server\share\aaa      æˆ»ã‚Šå€¤=1
 *----------------------------------------------------------------------------*/
 
 int MyPathIsUNCServerShare(_TCHAR *str)
@@ -320,16 +320,16 @@ typedef enum {
 } NEXT_TO_STATUS;
 
 
-/*----- ƒoƒbƒNƒAƒbƒv’†ƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ä¸­ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰ž‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -368,10 +368,10 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             SendDlgItemMessage(hDlg, TRANS_PROGRESS, PBM_SETSTEP, 1, 0);
             SendDlgItemMessage(hDlg, TRANS_PROGRESS, PBM_SETPOS, 0, 0);
 
-            /* ƒƒO•\Ž¦ƒEƒCƒ“ƒhƒE‚ðƒTƒuƒNƒ‰ƒX‰» */
+            /* ãƒ­ã‚°è¡¨ç¤ºã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ã‚µãƒ–ã‚¯ãƒ©ã‚¹åŒ– */
             hWndChild = GetDlgItem(hDlg, TRANS_EXEC);
             LogProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)LogWndProc);
-            /* ƒ_ƒCƒAƒƒOƒTƒCƒY‚Ì‰Šú‰» */
+            /* ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚µã‚¤ã‚ºã®åˆæœŸåŒ– */
             DlgSizeInit(hDlg, &DlgSize, &TransDlgSize, FALSE);
             Processing = PROCESSING_STOP;
             NextTo = NEXT_TO_STAY;
@@ -382,7 +382,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             EnableWindow(GetDlgItem(hDlg, TRANS_STOP), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_RETURN), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_QUIT), TRUE);
-            SetTimer(hDlg, TIMER_ANIM, 600, NULL);  /* 0.6•b‚¨‚« */
+            SetTimer(hDlg, TIMER_ANIM, 600, NULL);  /* 0.6ç§’ãŠã */
             Processing = PROCESSING_RUN;
             NextTo = NEXT_TO_STAY;
             SetBackupPat(CopyPatList);
@@ -425,7 +425,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                 else
                 {
                     TickCount = IntervalTime;
-                    SetTimer(hDlg, TIMER_INTERVAL, 60*1000, NULL);  /* 1•ª‚¨‚« */
+                    SetTimer(hDlg, TIMER_INTERVAL, 60*1000, NULL);  /* 1åˆ†ãŠã */
                     _stprintf(Tmp, MSGJPN_57, TickCount);
                     SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)Tmp);
                     SetTrayIcon(TICON_CHANGE, 0, Tmp);
@@ -460,21 +460,21 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                 case TRANS_STOP :
                     if(Processing == PROCESSING_STOP)
                     {
-                        /* ÄƒoƒbƒNƒAƒbƒvŠJŽn */
+                        /* å†ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—é–‹å§‹ */
                         KillTimer(hDlg, TIMER_INTERVAL);
                         PostMessage(hDlg, WM_BACKUP_START, 0, 0);
                     }
                     else if(Processing == PROCESSING_PAUSE)
                     {
-                        /* ˆêŽž’âŽ~‚©‚ç‚Ì•œ‹A */
+                        /* ä¸€æ™‚åœæ­¢ã‹ã‚‰ã®å¾©å¸° */
                         SetBackupRestart();
                         Processing = PROCESSING_RUN;
-                        SetTimer(hDlg, TIMER_ANIM, 600, NULL);  /* 0.6•b‚¨‚« */
+                        SetTimer(hDlg, TIMER_ANIM, 600, NULL);  /* 0.6ç§’ãŠã */
                         SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_123);
                     }
                     else
                     {
-                        /* ˆêŽž’âŽ~‚Ö‚ÌˆÚs */
+                        /* ä¸€æ™‚åœæ­¢ã¸ã®ç§»è¡Œ */
                         SetBackupPause();
                         Processing = PROCESSING_PAUSE;
                         KillTimer(hDlg, TIMER_ANIM);
@@ -591,13 +591,13 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
 }
 
 
-/*----- Œ»Ý‚Ìˆ—’iŠK‚ð•\Ž¦‚·‚é ----------------------------------------------
+/*----- ç¾åœ¨ã®å‡¦ç†æ®µéšŽã‚’è¡¨ç¤ºã™ã‚‹ ----------------------------------------------
 *
 *   Parameter
-*       int Pass : ˆ—’iŠK
+*       int Pass : å‡¦ç†æ®µéšŽ
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SelectPass(int Pass)
@@ -622,13 +622,13 @@ void SelectPass(int Pass)
 }
 
 
-/*----- ƒpƒ^[ƒ“–¼‚ð•\Ž¦‚·‚é --------------------------------------------------
+/*----- ãƒ‘ã‚¿ãƒ¼ãƒ³åã‚’è¡¨ç¤ºã™ã‚‹ --------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Name : ƒpƒ^[ƒ“–¼
+*       LPTSTR Name : ãƒ‘ã‚¿ãƒ¼ãƒ³å
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetPatName(LPTSTR Name)
@@ -641,14 +641,14 @@ void SetPatName(LPTSTR Name)
 }
 
 
-/*----- ƒƒOƒƒbƒZ[ƒW‚ð•\Ž¦‚·‚é ----------------------------------------------
+/*----- ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹ ----------------------------------------------
 *
 *   Parameter
-*       int Type : ƒ^ƒCƒv (TASKMSG_xxx)
-*       LPTSTR szFormat ... : ƒtƒH[ƒ}ƒbƒg•¶Žš—ñ
+*       int Type : ã‚¿ã‚¤ãƒ— (TASKMSG_xxx)
+*       LPTSTR szFormat ... : ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆæ–‡å­—åˆ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetTaskMsg(int Type, LPTSTR szFormat,...)
@@ -671,14 +671,14 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
             WriteMsgToErrorLogfile(szBuf);
         }
 
-        /* ƒEƒCƒ“ƒhƒE‚Ì‰¡•‚É‡‚í‚¹‚Ä®Œ` */
+        /* ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®æ¨ªå¹…ã«åˆã‚ã›ã¦æ•´å½¢ */
         SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)szBuf);
         _tcscat(szBuf, _T("\r\n"));
 
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
 
-        /* ƒeƒLƒXƒgƒTƒCƒY‚ÌƒŠƒ~ƒbƒg’l‚ðƒ`ƒFƒbƒN */
+        /* ãƒ†ã‚­ã‚¹ãƒˆã‚µã‚¤ã‚ºã®ãƒªãƒŸãƒƒãƒˆå€¤ã‚’ãƒã‚§ãƒƒã‚¯ */
         if((Pos + _tcslen(szBuf)) >= TASK_BUFSIZE)
         {
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEFROMCHAR, TASK_BUFSIZE/10, 0) + 1;
@@ -697,14 +697,14 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
 }
 
 
-/*----- “]‘—’†‚ÌƒvƒƒOƒŒƒXƒo[‚ð•\Ž¦‚·‚é --------------------------------------
+/*----- è»¢é€ä¸­ã®ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒãƒ¼ã‚’è¡¨ç¤ºã™ã‚‹ --------------------------------------
 *
 *   Parameter
-*       LONGLONG Total : ƒg[ƒ^ƒ‹‚ÌƒTƒCƒY
-*       LONGLONG Done : “]‘—‚µ‚½ƒTƒCƒY
+*       LONGLONG Total : ãƒˆãƒ¼ã‚¿ãƒ«ã®ã‚µã‚¤ã‚º
+*       LONGLONG Done : è»¢é€ã—ãŸã‚µã‚¤ã‚º
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetFileProgress(LONGLONG Total, LONGLONG Done)
@@ -723,16 +723,16 @@ void SetFileProgress(LONGLONG Total, LONGLONG Done)
 }
 
 
-/*----- ƒƒO•\Ž¦ƒEƒCƒ“ƒhƒE‚ÌƒvƒƒV[ƒWƒƒ --------------------------------------
+/*----- ãƒ­ã‚°è¡¨ç¤ºã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰ž‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -746,7 +746,7 @@ static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
     switch(message)
     {
-        // ƒeƒLƒXƒg®Œ`
+        // ãƒ†ã‚­ã‚¹ãƒˆæ•´å½¢
         case WM_FORMAT_TEXT :
             hDC2 = GetDC(hWnd);
             hDC = CreateCompatibleDC(hDC2);
@@ -769,13 +769,13 @@ static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 }
 
 
-/*----- “]‘—ƒ_ƒCƒAƒƒO‚ÌƒTƒCƒY‚ð•Û‘¶ ------------------------------------------
+/*----- è»¢é€ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚µã‚¤ã‚ºã‚’ä¿å­˜ ------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 void SaveTransDlgSize(void)
 {

@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /									Backup
-/							ƒƒCƒ‹ƒhƒJ[ƒh‚Ìˆ—
+/							ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã®å‡¦ç†
 /
 /============================================================================
 / Copyright (C) 1997-2015 Sota. All rights reserved.
@@ -41,21 +41,21 @@
 #include "resource.h"
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static int CheckNameMatch(LPTSTR str, LPTSTR regexp);
 
 
 
-/*----- ƒƒCƒ‹ƒhƒJ[ƒh‚Éƒ}ƒbƒ`‚·‚é‚©‚Ç‚¤‚©‚ð•Ô‚· ------------------------------
+/*----- ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã«ãƒžãƒƒãƒã™ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™ ------------------------------
 *
 *	Parameter
-*		LPTSTR str : •¶Žš—ñ
-*		LPTSTR Array : ƒƒCƒ‹ƒhƒJ[ƒhŒŸõŽ®iƒ}ƒ‹ƒ`•¶Žš—ñj
+*		LPTSTR str : æ–‡å­—åˆ—
+*		LPTSTR Array : ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰æ¤œç´¢å¼ï¼ˆãƒžãƒ«ãƒæ–‡å­—åˆ—ï¼‰
 *
 *	Return Value
-*		int ƒXƒe[ƒ^ƒX
-*			YES/NO=ƒƒCƒ‹ƒhƒJ[ƒh‚É‡‚í‚È‚©‚Á‚½
+*		int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*			YES/NO=ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã«åˆã‚ãªã‹ã£ãŸ
 *----------------------------------------------------------------------------*/
 
 int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array)
@@ -66,7 +66,7 @@ int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array)
 	Sts = NO;
 	while(*Array != NUL)
 	{
-		/* ƒpƒX{–¼‘O‚ÌŒ`‚Å‚È‚¢‚à‚Ì‚Í _T("*\") ‚ð‘O‚É•t‚¯‚é */
+		/* ãƒ‘ã‚¹ï¼‹åå‰ã®å½¢ã§ãªã„ã‚‚ã®ã¯ _T("*\") ã‚’å‰ã«ä»˜ã‘ã‚‹ */
 		_tcscpy(Tmp, _T(""));
 		if(_tcschr(Array, _T('\\')) == NULL)
 			_tcscat(Tmp, _T("*\\"));
@@ -81,15 +81,15 @@ int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array)
 }
 
 
-/*----- ƒƒCƒ‹ƒhƒJ[ƒh‚Éƒ}ƒbƒ`‚·‚é‚©‚Ç‚¤‚©‚ð•Ô‚· ------------------------------
+/*----- ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã«ãƒžãƒƒãƒã™ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™ ------------------------------
 *
 *	Parameter
-*		LPTSTR str : •¶Žš—ñ
-*		LPTSTR regexp : ƒƒCƒ‹ƒhƒJ[ƒhŒŸõŽ®
+*		LPTSTR str : æ–‡å­—åˆ—
+*		LPTSTR regexp : ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰æ¤œç´¢å¼
 *
 *	Return Value
-*		int ƒXƒe[ƒ^ƒX
-*			YES/NO=ƒƒCƒ‹ƒhƒJ[ƒh‚É‡‚í‚È‚©‚Á‚½
+*		int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*			YES/NO=ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã«åˆã‚ãªã‹ã£ãŸ
 *----------------------------------------------------------------------------*/
 
 int CheckFname(LPTSTR str, LPTSTR regexp)
@@ -105,7 +105,7 @@ int CheckFname(LPTSTR str, LPTSTR regexp)
 //	if(_tcschr(p2, _T('.')) == NULL)
 //		_tcscat(p2,_T("."));
 
-	/* *? ‚Æ‚© ** ‚Æ‚©‚ðíœ */
+	/* *? ã¨ã‹ ** ã¨ã‹ã‚’å‰Šé™¤ */
 	for(p = p1; *p != NUL; p++)
 	{
 		while((*p == _T('*')) && ((*(p+1) == _T('?')) || (*(p+1) == _T('*'))))
@@ -121,15 +121,15 @@ int CheckFname(LPTSTR str, LPTSTR regexp)
 }
 
 
-/*----- ƒƒCƒ‹ƒhƒJ[ƒhŒŸõƒTƒuƒ‹[ƒ`ƒ“ ----------------------------------------
+/*----- ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰æ¤œç´¢ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ ----------------------------------------
 *
 *	Parameter
-*		LPTSTR str : •¶Žš—ñ
-*		LPTSTR regexp : ƒƒCƒ‹ƒhƒJ[ƒhŒŸõŽ®
+*		LPTSTR str : æ–‡å­—åˆ—
+*		LPTSTR regexp : ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰æ¤œç´¢å¼
 *
 *	Return Value
-*		int ƒXƒe[ƒ^ƒX
-*			YES/NO=ƒƒCƒ‹ƒhƒJ[ƒh‚É‡‚í‚È‚©‚Á‚½
+*		int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*			YES/NO=ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã«åˆã‚ãªã‹ã£ãŸ
 *----------------------------------------------------------------------------*/
 
 static int CheckNameMatch(LPTSTR str, LPTSTR regexp)

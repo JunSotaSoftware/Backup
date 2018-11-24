@@ -1,7 +1,7 @@
-/*===========================================================================
+п»ї/*===========================================================================
 /
 /                                   Backup
-/                               ѓЃѓCѓ“ѓvѓЌѓOѓ‰ѓЂ
+/                               гѓЎг‚¤гѓігѓ—гѓ­г‚°гѓ©гѓ 
 /
 /============================================================================
 / Copyright (C) 1997-2018 Sota. All rights reserved.
@@ -43,7 +43,7 @@
 #include "resource.h"
 
 
-/*===== ѓvѓЌѓgѓ^ѓCѓv =====*/
+/*===== гѓ—гѓ­гѓ€г‚їг‚¤гѓ— =====*/
 
 static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdLine, int cmdShow);
 static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryLevel);
@@ -55,7 +55,7 @@ static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf);
 static void TrayIconMenu(void);
 void LoadTrayIcon(void);
 
-/*===== ѓЌЃ[ѓJѓ‹‚ИѓЏЃ[ѓN ======*/
+/*===== гѓ­гѓјг‚«гѓ«гЃЄгѓЇгѓјг‚Ї ======*/
 
 static const _TCHAR BupClassStr[] = _T("BackUp");
 
@@ -80,9 +80,9 @@ static int TmpTrayIcon;
 extern int ErrorCount;
 
 static const int IconData[] = {
-    /* ђГЋ~Ћћ—p */
+    /* йќ™ж­ўж™‚з”Ё */
     backup,
-    /* “®‰ж—p */
+    /* е‹•з”»з”Ё */
     backup_tiny_2, backup_tiny_3, backup_tiny_4, backup_tiny_5,
     backup_tiny_6, backup_tiny_7, backup_tiny_8, backup_tiny_9,
     backup_tiny_a, backup_tiny_b
@@ -91,11 +91,11 @@ static const int IconData[] = {
 static HANDLE IconHandle[11];
 static DWORD dwCookie;
 
-/*===== ѓOѓЌЃ[ѓoѓ‹‚ИѓЏЃ[ѓN ======*/
+/*===== г‚°гѓ­гѓјгѓђгѓ«гЃЄгѓЇгѓјг‚Ї ======*/
 
-/* ђЭ’и */
+/* иЁ­е®љ */
 int LogSwitch = LOG_SW_APPEND;
-int LogLimit = 1000;                    /* ЌЕ‘еѓTѓCѓYЃFѓ}ѓCѓiѓX’l‚И‚зђ§ЊА‚И‚µ */
+int LogLimit = 1000;                    /* жњЂе¤§г‚µг‚¤г‚єпјљгѓћг‚¤гѓЉг‚№еЂ¤гЃЄг‚‰е€¶й™ђгЃЄгЃ— */
 int LogUnicode = YES;
 int LogVerbose = NO;
 _TCHAR LogFname[MY_MAX_PATH+1] = { _T("") };
@@ -109,7 +109,7 @@ SIZE MainDlgSize = { -1, -1 };
 SIZE TransDlgSize = { -1, -1 };
 SIZE NotifyDlgSize = {-1, -1 };
 int ExitOnEsc = 0;
-int ShowComment = 1;        /* 0=•\Ћ¦‚µ‚И‚ў,1=ѓcЃ[ѓ‹ѓ`ѓbѓv‚Е•\Ћ¦ЃA2=ѓEѓCѓ“ѓhѓE‚Е•\Ћ¦ */
+int ShowComment = 1;        /* 0=иЎЁз¤єгЃ—гЃЄгЃ„,1=гѓ„гѓјгѓ«гѓЃгѓѓгѓ—гЃ§иЎЁз¤єгЂЃ2=г‚¦г‚¤гѓігѓ‰г‚¦гЃ§иЎЁз¤є */
 int AuthDialog = AUTH_DIALOG_HIDE;
 int SleepSuppressAC = 1;
 int SleepSuppressBattery = 0;
@@ -120,16 +120,16 @@ int ListWindowType = 0;
 
 
 
-/*----- ѓЃѓCѓ“ѓ‹Ѓ[ѓ`ѓ“ --------------------------------------------------------
+/*----- гѓЎг‚¤гѓігѓ«гѓјгѓЃгѓі --------------------------------------------------------
 *
 *   Parameter
-*       HINSTANCE hInstance : ‚±‚МѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚М‚±‚МѓCѓ“ѓXѓ^ѓ“ѓX‚Мѓnѓ“ѓhѓ‹
-*       HINSTANCE hPrevInstance : ‚±‚МѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚М’ј‘O‚МѓCѓ“ѓXѓ^ѓ“ѓX‚Мѓnѓ“ѓhѓ‹
-*       LPSTR lpszCmdLine : ѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚Є‹N“®‚µ‚Ѕ‚Ж‚«‚МѓRѓ}ѓ“ѓhѓ‰ѓCѓ“‚р‚і‚·ѓЌѓ“ѓOѓ|ѓCѓ“ѓ^
-*       int cmdShow : ЌЕЏ‰‚Й•\Ћ¦‚·‚йѓEѓCѓ“ѓhѓE‚МЊ`Ћ®ЃB
+*       HINSTANCE hInstance : гЃ“гЃ®г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃ®гЃ“гЃ®г‚¤гѓіг‚№г‚їгѓіг‚№гЃ®гѓЏгѓігѓ‰гѓ«
+*       HINSTANCE hPrevInstance : гЃ“гЃ®г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃ®з›ґе‰ЌгЃ®г‚¤гѓіг‚№г‚їгѓіг‚№гЃ®гѓЏгѓігѓ‰гѓ«
+*       LPSTR lpszCmdLine : г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃЊиµ·е‹•гЃ—гЃџгЃЁгЃЌгЃ®г‚ігѓћгѓігѓ‰гѓ©г‚¤гѓіг‚’гЃ•гЃ™гѓ­гѓіг‚°гѓќг‚¤гѓіг‚ї
+*       int cmdShow : жњЂе€ќгЃ«иЎЁз¤єгЃ™г‚‹г‚¦г‚¤гѓігѓ‰г‚¦гЃ®еЅўејЏгЂ‚
 *
 *   Return Value
-*       int ЌЕЊг‚МѓЃѓbѓZЃ[ѓW‚МwParam
+*       int жњЂеѕЊгЃ®гѓЎгѓѓг‚»гѓјг‚ёгЃ®wParam
 *----------------------------------------------------------------------------*/
 
 int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdLine, int cmdShow)
@@ -159,16 +159,16 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
 }
 
 
-/*----- ѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚МЏ‰Љъ‰» ----------------------------------------------
+/*----- г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃ®е€ќжњџеЊ– ----------------------------------------------
 *
 *   Parameter
-*       HINSTANCE hInstance : ‚±‚МѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚М‚±‚МѓCѓ“ѓXѓ^ѓ“ѓX‚Мѓnѓ“ѓhѓ‹
-*       HINSTANCE hPrevInstance : ‚±‚МѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚М’ј‘O‚МѓCѓ“ѓXѓ^ѓ“ѓX‚Мѓnѓ“ѓhѓ‹
-*       LPTSTR lpszCmdLine : ѓAѓvѓЉѓPЃ[ѓVѓ‡ѓ“‚Є‹N“®‚µ‚Ѕ‚Ж‚«‚МѓRѓ}ѓ“ѓhѓ‰ѓCѓ“‚р‚і‚·ѓЌѓ“ѓOѓ|ѓCѓ“ѓ^
-*       int cmdShow : ЌЕЏ‰‚Й•\Ћ¦‚·‚йѓEѓCѓ“ѓhѓE‚МЊ`Ћ®ЃB
+*       HINSTANCE hInstance : гЃ“гЃ®г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃ®гЃ“гЃ®г‚¤гѓіг‚№г‚їгѓіг‚№гЃ®гѓЏгѓігѓ‰гѓ«
+*       HINSTANCE hPrevInstance : гЃ“гЃ®г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃ®з›ґе‰ЌгЃ®г‚¤гѓіг‚№г‚їгѓіг‚№гЃ®гѓЏгѓігѓ‰гѓ«
+*       LPTSTR lpszCmdLine : г‚ўгѓ—гѓЄг‚±гѓјг‚·гѓ§гѓігЃЊиµ·е‹•гЃ—гЃџгЃЁгЃЌгЃ®г‚ігѓћгѓігѓ‰гѓ©г‚¤гѓіг‚’гЃ•гЃ™гѓ­гѓіг‚°гѓќг‚¤гѓіг‚ї
+*       int cmdShow : жњЂе€ќгЃ«иЎЁз¤єгЃ™г‚‹г‚¦г‚¤гѓігѓ‰г‚¦гЃ®еЅўејЏгЂ‚
 *
 *   Return Value
-*       int ѓXѓeЃ[ѓ^ѓX
+*       int г‚№гѓ†гѓјг‚їг‚№
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -212,7 +212,7 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
     AllocConsole();
 #endif
 
-    /* ѓЃѓCѓ“ѓEѓCѓ“ѓhѓE‚рЌмђ¬ */
+    /* гѓЎг‚¤гѓіг‚¦г‚¤гѓігѓ‰г‚¦г‚’дЅњж€ђ */
     wClass.cbSize        = sizeof(WNDCLASSEX);
     wClass.style         = 0;
     wClass.lpfnWndProc   = BupWndProc;
@@ -274,15 +274,15 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
 }
 
 
-/*----- ѓRѓ}ѓ“ѓhѓ‰ѓCѓ“‚МЋw’и‚ЙЏ]‚Б‚ДЏ€—ќ --------------------------------------
+/*----- г‚ігѓћгѓігѓ‰гѓ©г‚¤гѓігЃ®жЊ‡е®љгЃ«еѕ“гЃЈгЃ¦е‡¦зђ† --------------------------------------
 *
 *   Parameter
-*       Src     ѓoѓbѓNѓAѓbѓvЊі
-*       Dst     ѓoѓbѓNѓAѓbѓvђж
-*       Option  ѓIѓvѓVѓ‡ѓ“
+*       Src     гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…ѓ
+*       Dst     гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€
+*       Option  г‚Єгѓ—г‚·гѓ§гѓі
 *
 *   Return Value
-*       int ѓXѓeЃ[ѓ^ѓX
+*       int г‚№гѓ†гѓјг‚їг‚№
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -367,13 +367,13 @@ static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryL
 }
 
 
-/*----- ѓЃѓCѓ“ѓEѓCѓ“ѓhѓE‚МѓEѓCѓ“ѓhѓEѓnѓ“ѓhѓ‹‚р•Ф‚· ----------------------------
+/*----- гѓЎг‚¤гѓіг‚¦г‚¤гѓігѓ‰г‚¦гЃ®г‚¦г‚¤гѓігѓ‰г‚¦гѓЏгѓігѓ‰гѓ«г‚’иї”гЃ™ ----------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       HWND ѓEѓCѓ“ѓhѓEѓnѓ“ѓhѓ‹
+*       HWND г‚¦г‚¤гѓігѓ‰г‚¦гѓЏгѓігѓ‰гѓ«
 *----------------------------------------------------------------------------*/
 
 HWND GetMainHwnd(void)
@@ -382,13 +382,13 @@ HWND GetMainHwnd(void)
 }
 
 
-/*----- ѓvѓЌѓOѓ‰ѓЂ‚МѓCѓ“ѓXѓ^ѓ“ѓX‚р•Ф‚· ----------------------------------------
+/*----- гѓ—гѓ­г‚°гѓ©гѓ гЃ®г‚¤гѓіг‚№г‚їгѓіг‚№г‚’иї”гЃ™ ----------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       HINSTANCE ѓCѓ“ѓXѓ^ѓ“ѓX
+*       HINSTANCE г‚¤гѓіг‚№г‚їгѓіг‚№
 *----------------------------------------------------------------------------*/
 
 HINSTANCE GetBupInst(void)
@@ -397,13 +397,13 @@ HINSTANCE GetBupInst(void)
 }
 
 
-/*----- ѓIЃ[ѓgѓNѓЌЃ[ѓY‚©‚З‚¤‚©‚р•Ф‚· ------------------------------------------
+/*----- г‚Єгѓјгѓ€г‚Їгѓ­гѓјг‚єгЃ‹гЃ©гЃ†гЃ‹г‚’иї”гЃ™ ------------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       int ѓIЃ[ѓgѓNѓЌЃ[ѓY‚©‚З‚¤‚© (YES/NO
+*       int г‚Єгѓјгѓ€г‚Їгѓ­гѓјг‚єгЃ‹гЃ©гЃ†гЃ‹ (YES/NO
 *----------------------------------------------------------------------------*/
 
 AUTOCLOSE_ACTION AskAutoClose(void)
@@ -423,13 +423,13 @@ AUTOCLOSE_ACTION AskAutoClose(void)
 }
 
 
-/*----- Љm”F‚рЌs‚И‚н‚И‚ў‚©‚З‚¤‚©‚р•Ф‚· ----------------------------------------
+/*----- зўєиЄЌг‚’иЎЊгЃЄг‚ЏгЃЄгЃ„гЃ‹гЃ©гЃ†гЃ‹г‚’иї”гЃ™ ----------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       int Љm”F‚рЌs‚И‚н‚И‚ў‚©‚З‚¤‚© (YES/NO)
+*       int зўєиЄЌг‚’иЎЊгЃЄг‚ЏгЃЄгЃ„гЃ‹гЃ©гЃ†гЃ‹ (YES/NO)
 *----------------------------------------------------------------------------*/
 
 int AskNoNotify(void)
@@ -438,13 +438,13 @@ int AskNoNotify(void)
 }
 
 
-/*----- ѓwѓ‹ѓvѓtѓ@ѓCѓ‹‚МѓpѓX–ј‚р•Ф‚· ------------------------------------------
+/*----- гѓгѓ«гѓ—гѓ•г‚Ўг‚¤гѓ«гЃ®гѓ‘г‚№еђЌг‚’иї”гЃ™ ------------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       LPTSTR ѓpѓX–ј
+*       LPTSTR гѓ‘г‚№еђЌ
 *----------------------------------------------------------------------------*/
 
 LPTSTR AskHelpFilePath(void)
@@ -453,13 +453,13 @@ LPTSTR AskHelpFilePath(void)
 }
 
 
-/*----- INIѓtѓ@ѓCѓ‹‚МѓpѓX–ј‚р•Ф‚· ---------------------------------------------
+/*----- INIгѓ•г‚Ўг‚¤гѓ«гЃ®гѓ‘г‚№еђЌг‚’иї”гЃ™ ---------------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       LPTSTR ѓpѓX–ј
+*       LPTSTR гѓ‘г‚№еђЌ
 *----------------------------------------------------------------------------*/
 
 LPTSTR AskIniFilePath(void)
@@ -468,13 +468,13 @@ LPTSTR AskIniFilePath(void)
 }
 
 
-/*----- INIѓtѓ@ѓCѓ‹‚МѓpѓX–ј‚р•Ф‚·(ANSI) ----------------------------------------
+/*----- INIгѓ•г‚Ўг‚¤гѓ«гЃ®гѓ‘г‚№еђЌг‚’иї”гЃ™(ANSI) ----------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       char ѓpѓX–ј (free‚·‚й‚±‚Ж)
+*       char гѓ‘г‚№еђЌ (freeгЃ™г‚‹гЃ“гЃЁ)
 *----------------------------------------------------------------------------*/
 
 char *AskIniFilePathAnsi(void)
@@ -491,13 +491,13 @@ char *AskIniFilePathAnsi(void)
 }
 
 
-/*----- ‘S‚Д‚МѓIѓuѓWѓFѓNѓg‚рЌнЏњ ----------------------------------------------
+/*----- е…ЁгЃ¦гЃ®г‚Єгѓ–г‚ёг‚§г‚Їгѓ€г‚’е‰Љй™¤ ----------------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 static void DeleteAllObject(void)
@@ -512,14 +512,14 @@ static void DeleteAllObject(void)
     return;
 }
 
-/*----- ѓoѓbѓNѓAѓbѓvЏI—№Ћћ‚МЏ€—ќ --------------------------------------
+/*----- гѓђгѓѓг‚Їг‚ўгѓѓгѓ—зµ‚дє†ж™‚гЃ®е‡¦зђ† --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ѓEѓCѓ“ѓhѓEѓnѓ“ѓhѓ‹
-*       AUTOCLOSE_ACTION action  : ѓoѓbѓNѓAѓbѓvЏI—№Ћћ‚МЏ€—ќ
+*       HWND hWnd : г‚¦г‚¤гѓігѓ‰г‚¦гѓЏгѓігѓ‰гѓ«
+*       AUTOCLOSE_ACTION action  : гѓђгѓѓг‚Їг‚ўгѓѓгѓ—зµ‚дє†ж™‚гЃ®е‡¦зђ†
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 static void RunTask(HWND hWnd, AUTOCLOSE_ACTION action)
@@ -545,16 +545,16 @@ static void RunTask(HWND hWnd, AUTOCLOSE_ACTION action)
     }
 }
 
-/*----- ѓЃѓCѓ“ѓEѓCѓ“ѓhѓE‚МѓЃѓbѓZЃ[ѓWЏ€—ќ --------------------------------------
+/*----- гѓЎг‚¤гѓіг‚¦г‚¤гѓігѓ‰г‚¦гЃ®гѓЎгѓѓг‚»гѓјг‚ёе‡¦зђ† --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ѓEѓCѓ“ѓhѓEѓnѓ“ѓhѓ‹
-*       UINT message  : ѓЃѓbѓZЃ[ѓW”ФЌ†
-*       WPARAM wParam : ѓЃѓbѓZЃ[ѓW‚М WPARAM €шђ”
-*       LPARAM lParam : ѓЃѓbѓZЃ[ѓW‚М LPARAM €шђ”
+*       HWND hWnd : г‚¦г‚¤гѓігѓ‰г‚¦гѓЏгѓігѓ‰гѓ«
+*       UINT message  : гѓЎгѓѓг‚»гѓјг‚ёз•ЄеЏ·
+*       WPARAM wParam : гѓЎгѓѓг‚»гѓјг‚ёгЃ® WPARAM еј•ж•°
+*       LPARAM lParam : гѓЎгѓѓг‚»гѓјг‚ёгЃ® LPARAM еј•ж•°
 *
 *   Return Value
-*       ѓЃѓbѓZЃ[ѓW‚Й‘О‰ћ‚·‚й–Я‚и’l
+*       гѓЎгѓѓг‚»гѓјг‚ёгЃ«еЇѕеїњгЃ™г‚‹ж€»г‚ЉеЂ¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -645,7 +645,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             break;
 
         case WM_CLICK_ICON :
-            /* ѓgѓЊѓCѓAѓCѓRѓ“‚ЄѓNѓЉѓbѓN‚і‚к‚Ѕ */
+            /* гѓ€гѓ¬г‚¤г‚ўг‚¤г‚ігѓігЃЊг‚ЇгѓЄгѓѓг‚ЇгЃ•г‚ЊгЃџ */
             if((lParam & 0x00000007L) == 2)
                 SendMessage(hWnd, WM_COMMAND, MAKEWPARAM(MENU_OPEN, 0), 0);
             else if((lParam & 0x00000007L) == 5)
@@ -670,7 +670,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             }
             if(TmpTrayIcon == YES)
             {
-                /* ѓEѓCѓ“ѓhѓE‚МѓAѓCѓRѓ“‰»ЃA‚Ь‚Ѕ‚НЊі‚Й–Я‚µ‚Ѕ‚Ж‚«‚МЏ€—ќ */
+                /* г‚¦г‚¤гѓігѓ‰г‚¦гЃ®г‚ўг‚¤г‚ігѓіеЊ–гЂЃгЃѕгЃџгЃЇе…ѓгЃ«ж€»гЃ—гЃџгЃЁгЃЌгЃ®е‡¦зђ† */
                 if(wParam == SIZE_MINIMIZED)
                     ShowWindow(hWndBup, SW_HIDE);
                 else if(wParam == SIZE_RESTORED)
@@ -721,13 +721,13 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 }
 
 
-/*----- ѓvѓЌѓOѓ‰ѓЂЏI—№Ћћ‚МЏ€—ќ ------------------------------------------------
+/*----- гѓ—гѓ­г‚°гѓ©гѓ зµ‚дє†ж™‚гЃ®е‡¦зђ† ------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ѓEѓCѓ“ѓhѓEѓnѓ“ѓhѓ‹
+*       HWND hWnd : г‚¦г‚¤гѓігѓ‰г‚¦гѓЏгѓігѓ‰гѓ«
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 static void ExitProc(HWND hWnd)
@@ -747,13 +747,13 @@ static void ExitProc(HWND hWnd)
 }
 
 
-/*----- ѓAѓCѓRѓ“ѓgѓЊѓC—p‚МѓAѓCѓRѓ“‚рѓЌЃ[ѓh ------------------------------------
+/*----- г‚ўг‚¤г‚ігѓігѓ€гѓ¬г‚¤з”ЁгЃ®г‚ўг‚¤г‚ігѓіг‚’гѓ­гѓјгѓ‰ ------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 void LoadTrayIcon(void)
 {
@@ -770,16 +770,16 @@ void LoadTrayIcon(void)
 }
 
 
-/*----- ѓAѓCѓRѓ“ѓgѓЊѓC‚ЙѓAѓCѓRѓ“‚рѓZѓbѓg --------------------------------------
+/*----- г‚ўг‚¤г‚ігѓігѓ€гѓ¬г‚¤гЃ«г‚ўг‚¤г‚ігѓіг‚’г‚»гѓѓгѓ€ --------------------------------------
 *
 *   Parameter
-*       int Ope : ‘ЂЌм•ы–@ (TICON_xxx)
-*       int Type : ѓAѓCѓRѓ“”ФЌ† (TICON_CHANGE‚МЋћ‚М‚Э)
-*       LPTSTR AddMesg : ’З‰БѓЃѓbѓZЃ[ѓW (Backup - ????)
-*           NULL=‚И‚µ
+*       int Ope : ж“ЌдЅњж–№жі• (TICON_xxx)
+*       int Type : г‚ўг‚¤г‚ігѓіз•ЄеЏ· (TICON_CHANGEгЃ®ж™‚гЃ®гЃї)
+*       LPTSTR AddMesg : иїЅеЉ гѓЎгѓѓг‚»гѓјг‚ё (Backup - ????)
+*           NULL=гЃЄгЃ—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
@@ -794,13 +794,13 @@ void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
             if(Ope == TICON_NEXT)
             {
                 if(++CurIcon >= (sizeof(IconData)/sizeof(int)))
-                    CurIcon = 1;    /* “®‰ж—p‚МЌЕЏ‰‚Ц */
+                    CurIcon = 1;    /* е‹•з”»з”ЁгЃ®жњЂе€ќгЃё */
                 Type = CurIcon;
             }
             else
                 CurIcon = Type;
 
-            /* ѓAѓCѓRѓ“ѓgѓЊѓC‚ЙѓZѓbѓg */
+            /* г‚ўг‚¤г‚ігѓігѓ€гѓ¬г‚¤гЃ«г‚»гѓѓгѓ€ */
             ntData.cbSize = sizeof(NOTIFYICONDATA);
             ntData.hWnd = hWndBup;
             ntData.uID = 1;
@@ -820,7 +820,7 @@ void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
         }
         else
         {
-            /* ѓAѓCѓRѓ“ѓgѓЊѓC‚©‚зЏБ‹Ћ */
+            /* г‚ўг‚¤г‚ігѓігѓ€гѓ¬г‚¤гЃ‹г‚‰ж¶€еЋ» */
             ntData.cbSize = sizeof(NOTIFYICONDATA);
             ntData.hWnd = hWndBup;
             ntData.uID = 1;
@@ -832,23 +832,23 @@ void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
 }
 
 
-/*----- ѓRѓ}ѓ“ѓhѓ‰ѓCѓ“‚р‰рђН --------------------------------------------------
+/*----- г‚ігѓћгѓігѓ‰гѓ©г‚¤гѓіг‚’и§Јжћђ --------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : ѓRѓ}ѓ“ѓhѓ‰ѓCѓ“•¶Ћљ—с
-*       LPTSTR Src : ѓoѓbѓNѓAѓbѓvЊіѓtѓHѓ‹ѓ_ (NULL=Src,Dst‚рЋж“ѕ‚µ‚И‚ў)
-*       LPTSTR Dst : ѓoѓbѓNѓAѓbѓvђжѓtѓHѓ‹ѓ_
-*       LONGLONG *Opt : ѓIѓvѓVѓ‡ѓ“
-*       int *BatteryLevel : ѓoѓbѓeѓЉЃ[—e—К‚Ми‡’l
+*       LPTSTR Str : г‚ігѓћгѓігѓ‰гѓ©г‚¤гѓіж–‡е­—е€—
+*       LPTSTR Src : гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…ѓгѓ•г‚©гѓ«гѓЂ (NULL=Src,Dstг‚’еЏ–еѕ—гЃ—гЃЄгЃ„)
+*       LPTSTR Dst : гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€гѓ•г‚©гѓ«гѓЂ
+*       LONGLONG *Opt : г‚Єгѓ—г‚·гѓ§гѓі
+*       int *BatteryLevel : гѓђгѓѓгѓ†гѓЄгѓје®№й‡ЏгЃ®й–ѕеЂ¤
 *
 *   Return Value
-*       int ѓXѓeЃ[ѓ^ѓX
+*       int г‚№гѓ†гѓјг‚їг‚№
 *           SUCCESS/FAIL
 *
 *   Note
 *       source destination --force --rmdir --rmfile --noerror --start --close --name --all
 *       source destination -f -d -r -e -s -c -n -a
-*       -h --help -? ‚Нѓwѓ‹ѓv‚р•\Ћ¦
+*       -h --help -? гЃЇгѓгѓ«гѓ—г‚’иЎЁз¤є
 *----------------------------------------------------------------------------*/
 
 static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int *BatteryLevel)
@@ -990,15 +990,15 @@ static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int
 }
 
 
-/*----- ѓgЃ[ѓNѓ“‚р•Ф‚· --------------------------------------------------------
+/*----- гѓ€гѓјг‚Їгѓіг‚’иї”гЃ™ --------------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶Ћљ—с
-*       LPTSTR Buf : •¶Ћљ—с‚р•Ф‚·ѓoѓbѓtѓ@
+*       LPTSTR Str : ж–‡е­—е€—
+*       LPTSTR Buf : ж–‡е­—е€—г‚’иї”гЃ™гѓђгѓѓгѓ•г‚Ў
 *
 *   Return Value
-*       LPTSTR •Ф‚µ‚ЅѓgЃ[ѓNѓ“‚М––”ц
-*           NULL=ЏI‚н‚и
+*       LPTSTR иї”гЃ—гЃџгѓ€гѓјг‚ЇгѓігЃ®жњ«е°ѕ
+*           NULL=зµ‚г‚Џг‚Љ
 *----------------------------------------------------------------------------*/
 
 static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf)
@@ -1040,13 +1040,13 @@ static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf)
 }
 
 
-/*----- ѓЃѓjѓ…Ѓ[‚МѓnѓCѓhЏ€—ќ‚рЌs‚¤ --------------------------------------------
+/*----- гѓЎгѓ‹гѓҐгѓјгЃ®гѓЏг‚¤гѓ‰е‡¦зђ†г‚’иЎЊгЃ† --------------------------------------------
 *
 *   Parameter
-*       int Win : ѓEѓCѓ“ѓhѓE”ФЌ† (WIN_xxx)
+*       int Win : г‚¦г‚¤гѓігѓ‰г‚¦з•ЄеЏ· (WIN_xxx)
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 void SetMenuHide(int Win)
@@ -1076,13 +1076,13 @@ void SetMenuHide(int Win)
 }
 
 
-/*----- ѓgѓЊѓCѓAѓCѓRѓ“‚МѓЃѓjѓ…Ѓ[‚р•\Ћ¦ ----------------------------------------
+/*----- гѓ€гѓ¬г‚¤г‚ўг‚¤г‚ігѓігЃ®гѓЎгѓ‹гѓҐгѓјг‚’иЎЁз¤є ----------------------------------------
 *
 *   Parameter
-*       ‚И‚µ
+*       гЃЄгЃ—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 static void TrayIconMenu(void)
@@ -1095,8 +1095,8 @@ static void TrayIconMenu(void)
     AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
     AppendMenu(hMenu, MF_STRING, MENU_FILE_EXIT, MSGJPN_19);
 
-    SetForegroundWindow(GetMainHwnd());     /* ѓEѓBѓ“ѓhѓE‚рѓtѓHѓAѓOѓ‰ѓEѓ“ѓh‚Й€Ъ“® */
-    SetFocus(GetMainHwnd());                /* ‚±‚к‚р‚µ‚И‚ў‚ЖѓЃѓjѓ…Ѓ[‚ЄЏБ‚¦‚И‚ў */
+    SetForegroundWindow(GetMainHwnd());     /* г‚¦г‚Јгѓігѓ‰г‚¦г‚’гѓ•г‚©г‚ўг‚°гѓ©г‚¦гѓігѓ‰гЃ«з§»е‹• */
+    SetFocus(GetMainHwnd());                /* гЃ“г‚Њг‚’гЃ—гЃЄгЃ„гЃЁгѓЎгѓ‹гѓҐгѓјгЃЊж¶€гЃ€гЃЄгЃ„ */
 
     GetCursorPos(&point);
     TrackPopupMenu(hMenu, TPM_LEFTBUTTON | TPM_RIGHTBUTTON, point.x, point.y, 0, GetMainHwnd(), NULL);
@@ -1105,13 +1105,13 @@ static void TrayIconMenu(void)
 }
 
 
-/*----- ѓGѓ‰Ѓ[ѓЃѓbѓZЃ[ѓWѓ{ѓbѓNѓX‚р•\Ћ¦‚·‚й ------------------------------------
+/*----- г‚Ёгѓ©гѓјгѓЎгѓѓг‚»гѓјг‚ёгѓњгѓѓг‚Їг‚№г‚’иЎЁз¤єгЃ™г‚‹ ------------------------------------
 *
 *   Parameter
-*       LPTSTR szFormat ... : ѓtѓHЃ[ѓ}ѓbѓg•¶Ћљ—с
+*       LPTSTR szFormat ... : гѓ•г‚©гѓјгѓћгѓѓгѓ€ж–‡е­—е€—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 void DispErrorBox(LPTSTR szFormat,...)
@@ -1126,13 +1126,13 @@ void DispErrorBox(LPTSTR szFormat,...)
 }
 
 
-/*----- ѓfѓoѓbѓOѓRѓ“ѓ\Ѓ[ѓ‹‚ЙѓЃѓbѓZЃ[ѓW‚р•\Ћ¦‚·‚й ------------------------------
+/*----- гѓ‡гѓђгѓѓг‚°г‚ігѓіг‚Ѕгѓјгѓ«гЃ«гѓЎгѓѓг‚»гѓјг‚ёг‚’иЎЁз¤єгЃ™г‚‹ ------------------------------
 *
 *   Parameter
-*       LPTSTR szFormat ... : ѓtѓHЃ[ѓ}ѓbѓg•¶Ћљ—с
+*       LPTSTR szFormat ... : гѓ•г‚©гѓјгѓћгѓѓгѓ€ж–‡е­—е€—
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 
 void DoPrintf(LPTSTR szFormat,...)
@@ -1150,13 +1150,13 @@ void DoPrintf(LPTSTR szFormat,...)
 }
 
 
-/*----- ѓfѓtѓHѓ‹ѓg‚МѓЌѓOѓtѓ@ѓCѓ‹–ј‚р•Ф‚·---------------------------------------
+/*----- гѓ‡гѓ•г‚©гѓ«гѓ€гЃ®гѓ­г‚°гѓ•г‚Ўг‚¤гѓ«еђЌг‚’иї”гЃ™---------------------------------------
 *
 *   Parameter
-*       LPTSTR buf : ѓЌѓOѓtѓ@ѓCѓ‹–ј‚р•Ф‚·ѓoѓbѓtѓ@
+*       LPTSTR buf : гѓ­г‚°гѓ•г‚Ўг‚¤гѓ«еђЌг‚’иї”гЃ™гѓђгѓѓгѓ•г‚Ў
 *
 *   Return Value
-*       ‚И‚µ
+*       гЃЄгЃ—
 *----------------------------------------------------------------------------*/
 void MakeInitialLogFilename(LPTSTR buf)
 {
