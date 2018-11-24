@@ -67,6 +67,7 @@ static int WriteBinaryToReg(void *Handle, LPTSTR Name, void *Bin, int Len);
 extern int LogSwitch;
 extern int LogLimit;
 extern int LogUnicode;
+extern int LogVerbose;
 extern _TCHAR LogFname[MY_MAX_PATH+1];
 extern _TCHAR ViewerName[MY_MAX_PATH+1];
 extern int SaveWinPos;
@@ -79,6 +80,7 @@ extern SIZE TransDlgSize;
 extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
 extern int ShowComment;     /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
+extern int AuthDialog;
 
 
 
@@ -113,6 +115,7 @@ int SaveRegistory(void)
             WriteIntValueToReg(hKey4, _T("Log"), LogSwitch);
             WriteIntValueToReg(hKey4, _T("LogLimit"), LogLimit);
             WriteIntValueToReg(hKey4, _T("LogUnicode"), LogUnicode);
+            WriteIntValueToReg(hKey4, _T("LogVerbose"), LogVerbose);
             WriteStringToReg(hKey4, _T("LogFile"), LogFname);
             WriteStringToReg(hKey4, _T("Viewer"), ViewerName);
             WriteIntValueToReg(hKey4, _T("SavePos"), SaveWinPos);
@@ -122,6 +125,7 @@ int SaveRegistory(void)
             WriteIntValueToReg(hKey4, _T("Reg"), RegType);
             WriteIntValueToReg(hKey4, _T("ExitEsc"), ExitOnEsc);
             WriteIntValueToReg(hKey4, _T("ShowComment"), ShowComment);
+            WriteIntValueToReg(hKey4, _T("AuthDialog"), AuthDialog);
 
             WriteBinaryToReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             WriteBinaryToReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));
@@ -255,6 +259,7 @@ int LoadRegistory(void)
                 /* Turn off the unicode-log flag for older version compatibility. */
                 LogUnicode = NO;
             }
+            ReadIntValueFromReg(hKey4, _T("LogVerbose"), &LogVerbose);
             ReadStringFromReg(hKey4, _T("LogFile"), LogFname, MY_MAX_PATH+1);
             ReadStringFromReg(hKey4, _T("Viewer"), ViewerName, MY_MAX_PATH+1);
             ReadIntValueFromReg(hKey4, _T("SavePos"), &SaveWinPos);
@@ -264,6 +269,7 @@ int LoadRegistory(void)
             ReadIntValueFromReg(hKey4, _T("Reg"), &RegType);
             ReadIntValueFromReg(hKey4, _T("ExitEsc"), &ExitOnEsc);
             ReadIntValueFromReg(hKey4, _T("ShowComment"), &ShowComment);
+            ReadIntValueFromReg(hKey4, _T("AuthDialog"), &AuthDialog);
 
             ReadBinaryFromReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             ReadBinaryFromReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));

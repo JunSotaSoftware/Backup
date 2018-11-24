@@ -147,4 +147,7 @@
 #define MSGJPN_123  _T("中断(&P)")
 #define MSGJPN_124  _T("除外２")
 #define MSGJPN_125  _T("--- バックアップの準備をしています ---")
+#define MSGJPN_126  _T("更新 : %s (サイズが異なる：元=%s, 先=%s)")
+#define MSGJPN_127  _T("更新 : %s (日付が異なる：元=%s, 先=%s)")
+#define MSGJPN_128  _T("<< パターン名未入力 >>")
 

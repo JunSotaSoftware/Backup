@@ -203,6 +203,7 @@
 #define MISC_TRAYICON                   1133
 #define MISC_REGTYPE                    1134
 #define IDC_BUTTON2                     1135
+#define MISC_AUTHDIAG                   1135
 #define PATSET_SIZE                     1136
 #define cmb1                            0x0470
 #define INPFILE_FOLDER_BR               1137
@@ -279,6 +280,7 @@
 #define NOBACK_DIR_UP                   1206
 #define NOBACK_FILE_UP                  1207
 #define IDC_CHECK1                      1208
+#define LOG_VERBOSE                     1208
 #define PATSET_SHOW_COMMENT             1209
 #define NOBACK_SIZE_FLG                 1210
 #define NOBACK_BIG_FILE                 1211
@@ -336,12 +338,12 @@
 #define MENU_REGLOAD                    40016
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
 #define _APS_NEXT_COMMAND_VALUE         40017
-#define _APS_NEXT_CONTROL_VALUE         1247
+#define _APS_NEXT_CONTROL_VALUE         1249
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

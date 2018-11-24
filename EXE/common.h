@@ -48,8 +48,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.11")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x010b0000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.12")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x010c0000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -101,6 +101,8 @@
 #define OPT_SHOW_COMMENT    0x00400000
 #define OPT_IGN_BIG_FILE    0x00800000
 #define OPT_NO_NOTIFY_DEL   0x01000000
+#define OPT_SHOW_AUTHDIALOG   0x02000000
+#define OPT_HIDE_AUTHDIALOG   0x04000000
 
 /*===== トレイアイコン制御 =====*/
 
@@ -126,6 +128,11 @@
 #define REGTYPE_INI     1       /* INIファイル */
 
 #define REG_SECT_MAX    (16*1024)   /* レジストリの１セクションの最大データサイズ */
+
+/*===== 認証ダイアログを表示するか  =====*/
+
+#define AUTH_DIALOG_HIDE          0       /* 認証ダイアログを表示しない */
+#define AUTH_DIALOG_SHOW          1       /* 認証ダイアログを表示する   */
 
 /*===== TreeViewのデータタイプ =====*/
 
@@ -296,6 +303,9 @@ int MakeTransferDialog(void);
 void DeleteTransferDialogResources(void);
 HWND GetTransDlgHwnd(void);
 int StartBackup(COPYPATLIST *Pat);
+DWORD ShowWNetUseConnection(HWND hWnd, LPTSTR lpRemoteName);
+int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat);
+int MyPathIsUNCServerShare(_TCHAR *str);
 void SelectPass(int Pass);
 void SetPatName(LPTSTR Name);
 void SetTaskMsg(int Type, LPTSTR szFormat,...);
@@ -315,6 +325,7 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi);
 BOOL SetCurrentDirectory_My(LPCTSTR lpPathName);
 HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData);
 DWORD GetFileAttributes_My(LPCTSTR lpFileName);
+DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError);
 BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes);
 BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);

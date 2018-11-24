@@ -147,4 +147,7 @@
 #define MSGJPN_123  _T("&Pause")
 #define MSGJPN_124  _T("Ignore 2")
 #define MSGJPN_125  _T("--- Preparing backup ---")
+#define MSGJPN_126  _T("Updt : %s (Size is not same : Src=%s, Dst=%s)")
+#define MSGJPN_127  _T("Updt : %s (Time stamp is not same : Src=%s, Dst=%s)")
+#define MSGJPN_128  _T("<< No pattern name >>")
 

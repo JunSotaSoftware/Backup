@@ -132,6 +132,10 @@ static int OverwriteMode = YES;
 
 int TviewDispCounter=0;
 
+/*===== グローバルなワーク ======*/
+
+extern int LogVerbose;
+
 
 
 /*----- バックアップスレッドを起動する ----------------------------------------
@@ -1254,9 +1258,44 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 #else
                     CopyFileCount++;
                     if(Copy == 1)
-                        SetTaskMsg(TASKMSG_NOR, MSGJPN_77, Src);
+                    {
+                        if(LogVerbose)
+                        {
+                            unsigned __int64    tmp64;
+                            double              size1;
+                            double              size2;
+                            tmp64 = (unsigned __int64)SrcFinfo.nFileSizeLow +
+                                        ((unsigned __int64)SrcFinfo.nFileSizeHigh << 32);
+                            size1 = (double)tmp64;
+                            tmp64 = (unsigned __int64)DstFinfo.nFileSizeLow +
+                                        ((unsigned __int64)DstFinfo.nFileSizeHigh << 32);
+                            size2 = (double)tmp64;
+                            if(size1 != size2)
+                            {
+                                _TCHAR              sizestr1[80];
+                                _TCHAR              sizestr2[80];
+                                MakeSizeString(size1, sizestr1);
+                                MakeSizeString(size2, sizestr2);
+                                SetTaskMsg(TASKMSG_NOR, MSGJPN_126, Src, sizestr1, sizestr2);
+                            }
+                            else
+                            {
+                                _TCHAR              timestr1[80];
+                                _TCHAR              timestr2[80];
+                                FileTime2TimeString(&SrcFinfo.ftLastWriteTime, timestr1);
+                                FileTime2TimeString(&DstFinfo.ftLastWriteTime, timestr2);
+                                SetTaskMsg(TASKMSG_NOR, MSGJPN_127, Src, timestr1, timestr2);
+                            }
+                        }
+                        else
+                        {
+                            SetTaskMsg(TASKMSG_NOR, MSGJPN_77, Src);
+                        }
+                    }
                     else
+                    {
                         SetTaskMsg(TASKMSG_NOR, MSGJPN_78, Src);
+                    }
 
                     GoDelete1(Dst, NO, NULL);
                     if(CopyFile1(Src, Dst, options->Wait, DrvType) != TRUE)
@@ -2760,6 +2799,30 @@ DWORD GetFileAttributes_My(LPCTSTR lpFileName)
     ret = GetFileAttributes(path);
     free(path);
 
+    return ret;
+}
+
+/*----- GetFileAttributesのMAX_PATH以上への拡張 -----------------------------
+*
+*   Parameter
+*       GetFileAttributes
+*       GetLastError() の戻り値を返す
+*
+*   Return Value
+*       GetFileAttributes関数と同じ
+*----------------------------------------------------------------------------*/
+DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
+{
+    DWORD ret;
+    LPTSTR path;
+
+    path = MakeLongPath(lpFileName);
+    ret = GetFileAttributes(path);
+    if( pLastError )
+    {
+        *pLastError = GetLastError();
+    }
+    free(path);
     return ret;
 }
 
