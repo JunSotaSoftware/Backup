@@ -50,8 +50,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.18")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x01120000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.18a")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01120100      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -276,7 +276,7 @@ typedef struct {
 
 typedef struct {
     int HorMoveList[20];    /* 水平に動かす部品のリスト */
-    int VarMoveList[15];    /* 垂直に動かす部品のリスト */
+    int VarMoveList[20];    /* 垂直に動かす部品のリスト */
     int ResizeList[10];     /* サイズ変更する部品のリスト */
     int ResizeHorList[10];  /* 水平方向にのみサイズ変更する部品のリスト */
     int ResizeVarList[10];  /* 垂直方向にのみサイズ変更する部品のリスト */

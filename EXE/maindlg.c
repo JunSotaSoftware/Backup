@@ -100,7 +100,7 @@ static DIALOGSIZE MainDlgSizeInfo = {
 
 static DIALOGSIZE NotifyDlgSizeInfo = {
     { TRNOT_NEXT, TRNOT_GRIP, -1 },
-    { IDOK, IDCANCEL, TRNOT_QUIT, TRNOT_SHUTDOWN, TRNOT_DST, TRNOT_VOL, TRNOT_PREV, TRNOT_NEXT, TRNOT_GRIP, TRNOT_MSG1, TRNOT_MSG2, TRNOT_MSG3, TRNOT_MSG4, TRNOT_SYSTEM, -1 },
+    { IDOK, IDCANCEL, TRNOT_QUIT, TRNOT_SHUTDOWN, TRNOT_DST, TRNOT_VOL, TRNOT_PREV, TRNOT_NEXT, TRNOT_GRIP, TRNOT_MSG1, TRNOT_MSG2, TRNOT_MSG3, TRNOT_MSG4, TRNOT_SYSTEM, TRNOT_MSG5, TRNOT_SYSTEM_ERROR, -1 },
     { TRNOT_SRCLIST, -1 },
     { TRNOT_DST, TRNOT_VOL, -1 },
     { -1 },
@@ -1108,9 +1108,9 @@ void CopyDefaultPat(COPYPAT *Set)
     Set->IgnTime = NO;
     Set->ShowComment = NO;
     Set->NextDstNum = 0;
-	Set->DstDropbox = NO;
-	Set->MoveInsteadDelete = NO;
-	_tcscpy(Set->MoveToFolder, _T(""));
+    Set->DstDropbox = NO;
+    Set->MoveInsteadDelete = NO;
+    _tcscpy(Set->MoveToFolder, _T(""));
     Set->NextDst = NULL;
     Set->PatNum = 0;
     return;

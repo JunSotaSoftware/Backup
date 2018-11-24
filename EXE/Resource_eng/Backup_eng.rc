@@ -130,7 +130,7 @@ BEGIN
     LTEXT           "&On backup is completed on success",TRNOT_MSG3,5,119,104,8
     COMBOBOX        TRNOT_SYSTEM,5,119,185,79,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CTEXT           "Confirm?",TRNOT_MSG2,15,189,188,16,SS_CENTERIMAGE | WS_BORDER,WS_EX_CLIENTEDGE
-    ICON            grip_icon,TRNOT_GRIP,181,205,12,12
+    ICON            grip_icon,TRNOT_GRIP,181,216,18,21
     LTEXT           "Volume Label",TRNOT_MSG4,32,95,45,8
     EDITTEXT        TRNOT_VOL,80,92,86,12,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "backup is completed on &Failure",TRNOT_MSG5,5,149,104,8
@@ -165,7 +165,7 @@ FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.18",-1,29,13,98,8
+    CTEXT           "Backup  Ver.1.18a",-1,29,13,98,8
     CTEXT           "Copyright(C) 1997-2018 Sota",-1,7,27,141,8
     CTEXT           "Backup is Freeware.",-1,7,42,141,8
 END
@@ -1068,8 +1068,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,18,0,0
- PRODUCTVERSION 1,18,0,0
+ FILEVERSION 1,18,1,0
+ PRODUCTVERSION 1,18,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1087,12 +1087,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.18.0.0"
+            VALUE "FileVersion", "1.18.1.0"
             VALUE "InternalName", "Backup"
             VALUE "LegalCopyright", "Copyright (C) 1997-2018 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.18.0.0"
+            VALUE "ProductVersion", "1.18.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1132,6 +1132,11 @@ BEGIN
 END
 
 patset_system_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+tr_notify_dlg AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
