@@ -173,11 +173,11 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 			hWndQuickPat = hDlg;
 			hWndChild = GetDlgItem(hDlg, QUICK_SRC);
 			DragAcceptFiles(hWndChild, TRUE);
-			QuickSrcProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)QuickSrcWndProc);
+			QuickSrcProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)QuickSrcWndProc);
 
 			hWndChild = GetDlgItem(hDlg, QUICK_DST);
 			DragAcceptFiles(hWndChild, TRUE);
-			QuickDstProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)QuickDstWndProc);
+			QuickDstProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)QuickDstWndProc);
 			return(TRUE);
 
 		case WM_COMMAND :
