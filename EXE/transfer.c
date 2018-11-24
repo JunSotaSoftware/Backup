@@ -533,6 +533,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
 
     if(0 == NoMakeTopDir)
     {
+        //‚±‚±
         _tcscat(Cur, GetFileName(SrcPath));
         SetYenTail(Cur);
     }
@@ -2208,8 +2209,8 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     TV_INSERTSTRUCT TvIns;
     HTREEITEM hItem;
     int Sts;
-	DWORD Err = 0;
-	BOOL Next;
+    DWORD Err = 0;
+    BOOL Next;
     LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
@@ -2265,16 +2266,16 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                 }
             }
 
-			Next = FindNextFile(fHnd, &FindBuf);
-			if (Next != TRUE)
-			{
-				Err = GetLastError();
-				if (Err != ERROR_NO_MORE_FILES)
-				{
-					Sts = FAIL;
-					break;
-				}
-			}
+            Next = FindNextFile(fHnd, &FindBuf);
+            if (Next != TRUE)
+            {
+                Err = GetLastError();
+                if (Err != ERROR_NO_MORE_FILES)
+                {
+                    Sts = FAIL;
+                    break;
+                }
+            }
         }
         while(Next == TRUE);
 
@@ -2282,16 +2283,16 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     }
     else
     {
-		Err = GetLastError();
-		if ((Err != ERROR_FILE_NOT_FOUND) && (Err != ERROR_ACCESS_DENIED))
-		{
-			Sts = FAIL;
-		}
+        Err = GetLastError();
+        if ((Err != ERROR_FILE_NOT_FOUND) && (Err != ERROR_ACCESS_DENIED))
+        {
+            Sts = FAIL;
+        }
     }
 
-	if((Sts == FAIL) && (Err != 0))
-	{
-		ErrorCount++;
+    if((Sts == FAIL) && (Err != 0))
+    {
+        ErrorCount++;
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL,
@@ -2303,7 +2304,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
         RemoveReturnCode(lpBuffer);
         SetTaskMsg(TASKMSG_ERR, MSGJPN_129, Src, lpBuffer);
         LocalFree(lpBuffer);
-	}
+    }
 
     return(Sts);
 }
@@ -2514,6 +2515,8 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
                     {
                         MakePathandFile(Tmp, NULL, NO);
 
+                        //‚±‚±
+
                         if(_tcslen(GetFileName(Tmp)) > 0)
                         {
                             SetYenTail(Dst);
@@ -2531,6 +2534,10 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
             Sts = SUCCESS;
         }
     }
+
+//SetTaskMsg(TASKMSG_NOR, _T("RET=%d, >%s<, >%s<"), Sts, Dst, DstPath);
+
+
     return(Sts);
 }
 

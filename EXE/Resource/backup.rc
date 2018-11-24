@@ -122,7 +122,7 @@ FONT 9, "MS UI Gothic", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.13",-1,29,13,98,8
+    CTEXT           "Backup  Ver.1.13a",-1,29,13,98,8
     CTEXT           "Copyright(C) 1997-2014 Sota",-1,7,27,141,8
     CTEXT           "BackupはFreewareです",-1,7,42,141,8
 END
@@ -1021,8 +1021,8 @@ done_bmp                BITMAP                  "box_bmp2.bmp"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,13,0,0
- PRODUCTVERSION 1,13,0,0
+ FILEVERSION 1,13,1,0
+ PRODUCTVERSION 1,13,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1040,12 +1040,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.13.0.0"
+            VALUE "FileVersion", "1.13.1.0"
             VALUE "InternalName", "Backup"
             VALUE "LegalCopyright", "Copyright (C) 1997-2014 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup アプリケーション"
-            VALUE "ProductVersion", "1.13.0.0"
+            VALUE "ProductVersion", "1.13.1.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -15,6 +15,11 @@
 		<param name="Local" value="HTML\H0000002.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="バックアップの基本的な考え方">
+		<param name="Name" value="バックアップの基本的な考え方">
+		<param name="Local" value="HTML\H0000032.HTM">
+		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
 		<param name="Name" value="使い方">
 		<param name="Name" value="使い方">
 		<param name="Local" value="HTML\H0000003.HTM">
@@ -25,7 +30,7 @@
 		<param name="Local" value="HTML\H0000004.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="バックアップか意思確認画面">
+		<param name="Name" value="バックアップ開始確認画面">
 		<param name="Name" value="バックアップ開始確認画面">
 		<param name="Local" value="HTML\H0000005.HTM">
 		</OBJECT>
@@ -65,9 +70,14 @@
 		<param name="Local" value="HTML\H0000012.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="魚外">
+		<param name="Name" value="除外１">
 		<param name="Name" value="除外１">
 		<param name="Local" value="HTML\H0000013.HTM">
+		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="除外２">
+		<param name="Name" value="除外２">
+		<param name="Local" value="HTML\H0000034.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
 		<param name="Name" value="オプション">
@@ -85,18 +95,14 @@
 		<param name="Local" value="HTML\H0000016.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="シスエム">
+		<param name="Name" value="システム">
 		<param name="Name" value="システム">
 		<param name="Local" value="HTML\H0000017.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="バックアップ元とバックアップ先の関係">
-		<param name="See Also" value="バックアップ元とバックアップ先の関係">
-		</OBJECT>
-	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="クイックバックアップ">
-		<param name="Name" value="クイックバックアップ">
-		<param name="Local" value="HTML\H0000019.HTM">
+		<param name="Name" value="パス名一括置換">
+		<param name="Name" value="パス名一括置換">
+		<param name="Local" value="HTML\H0000033.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
 		<param name="Name" value="クイックバックアップ">
@@ -139,7 +145,7 @@
 		<param name="Local" value="HTML\H0000027.HTM">
 		</OBJECT>
 	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="その多">
+		<param name="Name" value="その他">
 		<param name="Name" value="その他">
 		<param name="Local" value="HTML\H0000028.HTM">
 		</OBJECT>
@@ -157,21 +163,6 @@
 		<param name="Name" value="製作">
 		<param name="Name" value="製作">
 		<param name="Local" value="HTML\H0000031.HTM">
-		</OBJECT>
-	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="バックアップの基本的な考え方">
-		<param name="Name" value="バックアップの基本的な考え方">
-		<param name="Local" value="HTML\H0000032.HTM">
-		</OBJECT>
-	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="パス名一括置換">
-		<param name="Name" value="パス名一括置換">
-		<param name="Local" value="HTML\H0000033.HTM">
-		</OBJECT>
-	<LI><OBJECT type="text/sitemap">
-		<param name="Name" value="除外２">
-		<param name="Name" value="除外２">
-		<param name="Local" value="HTML\H0000034.HTM">
 		</OBJECT>
 </UL>
 </BODY></HTML>

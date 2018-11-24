@@ -888,7 +888,7 @@ int MoveFileToTrashCan(LPTSTR Path)
 	FileOp.wFunc = FO_DELETE;
 	FileOp.pFrom = Tmp;
 	FileOp.pTo = _T("");
-	FileOp.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO;
+	FileOp.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO | FOF_NO_CONNECTED_ELEMENTS;
 	FileOp.lpszProgressTitle = _T("");
 	return(SHFileOperation(&FileOp));
 }
