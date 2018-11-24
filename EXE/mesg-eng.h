@@ -150,4 +150,5 @@
 #define MSGJPN_126  _T("Updt : %s (Size is not same : Src=%s, Dst=%s)")
 #define MSGJPN_127  _T("Updt : %s (Time stamp is not same : Src=%s, Dst=%s)")
 #define MSGJPN_128  _T("<< No pattern name >>")
+#define MSGJPN_129  _T("ERROR: Some error occurd while searching %s.(%s)")
 

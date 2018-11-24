@@ -150,4 +150,5 @@
 #define MSGJPN_126  _T("更新 : %s (サイズが異なる：元=%s, 先=%s)")
 #define MSGJPN_127  _T("更新 : %s (日付が異なる：元=%s, 先=%s)")
 #define MSGJPN_128  _T("<< パターン名未入力 >>")
+#define MSGJPN_129  _T("ERROR: %s のファイル検索中にエラーが発生しました。(%s)")
 

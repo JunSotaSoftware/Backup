@@ -147,8 +147,8 @@ FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.12",-1,29,13,98,8
-    CTEXT           "Copyright(C) 1997-2013 Sota",-1,7,27,141,8
+    CTEXT           "Backup  Ver.1.13",-1,29,13,98,8
+    CTEXT           "Copyright(C) 1997-2014 Sota",-1,7,27,141,8
     CTEXT           "Backup is Freeware.",-1,7,42,141,8
 END
 
@@ -322,7 +322,8 @@ BEGIN
     CONTROL         "&Window",MISC_COMMENT_WIN,"Button",BS_AUTORADIOBUTTON,119,63,68,10
     CONTROL         "Sa&ve settings to the backup.ini file, instead of the registory.",MISC_REGTYPE,
                     "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,85,213,10
-    CONTROL         "Show Authentication Dialog for UNC Paths",MISC_AUTHDIAG,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,112,157,10
+    CONTROL         "Show Authentication Dialog for UNC Paths",MISC_AUTHDIAG,
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,112,157,10
 END
 
 reginit_dlg DIALOG 0, 0, 155, 87
@@ -1032,8 +1033,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,12,0,0
- PRODUCTVERSION 1,12,0,0
+ FILEVERSION 1,13,0,0
+ PRODUCTVERSION 1,13,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1051,12 +1052,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.12.0.0"
+            VALUE "FileVersion", "1.13.0.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2013 Sota"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2014 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.12.0.0"
+            VALUE "ProductVersion", "1.13.0.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -491,6 +491,10 @@ static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *op
 
         SrcPath = _tcschr(SrcPath, NUL) + 1;
     }
+
+    if(IgnoreErr == YES)
+        Sts = SUCCESS;
+
     return(Sts);
 }
 
@@ -519,6 +523,8 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
     DIRTREE *Pos;
     int Sts;
     HANDLE fHnd;
+    DWORD Err;
+    LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
 
@@ -579,8 +585,26 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
                             break;
                     }
                 }
+                else if ((Err = GetLastError()) != ERROR_FILE_NOT_FOUND)
+                {
+                    ErrorCount++;
+                    FormatMessage(
+                        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                        NULL,
+                        Err,
+                        LANG_USER_DEFAULT,
+                        (LPTSTR )&lpBuffer,
+                        0,
+                        NULL );
+                    RemoveReturnCode(lpBuffer);
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_129, Tmp, lpBuffer);
+                    LocalFree(lpBuffer);
+                    Sts = FAIL;
+                    break;
+                }
                 else
                 {
+
 #ifdef NO_OPERATION
                     DoPrintf(_T("    Delete %s\n"), Cur);
                     Sts = SUCCESS;
@@ -713,6 +737,8 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
     WIN32_FIND_DATA FindBuf;
     int DelFlg;
     int DialogResult;
+    DWORD Err;
+    LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
     DialogResult = NO;
@@ -750,6 +776,24 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
                             {
                                 FindClose(fHnd);
                                 DelFlg = NO;
+                            }
+                            else if ((Err = GetLastError()) != ERROR_FILE_NOT_FOUND)
+                            {
+                                DelFlg = NO;
+                                Sts = FAIL;
+                                ErrorCount++;
+                                FormatMessage(
+                                    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                                    NULL,
+                                    Err,
+                                    LANG_USER_DEFAULT,
+                                    (LPTSTR )&lpBuffer,
+                                    0,
+                                    NULL );
+                                RemoveReturnCode(lpBuffer);
+                                SetTaskMsg(TASKMSG_ERR, MSGJPN_129, Src, lpBuffer);
+                                LocalFree(lpBuffer);
+                                break;
                             }
                         }
                     }
@@ -1617,6 +1661,14 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     return(Sts);
 #endif
 #if FILECOPY_METHOD==COPYFILEEX
+    HANDLE hRead;
+    HANDLE hWrite;
+    SECURITY_ATTRIBUTES SecRead;
+    SECURITY_ATTRIBUTES SecWrite;
+    FILETIME CreTime;
+    FILETIME AccTime;
+    FILETIME ModTime;
+
     BOOL sts = TRUE;
     LPTSTR lSrc = MakeLongPath(Src);
     LPTSTR lDst = MakeLongPath(Dst);
@@ -1633,6 +1685,38 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     }
 
 //  SetFileProgress(0, 0);
+
+    if (sts == TRUE)
+    {
+        SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
+        SecRead.lpSecurityDescriptor = NULL;
+        SecRead.bInheritHandle = FALSE;
+        if((hRead = CreateFile_My(Src, GENERIC_READ,
+            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+        {
+            SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
+            SecWrite.lpSecurityDescriptor = NULL;
+            SecWrite.bInheritHandle = FALSE;
+            if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
+                FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+            {
+                if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
+                {
+//                  if(DrvType == DRIVE_CDROM)
+//                  {
+//                      LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
+//                      LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
+//                      LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
+//                      SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
+//                  }
+//                  else
+                        SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
+                }
+            }
+            CloseHandle(hWrite);
+        }
+        CloseHandle(hRead);
+    }
 
     free(info);
     free(lDst);
@@ -2094,7 +2178,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
         {
             if((Type & FILE_ATTRIBUTE_DIRECTORY) != 0)
             {
-                MakeSubTree(Dname, options, Parent, hWnd);
+                Sts = MakeSubTree(Dname, options, Parent, hWnd);
                 SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)Parent);
             }
         }
@@ -2124,6 +2208,9 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     TV_INSERTSTRUCT TvIns;
     HTREEITEM hItem;
     int Sts;
+	DWORD Err = 0;
+	BOOL Next;
+    LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
     _tcscpy(Src, SrcRoot);
@@ -2177,11 +2264,47 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                     }
                 }
             }
+
+			Next = FindNextFile(fHnd, &FindBuf);
+			if (Next != TRUE)
+			{
+				Err = GetLastError();
+				if (Err != ERROR_NO_MORE_FILES)
+				{
+					Sts = FAIL;
+					break;
+				}
+			}
         }
-        while(FindNextFile(fHnd, &FindBuf) == TRUE);
+        while(Next == TRUE);
 
         FindClose(fHnd);
     }
+    else
+    {
+		Err = GetLastError();
+		if ((Err != ERROR_FILE_NOT_FOUND) && (Err != ERROR_ACCESS_DENIED))
+		{
+			Sts = FAIL;
+		}
+    }
+
+	if((Sts == FAIL) && (Err != 0))
+	{
+		ErrorCount++;
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL,
+            Err,
+            LANG_USER_DEFAULT,
+            (LPTSTR )&lpBuffer,
+            0,
+            NULL );
+        RemoveReturnCode(lpBuffer);
+        SetTaskMsg(TASKMSG_ERR, MSGJPN_129, Src, lpBuffer);
+        LocalFree(lpBuffer);
+	}
+
     return(Sts);
 }
 
