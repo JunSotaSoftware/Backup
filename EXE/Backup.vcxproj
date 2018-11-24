@@ -80,6 +80,8 @@
       <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <AdditionalOptions>/source-charset:utf-8 /execution-charset:shift_jis %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -92,6 +94,8 @@
       <AdditionalDependencies>comctl32.lib;winmm.lib;htmlhelp.lib;Mpr.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)\Backup.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ManifestFile>
+      </ManifestFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)\Backup.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
