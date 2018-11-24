@@ -163,3 +163,4 @@
 #endif /* USE_SAME_AS_SUCCESS */
 #define MSGJPN_138  _T("スキップします (%s)")
 #define MSGJPN_139  _T("スキップ (エラー %d, 総エラー %d) (作成 %d, 削除 %d, 複写 %d)")
+#define MSGJPN_140  _T("-- 無効 -- ")

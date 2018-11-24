@@ -4,7 +4,7 @@
 /                               ÉÅÉCÉìÉvÉçÉOÉâÉÄ
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2018 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -116,6 +116,7 @@ int SleepSuppressBattery = 0;
 int SleepSuppressBatteryPercent = 80;
 _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1] = { _T("") };
 _TCHAR LastErrorLogFname[MY_MAX_PATH+1] = { _T("") };
+int ListWindowType = 0;
 
 
 

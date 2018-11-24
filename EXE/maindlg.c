@@ -4,7 +4,7 @@
 /                               メインダイアログ
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2018 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -61,6 +61,7 @@ static BOOL CheckNullPat(int Num);
 static BOOL CheckValidPat(int Num);
 static void DispCommentToWin(HWND hDlg);
 static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static _TCHAR *MakeListBoxName(COPYPAT *Pat);
 
 /*===== グローバルなワーク =====*/
 
@@ -74,6 +75,7 @@ extern int Sound;
 extern _TCHAR SoundFile[MY_MAX_PATH+1];
 extern int IntervalTime;
 extern int AuthDialog;
+extern int ListWindowType;
 
 /*===== ローカルなワーク ======*/
 
@@ -125,9 +127,27 @@ int MakeMainDialog(void)
 
     Sts = FAIL;
     if(ShowComment == 2)
-        hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_comment_dlg), GetMainHwnd(), MainDlgWndProc);
+    {
+        if(ListWindowType == 0)
+        {
+            hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_comment_dlg), GetMainHwnd(), MainDlgWndProc);
+        }
+        else
+        {
+            hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_comment_dlg_old), GetMainHwnd(), MainDlgWndProc);
+        }
+    }
     else
-        hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_dlg), GetMainHwnd(), MainDlgWndProc);
+    {
+        if(ListWindowType == 0)
+        {
+            hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_dlg), GetMainHwnd(), MainDlgWndProc);
+        }
+        else
+        {
+            hWndMainDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(main_dlg_old), GetMainHwnd(), MainDlgWndProc);
+        }
+    }
 
     if(hWndMainDlg != NULL)
     {
@@ -279,6 +299,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
     RECT Rect;
     POINT Point;
     RECT *pRect;
+    _TCHAR *Name;
 
     switch (message)
     {
@@ -383,14 +404,9 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     if(DispHostSetDlg(GetMainHwnd(), &TmpPat) == YES)
                     {
                         AddPatToList(&TmpPat);
-                        if(_tcslen(TmpPat.Name) > 0)
-                        {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)TmpPat.Name);
-                        }
-                        else
-                        {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)MSGJPN_128);
-                        }
+                        Name = MakeListBoxName(&TmpPat);
+                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
+                        free(Name);
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
                         SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
@@ -407,14 +423,9 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                         {
                             UpdatePatToList(Cur, &TmpPat);
                             SendDlgItemMessage(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
-                            if(_tcslen(TmpPat.Name) > 0)
-                            {
-                                SendDlgItemMessage(hDlg, MAIN_LIST, LB_INSERTSTRING, Cur, (LPARAM)TmpPat.Name);
-                            }
-                            else
-                            {
-                                SendDlgItemMessage(hDlg, MAIN_LIST, LB_INSERTSTRING, Cur, (LPARAM)MSGJPN_128);
-                            }
+                            Name = MakeListBoxName(&TmpPat);
+                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_INSERTSTRING, Cur, (LPARAM)Name);
+                            free(Name);
                             ResetAllSel(hDlg, MAIN_LIST);
                             SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
@@ -428,14 +439,9 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     {
                         CopyPatFromList(Cur, &TmpPat);
                         AddPatToList(&TmpPat);
-                        if(_tcslen(TmpPat.Name) > 0)
-                        {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)TmpPat.Name);
-                        }
-                        else
-                        {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)MSGJPN_128);
-                        }
+                        Name = MakeListBoxName(&TmpPat);
+                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
+                        free(Name);
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
                         SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
@@ -1131,18 +1137,14 @@ static void SendAllPatNames(HWND hWnd, int Cmd)
 {
     int i;
     COPYPATLIST *Pos;
+    _TCHAR *Name;
 
     Pos = PatListTop;
     for(i = 0; i < Patterns; i++)
     {
-        if(_tcslen(Pos->Set.Name) > 0)
-        {
-            SendMessage(hWnd, Cmd, 0, (LPARAM)Pos->Set.Name);
-        }
-        else
-        {
-            SendMessage(hWnd, Cmd, 0, (LPARAM)MSGJPN_128);
-        }
+        Name = MakeListBoxName(&Pos->Set);
+        SendMessage(hWnd, Cmd, 0, (LPARAM)Name);
+        free(Name);
         Pos = Pos->Next;
     }
     return;
@@ -1640,4 +1642,42 @@ void IncrementDstNum(int PatNum)
     }
 }
 
+
+/*----- リストボックスに表示する設定名を返す --------------------------------------
+*
+*   Parameter
+*       COPYPAT *Pat : パターン
+*
+*   Return Value
+*       _TCHAR* 名前
+*
+*   Comment
+*       名前はfreeすること
+*----------------------------------------------------------------------------*/
+
+static _TCHAR *MakeListBoxName(COPYPAT *Pat)
+{
+    _TCHAR *RetName = NULL;
+
+    if (_tcslen(Pat->Name) > 0)
+    {
+        if ((ListWindowType == 1) && (Pat->Enabled == 0))
+        {
+            RetName = malloc((_tcslen(MSGJPN_140) + _tcslen(Pat->Name) + 1) * sizeof(_TCHAR));
+            _tcscpy(RetName, MSGJPN_140);
+            _tcscat(RetName, Pat->Name);
+        }
+        else
+        {
+            RetName = malloc((_tcslen(Pat->Name) + 1) * sizeof(_TCHAR));
+            _tcscpy(RetName, Pat->Name);
+        }
+    }
+    else
+    {
+        RetName = malloc((_tcslen(MSGJPN_128) + 1) * sizeof(_TCHAR));
+        _tcscpy(RetName, MSGJPN_128);
+    }
+    return RetName;
+}
 

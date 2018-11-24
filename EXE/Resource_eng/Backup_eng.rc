@@ -165,7 +165,7 @@ FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.18a",-1,29,13,98,8
+    CTEXT           "Backup  Ver.1.19",-1,29,13,98,8
     CTEXT           "Copyright(C) 1997-2018 Sota",-1,7,27,141,8
     CTEXT           "Backup is Freeware.",-1,7,42,141,8
 END
@@ -339,20 +339,23 @@ BEGIN
     CONTROL         "Store &icon to the Icon Tray. (activate on next start)",MISC_TRAYICON,
                     "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,20,213,10
     CONTROL         "&Exit on ESC key",MISC_ESC_EXIT,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,34,142,10
-    GROUPBOX        "Show Comments (activate on next start)",IDC_STATIC,5,49,189,29
+    GROUPBOX        "Show Comments (activate on next start)",IDC_STATIC,5,49,213,29
     CONTROL         "&No Display",MISC_COMMENT_NO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,9,63,57,10
     CONTROL         "&Tip",MISC_COMMENT_TIP,"Button",BS_AUTORADIOBUTTON,69,63,41,10
     CONTROL         "&Window",MISC_COMMENT_WIN,"Button",BS_AUTORADIOBUTTON,119,63,68,10
     CONTROL         "Sa&ve settings to the backup.ini file, instead of the registory.",MISC_REGTYPE,
-                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,85,213,10
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,83,213,10
     CONTROL         "Show Authentication Dialog for UNC Paths",MISC_AUTHDIAG,
-                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,112,157,10
-    GROUPBOX        "Suppress sleep during backup",IDC_STATIC,5,135,213,43
-    CONTROL         "AC",MISC_SUPPRESS_AC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,147,50,9
-    CONTROL         "Battery",MISC_SUPPRESS_BATTERY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,69,147,64,10
-    EDITTEXT        MISC_BATTERY_PERCENT,176,160,24,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "%",IDC_STATIC,205,162,8,8
-    LTEXT           "Above the Battery capacity",IDC_STATIC,72,162,91,8
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,97,157,10
+    GROUPBOX        "Suppress sleep during backup",IDC_STATIC,5,112,213,43
+    CONTROL         "AC",MISC_SUPPRESS_AC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,124,50,9
+    CONTROL         "Battery",MISC_SUPPRESS_BATTERY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,69,124,64,10
+    EDITTEXT        MISC_BATTERY_PERCENT,176,137,24,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "%",IDC_STATIC,205,139,8,8
+    LTEXT           "Above the Battery capacity",IDC_STATIC,72,139,91,8
+    GROUPBOX        "Pattern list display type (activate on next start)",IDC_STATIC,5,159,213,29
+    CONTROL         "New type",MISC_LIST_NEW_TYPE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,9,173,57,10
+    CONTROL         "Old type",MISC_LIST_OLD_TYPE,"Button",BS_AUTORADIOBUTTON,69,173,41,10
 END
 
 reginit_dlg DIALOG 0, 0, 155, 87
@@ -713,6 +716,50 @@ BEGIN
     LTEXT           "Ignore files bigger than",IDC_STATIC,22,54,68,8
 END
 
+main_comment_dlg_old DIALOGEX 0, 0, 227, 178
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Backup Patterns",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,96,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Start Selected Patterns",MAIN_START,8,157,84,14
+    PUSHBUTTON      "Start &All Patterns",MAIN_ALLSTART,99,157,71,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "E&xit",MAIN_QUIT,177,157,43,14
+    PUSHBUTTON      "&New Pattern...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "&Modify...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "&Copy",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "&Delete...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "Up",MAIN_UP,174,87,21,14
+    PUSHBUTTON      "Dn",MAIN_DOWN,199,87,21,14
+    PUSHBUTTON      "&File Size...",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,151,226,1
+    EDITTEXT        MAIN_COMMENT,8,118,155,29,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
+END
+
+main_dlg_old DIALOGEX 0, 0, 227, 178
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Backup Patterns",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,129,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Start Selected Patterns",MAIN_START,8,157,84,14
+    PUSHBUTTON      "Start &All Patterns",MAIN_ALLSTART,99,157,71,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "E&xit",MAIN_QUIT,177,157,43,14
+    PUSHBUTTON      "&New Pattern...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "&Modify...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "&Copy",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "&Delete...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "Up",MAIN_UP,174,87,21,14
+    PUSHBUTTON      "Dn",MAIN_DOWN,199,87,21,14
+    PUSHBUTTON      "&File Size...",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,151,226,1
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -942,7 +989,6 @@ BEGIN
     patset_system_dlg, DIALOG
     BEGIN
         LEFTMARGIN, 5
-        RIGHTMARGIN, 225
         TOPMARGIN, 5
         BOTTOMMARGIN, 231
     END
@@ -1058,6 +1104,23 @@ BEGIN
         TOPMARGIN, 5
         BOTTOMMARGIN, 231
     END
+
+    main_comment_dlg_old, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        VERTGUIDE, 159
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 171
+    END
+
+    main_dlg_old, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 171
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1068,8 +1131,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,18,1,0
- PRODUCTVERSION 1,18,1,0
+ FILEVERSION 1,19,0,0
+ PRODUCTVERSION 1,19,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1087,12 +1150,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.18.1.0"
+            VALUE "FileVersion", "1.19.0.0"
             VALUE "InternalName", "Backup"
             VALUE "LegalCopyright", "Copyright (C) 1997-2018 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.18.1.0"
+            VALUE "ProductVersion", "1.19.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1137,6 +1200,16 @@ BEGIN
 END
 
 tr_notify_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+main_comment_dlg_old AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+main_dlg_old AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

@@ -163,3 +163,4 @@
 #endif /* USE_SAME_AS_SUCCESS */
 #define MSGJPN_138  _T("Skip (%s)")
 #define MSGJPN_139  _T("Skip. (Error:%d, Total Errors:%d) (Create:%d, Delete:%d, Copy:%d)")
+#define MSGJPN_140  _T("-- Disabled -- ")

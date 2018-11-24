@@ -4,7 +4,7 @@
 /                               オプション設定
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2018 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -70,6 +70,7 @@ extern int AuthDialog;
 extern int SleepSuppressAC;
 extern int SleepSuppressBattery;
 extern int SleepSuppressBatteryPercent;
+extern int ListWindowType;
 
 /*----- オプション設定 --------------------------------------------------------
 *
@@ -305,6 +306,13 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
         { MISC_COMMENT_WIN, 2 }
     };
     #define SHOWCOMMENTBUTTONS  (sizeof(ShowCommentButton)/sizeof(RADIOBUTTON))
+
+    static const RADIOBUTTON ListTypeButton[] = {
+        { MISC_LIST_NEW_TYPE, 0 },
+        { MISC_LIST_OLD_TYPE, 1 }
+    };
+    #define LISTTYPEBUTTONS  (sizeof(ListTypeButton)/sizeof(RADIOBUTTON))
+
     BOOL isSuccess = FALSE;
 
     switch (message)
@@ -327,6 +335,7 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             {
                 EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), FALSE);
             }
+            SetRadioButtonByValue(hDlg, ListWindowType, ListTypeButton, LISTTYPEBUTTONS);
             return(TRUE);
 
         case WM_NOTIFY:
@@ -343,6 +352,7 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     SleepSuppressAC = SendDlgItemMessage(hDlg, MISC_SUPPRESS_AC, BM_GETCHECK, 0, 0);
                     SleepSuppressBattery = SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0);
                     SleepSuppressBatteryPercent = GetDlgItemInt(hDlg, MISC_BATTERY_PERCENT, &isSuccess, FALSE);
+                    ListWindowType = AskRadioButtonValue(hDlg, ListTypeButton, LISTTYPEBUTTONS);
                     Apply = YES;
                     break;
 

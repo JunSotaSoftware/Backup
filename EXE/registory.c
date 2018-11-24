@@ -4,7 +4,7 @@
 /                               レジストリ操作
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2018 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -86,6 +86,7 @@ extern int SleepSuppressBattery;
 extern int SleepSuppressBatteryPercent;
 extern _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1];
 extern _TCHAR LastErrorLogFname[MY_MAX_PATH+1];
+extern int ListWindowType;
 
 
 
@@ -141,6 +142,8 @@ int SaveRegistory(void)
 
             WriteStringToReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname);
             WriteStringToReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname);
+
+            WriteIntValueToReg(hKey4, _T("ListWindowType"), ListWindowType);
 
             /* 古い形式のレジストリを削除 */
             DeleteValue(hKey4, _T("IntTime"));
@@ -296,6 +299,8 @@ int LoadRegistory(void)
 
             ReadStringFromReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname, MY_MAX_PATH + 10 + 1);
             ReadStringFromReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname, MY_MAX_PATH + 1);
+
+            ReadIntValueFromReg(hKey4, _T("ListWindowType"), &ListWindowType);
 
             OldIntervalTimeFlg = ReadIntValueFromReg(hKey4, _T("IntTime"), &IntervalTime);
 

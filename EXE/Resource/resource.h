@@ -74,6 +74,7 @@
 #define LOG_APPEND                      1013
 #define MISC_COMMENT_TIP                1014
 #define IDC_RADIO3                      1015
+#define MISC_COMMENT_TIP2               1015
 #define MAIN_START                      1016
 #define TRANS_COPY                      1017
 #define LOG_NOLIMIT                     1018
@@ -320,6 +321,7 @@
 #define main_comment_dlg                1235
 #define patset_system_dlg               1236
 #define countdown_dlg                   1237
+#define main_dlg2                       1237
 #define patset_dst_dlg                  1238
 #define patset_timer_dlg                1239
 #define patset_adv_dlg                  1240
@@ -329,7 +331,12 @@
 #define log_err_notify_dlg              1244
 #define patset_ign2_dlg                 1245
 #define PATSET_DST_COMMENT              1246
+#define MISC_LIST_NEW_TYPE              1249
+#define MISC_LIST_OLD_TYPE              1250
 #define FILEOPENORD                     1536
+#define main_dlg_old                    1537
+#define main_comment_dlg1               1538
+#define main_comment_dlg_old            1538
 #define MENU_EXIT                       40001
 #define MENU_FILE_EXIT                  40002
 #define MENU_HELP_CONTENT               40003
@@ -352,12 +359,12 @@
 #define MENU_LOGFOLDER                  40020
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         40021
-#define _APS_NEXT_CONTROL_VALUE         1249
+#define _APS_NEXT_CONTROL_VALUE         1251
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
