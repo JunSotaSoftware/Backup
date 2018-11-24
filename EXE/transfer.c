@@ -114,6 +114,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization);
 static LPTSTR MakeLongPathNFD(LPCTSTR path);
 static int CheckNormlization(LPCTSTR dest);
 static int FnameCompare(LPCTSTR src, LPCTSTR dst);
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo);
 
 /*===== ローカルなワーク ======*/
 
@@ -124,6 +125,8 @@ static HTREEITEM CurItem;
 static int IgnoreErr;
 static int UseTrashCan;
 static int NoMakeTopDir;
+static int MoveInsteadDelete;
+static LPTSTR MoveToFolder;
 
 static int ErrorCount;
 static int TotalErrorCount = 0;
@@ -310,6 +313,8 @@ static int BackupProc(COPYPATLIST *Pat)
         IgnoreErr = Pat->Set.IgnoreErr;
         UseTrashCan = Pat->Set.UseTrashCan;
         NoMakeTopDir = Pat->Set.NoMakeTopDir;
+		MoveInsteadDelete = Pat->Set.MoveInsteadDelete;
+		MoveToFolder = Pat->Set.MoveToFolder;
 
         DeleteMode = YES;
         if(Pat->Set.NotifyDel == NO)
@@ -1835,8 +1840,8 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
             if(MoveFileToTrashCan(Fname) != 0)
                 Sts = FAIL;
         }
-        else
-        {
+		else
+		{
             Attr = GetFileAttributes_My(Fname, YES);
             if(Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
                 SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES);
@@ -1848,8 +1853,16 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
             }
             else
             {
-                if(DeleteFile_My(Fname, YES) == FALSE)
-                    Sts = FAIL;
+				if(MoveInsteadDelete)
+				{
+					if(MoveFileToDeletionFolder(Fname, MoveToFolder) != 0)
+						Sts = FAIL;
+				}
+				else
+				{
+					if(DeleteFile_My(Fname, YES) == FALSE)
+						Sts = FAIL;
+				}
             }
         }
 
@@ -2132,7 +2145,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     MakePathandFile(Dname, Fname, NO);
 
     Type = FILE_ATTRIBUTE_DIRECTORY;
-    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)
+//    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)		//20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
+    if(_tcscmp(Dname+1, _T(":\\")) != 0)
     {
         /* フォルダ／ファイルがあるかチェック */
         RemoveYenTail(Dname);
@@ -2158,7 +2172,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     }
     else
     {
-        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||
+//        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||		//20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
+        if((GetDriveType(Dname) == DRIVE_NO_ROOT_DIR) ||
            ((Type = GetFileAttributes_My(Dname, NO)) == 0xFFFFFFFF))
         {
             ErrorCount++;
@@ -3265,5 +3280,44 @@ static int FnameCompare(LPCTSTR src, LPCTSTR dst)
         ret = _tcscmp(src, dst);
     }
     return ret;
+}
+
+/*----- ファイルを削除先フォルダへ移動 -------------------------------------------
+*
+*   Parameter
+*       LPCTSTR path : 削除するファイル
+*       LPCTSTR moveTo : 移動先
+*
+*   Return Value
+*       int ステータス (0=正常終了)
+*----------------------------------------------------------------------------*/
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo)
+{
+	int sts = 0;
+	_TCHAR destFolder[MY_MAX_PATH+1];
+	_TCHAR destFname[MY_MAX_PATH+1];
+	HANDLE fHnd;
+    WIN32_FIND_DATA FindBuf;
+	LPCTSTR fname;
+	int num;
+
+	fname = GetFileName(path);
+	_tcscpy(destFolder, moveTo);
+	SetYenTail(destFolder);
+	_stprintf(destFname, _T("%s%s"), destFolder, fname);
+	num = 1;
+    while((fHnd = FindFirstFile_My(destFname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+	{
+		FindClose(fHnd);
+		_stprintf(destFname, _T("%s%s(%d)"), destFolder, fname, num);
+		num++;
+	}
+	SetTaskMsg(TASKMSG_ERR, MSGJPN_131, destFname);
+	if(MoveFile_My(path, destFname, NO) == 0)
+	{
+		SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, destFname);
+		sts = 1;
+	}
+	return sts;
 }
 

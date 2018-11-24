@@ -111,6 +111,7 @@
 #define TRANS_SRC                       1047
 #define IDC_BUTTON1                     1048
 #define LOG_FNAME_INIT                  1048
+#define PATSET_DEL_MOVE_FOLDER_BR       1048
 #define TRANS_LOGWRITE                  1049
 #define BMAIN_EDIT                      1050
 #define PATSET_ADD                      1051
@@ -132,6 +133,7 @@
 #define TRNOT_SRCLIST                   1067
 #define LOG_VIEWER_BR                   1068
 #define IDC_EDIT1                       1069
+#define PATSET_DEL_MOVE_FOLDER          1069
 #define PATSET_SRC                      1070
 #define TRNOT_PREV                      1071
 #define LOG_FNAME                       1072
@@ -282,6 +284,7 @@
 #define IDC_CHECK1                      1208
 #define LOG_VERBOSE                     1208
 #define PATSET_DST_DROPBOX              1208
+#define PATSET_DEL_MOVE_TO              1208
 #define PATSET_SHOW_COMMENT             1209
 #define NOBACK_SIZE_FLG                 1210
 #define NOBACK_BIG_FILE                 1211

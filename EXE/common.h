@@ -48,8 +48,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.14")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x010e0000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.15a")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x010f0100      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -76,34 +76,35 @@
 
 /*===== オプション =====*/
 
-#define OPT_FORCE           0x00000001
-#define OPT_RMDIR           0x00000002
-#define OPT_RMFILE          0x00000004
-#define OPT_NOERROR         0x00000008
-#define OPT_START           0x00000010
-#define OPT_CLOSE           0x00000020
-#define OPT_NAME            0x00000040
-#define OPT_NOTIFY_DEL      0x00000080
-#define OPT_ALL             0x00000100
-#define OPT_IGNNODEL        0x00000200
-#define OPT_NEWONLY         0x00000400
-#define OPT_CHK_LABEL       0x00000800
-#define OPT_TRASHCAN        0x00001000
-#define OPT_MINIMIZED       0x00002000
-#define OPT_IGN_SYSTEM      0x00004000
-#define OPT_IGN_HIDDEN      0x00008000
-#define OPT_INI_FILE        0x00010000
-#define OPT_IGN_ATTR        0x00020000
-#define OPT_PLAY_SOUND      0x00040000
-#define OPT_NO_TOPDIR       0x00080000
-#define OPT_IGN_TIME        0x00100000
-#define OPT_NOTIFY_OVW      0x00200000
-#define OPT_SHOW_COMMENT    0x00400000
-#define OPT_IGN_BIG_FILE    0x00800000
-#define OPT_NO_NOTIFY_DEL   0x01000000
-#define OPT_SHOW_AUTHDIALOG 0x02000000
-#define OPT_HIDE_AUTHDIALOG 0x04000000
-#define OPT_DST_DROPBOX		0x08000000
+#define OPT_FORCE				0x00000001
+#define OPT_RMDIR				0x00000002
+#define OPT_RMFILE				0x00000004
+#define OPT_NOERROR				0x00000008
+#define OPT_START				0x00000010
+#define OPT_CLOSE				0x00000020
+#define OPT_NAME				0x00000040
+#define OPT_NOTIFY_DEL			0x00000080
+#define OPT_ALL					0x00000100
+#define OPT_IGNNODEL			0x00000200
+#define OPT_NEWONLY				0x00000400
+#define OPT_CHK_LABEL			0x00000800
+#define OPT_TRASHCAN			0x00001000
+#define OPT_MINIMIZED			0x00002000
+#define OPT_IGN_SYSTEM			0x00004000
+#define OPT_IGN_HIDDEN			0x00008000
+#define OPT_INI_FILE			0x00010000
+#define OPT_IGN_ATTR			0x00020000
+#define OPT_PLAY_SOUND			0x00040000
+#define OPT_NO_TOPDIR			0x00080000
+#define OPT_IGN_TIME			0x00100000
+#define OPT_NOTIFY_OVW			0x00200000
+#define OPT_SHOW_COMMENT		0x00400000
+#define OPT_IGN_BIG_FILE		0x00800000
+#define OPT_NO_NOTIFY_DEL		0x01000000
+#define OPT_SHOW_AUTHDIALOG		0x02000000
+#define OPT_HIDE_AUTHDIALOG		0x04000000
+#define OPT_DST_DROPBOX			0x08000000
+#define OPT_MOVE_INSTEAD_DEL	0x10000000
 
 /*===== トレイアイコン制御 =====*/
 
@@ -191,8 +192,8 @@ typedef struct {
     _TCHAR Dst[DST_PATH_LEN+1];     /* バックアップ先 (マルチ文字列) */
     _TCHAR IgnDir[IGN_PATH_LEN+1];  /* バックアップしないフォルダ (マルチ文字列) */
     _TCHAR IgnFile[IGN_PATH_LEN+1]; /* バックアップしないファイル (マルチ文字列) */
-    _TCHAR VolLabel[MY_MAX_PATH+1];     /* ボリュームラベル */
-    _TCHAR SoundFile[MY_MAX_PATH+1];        /* サウンドファイル */
+    _TCHAR VolLabel[MY_MAX_PATH+1]; /* ボリュームラベル */
+    _TCHAR SoundFile[MY_MAX_PATH+1];/* サウンドファイル */
     int ForceCopy;                  /* 常にファイルをコピー */
     int DelDir;                     /* フォルダを削除する */
     int DelFile;                    /* ファイルを削除する */
@@ -218,6 +219,8 @@ typedef struct {
     int ShowComment;                /* バックアップ開始時にコメントをウインドウで表示する */
     int NextDstNum;                 /* 次のバックアップ先番号 */
 	int DstDropbox;					/* バックアップ先はDropbox */
+	int MoveInsteadDelete;			/* 削除の代わりにファイルを移動する */
+	_TCHAR MoveToFolder[MY_MAX_PATH+1]; /* ファイル移動先のフォルダー */
     /* 以下は設定値ではない。内部処理で使用する。 */
     _TCHAR *NextDst;                /* 次のバックアップ先へのポインタ */
     int PatNum;                     /* パターン番号 */

@@ -147,7 +147,7 @@ FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.14",-1,29,13,98,8
+    CTEXT           "Backup  Ver.1.15a",-1,29,13,98,8
     CTEXT           "Copyright(C) 1997-2015 Sota",-1,7,27,141,8
     CTEXT           "Backup is Freeware.",-1,7,42,141,8
 END
@@ -202,7 +202,7 @@ BEGIN
     LTEXT           "Prepareing",TRANS_PREPARE,161,20,46,8
 END
 
-patset_name_dlg DIALOGEX 0, 0, 231, 203
+patset_name_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -215,22 +215,22 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,136,151,10
 END
 
-patset_dir_dlg DIALOGEX 0, 0, 231, 203
+patset_dir_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LISTBOX         PATSET_SRCLIST,12,18,206,141,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Add...",PATSET_ADD,24,163,38,14
-    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,163,38,14
-    PUSHBUTTON      "&Delete",PATSET_DEL,110,163,38,14
-    PUSHBUTTON      "Up",PATSET_UP,160,163,16,14
-    PUSHBUTTON      "Dn",PATSET_DOWN,178,163,16,14
-    PUSHBUTTON      ">",PATSET_TOOLMENU,203,163,14,14
-    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,188,142,10,SS_SUNKEN
-    GROUPBOX        "Files/Folders which backup",-1,5,5,221,177
+    LISTBOX         PATSET_SRCLIST,12,20,206,171,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",PATSET_ADD,24,195,38,14
+    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,195,38,14
+    PUSHBUTTON      "&Delete",PATSET_DEL,110,195,38,14
+    PUSHBUTTON      "Up",PATSET_UP,160,195,16,14
+    PUSHBUTTON      "Dn",PATSET_DOWN,178,195,16,14
+    PUSHBUTTON      ">",PATSET_TOOLMENU,203,195,14,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,221,142,10,SS_SUNKEN
+    GROUPBOX        "Files/Folders which backup",-1,5,5,221,209
 END
 
-patset_flg_dlg DIALOGEX 0, 0, 231, 203
+patset_flg_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -241,45 +241,49 @@ BEGIN
     CONTROL         "Do not delete files/folders specified on &Ignore tab.",PATSET_IGNNODEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,29,221,10
     CONTROL         "Delete to &Trash Can.",PATSET_USE_TRASHCAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,41,221,10
-    CONTROL         "&Comfirm deletions.",PATSET_NOTIFY_DEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,53,221,10
-    CONTROL         "Force copy &all files.",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,73,221,10
-    CONTROL         "Igno&re file attributes.",PATSET_IGNATTR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,86,197,10
-    CONTROL         "Ignore file ti&me stamp.",PATSET_IGNTIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,98,221,10
-    LTEXT           "I&gnore time stamp difference less than ",-1,5,110,119,8
-    EDITTEXT        PATSET_TOLERANCE,125,108,23,13,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "",PATSET_TOLERANCE_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,147,107,9,14
-    LTEXT           "seconds.",-1,151,110,48,8
+    CONTROL         "Move file to following folder instead of delete.",PATSET_DEL_MOVE_TO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,55,197,10
+    EDITTEXT        PATSET_DEL_MOVE_FOLDER,17,69,167,13,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",PATSET_DEL_MOVE_FOLDER_BR,184,69,18,14
+    CONTROL         "&Comfirm deletions.",PATSET_NOTIFY_DEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,86,221,10
+    CONTROL         "Force copy &all files.",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,106,221,10
+    CONTROL         "Igno&re file attributes.",PATSET_IGNATTR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,119,197,10
+    CONTROL         "Ignore file ti&me stamp.",PATSET_IGNTIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,131,221,10
+    LTEXT           "I&gnore time stamp difference less than ",-1,5,143,119,8
+    EDITTEXT        PATSET_TOLERANCE,125,141,23,13,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",PATSET_TOLERANCE_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,147,140,10,14
+    LTEXT           "seconds.",-1,151,143,48,8
     CONTROL         "Do not copy if destination file is &newer.",PATSET_NEWONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,121,221,10
-    CONTROL         "C&omfirm overwriting.",PATSET_NOTIFY_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,133,221,10
-    CONTROL         "Ignore &errors.",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,152,221,10
-    GROUPBOX        "Copy &Speed",-1,5,169,170,29
-    CONTROL         "Slider1",PATSET_WAIT,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,29,179,121,12
-    LTEXT           "Fast",-1,11,181,14,8
-    LTEXT           "Slow",-1,154,181,15,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,154,221,10
+    CONTROL         "C&omfirm overwriting.",PATSET_NOTIFY_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,166,221,10
+    CONTROL         "Ignore &errors.",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,185,221,10
+    GROUPBOX        "Copy &Speed",-1,5,202,170,29
+    CONTROL         "Slider1",PATSET_WAIT,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,29,212,121,12
+    LTEXT           "Fast",-1,11,214,14,8
+    LTEXT           "Slow",-1,154,214,15,8
 END
 
-patset_ign1_dlg DIALOGEX 0, 0, 231, 203
+patset_ign1_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LISTBOX         NOBACK_DIR_LIST,11,16,207,53,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Add...",NOBACK_DIR_ADD,25,71,38,14
-    PUSHBUTTON      "&Modify...",NOBACK_DIR_EDIT,68,71,38,14
-    PUSHBUTTON      "D&elete",NOBACK_DIR_DEL,111,71,38,14
-    PUSHBUTTON      "Up",NOBACK_DIR_UP,162,71,16,14
-    PUSHBUTTON      "Dn",NOBACK_DIR_DOWN,180,71,16,14
-    PUSHBUTTON      ">",NOBACK_DIR_TOOLMENU,203,71,13,14
-    LISTBOX         NOBACK_FILE_LIST,11,107,207,53,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Add(&I)...",NOBACK_FILE_ADD,25,162,38,14
-    PUSHBUTTON      "Modify(&X)...",NOBACK_FILE_EDIT,68,162,38,14
-    PUSHBUTTON      "Delete(&Z)",NOBACK_FILE_DEL,111,162,38,14
-    PUSHBUTTON      "Up",NOBACK_FILE_UP,162,162,16,14
-    PUSHBUTTON      "Dn",NOBACK_FILE_DOWN,180,162,16,14
-    PUSHBUTTON      ">",NOBACK_FILE_TOOLMENU,204,162,13,14
-    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,186,142,11,SS_SUNKEN
-    GROUPBOX        "Folders not Copied",-1,5,5,221,84
-    GROUPBOX        "Files not Copied",-1,5,95,221,84
+    LISTBOX         NOBACK_DIR_LIST,11,18,207,65,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",NOBACK_DIR_ADD,25,85,38,14
+    PUSHBUTTON      "&Modify...",NOBACK_DIR_EDIT,68,85,38,14
+    PUSHBUTTON      "D&elete",NOBACK_DIR_DEL,111,85,38,14
+    PUSHBUTTON      "Up",NOBACK_DIR_UP,162,85,16,14
+    PUSHBUTTON      "Dn",NOBACK_DIR_DOWN,180,85,16,14
+    PUSHBUTTON      ">",NOBACK_DIR_TOOLMENU,203,85,13,14
+    LISTBOX         NOBACK_FILE_LIST,11,129,207,65,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Add(&I)...",NOBACK_FILE_ADD,25,196,38,14
+    PUSHBUTTON      "Modify(&X)...",NOBACK_FILE_EDIT,68,196,38,14
+    PUSHBUTTON      "Delete(&Z)",NOBACK_FILE_DEL,111,196,38,14
+    PUSHBUTTON      "Up",NOBACK_FILE_UP,162,196,16,14
+    PUSHBUTTON      "Dn",NOBACK_FILE_DOWN,180,196,16,14
+    PUSHBUTTON      ">",NOBACK_FILE_TOOLMENU,204,196,13,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,220,142,11,SS_SUNKEN
+    GROUPBOX        "Folders not Copied",-1,5,5,221,98
+    GROUPBOX        "Files not Copied",-1,5,115,221,98
 END
 
 opt_log_dlg DIALOGEX 0, 0, 223, 193
@@ -483,7 +487,7 @@ BEGIN
     CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
 END
 
-patset_system_dlg DIALOGEX 0, 0, 230, 197
+patset_system_dlg DIALOGEX 0, 0, 230, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -509,45 +513,45 @@ BEGIN
     CTEXT           "?X?^?e?B?b?N",CDOWN_MSG2,7,16,141,8
 END
 
-patset_frame_dlg DIALOGEX 0, 0, 321, 245
+patset_frame_dlg DIALOGEX 0, 0, 322, 274
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
     LTEXT           "Settings(&1)",-1,7,7,49,8
-    CONTROL         "",PATSET_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_NOSCROLL | WS_BORDER | WS_TABSTOP,7,17,69,194
-    DEFPUSHBUTTON   "OK",IDOK,91,224,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,148,224,50,14
-    PUSHBUTTON      "Help",IDHELP,264,224,50,14
-    LTEXT           "??????",PATSET_DIALOG_POS,82,7,231,203,NOT WS_VISIBLE | WS_DISABLED
-    PUSHBUTTON      "File Size",MENU_FILESIZE,206,224,50,14
+    CONTROL         "",PATSET_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_NOSCROLL | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,17,69,228
+    DEFPUSHBUTTON   "OK",IDOK,91,253,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,148,253,50,14
+    PUSHBUTTON      "Help",IDHELP,265,253,50,14
+    LTEXT           "??????",PATSET_DIALOG_POS,82,7,231,236,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "File Size",MENU_FILESIZE,206,253,50,14
 END
 
-patset_dst_dlg DIALOGEX 0, 0, 231, 203
+patset_dst_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
-    LISTBOX         PATSET_DSTLIST,12,18,206,45,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Add...",PATSET_ADD,24,66,38,14
-    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,66,38,14
-    PUSHBUTTON      "&Delete",PATSET_DEL,110,66,38,14
-    PUSHBUTTON      "Up",PATSET_UP,160,66,16,14
-    PUSHBUTTON      "Dn",PATSET_DOWN,178,66,16,14
-    PUSHBUTTON      ">",PATSET_TOOLMENU,203,66,14,14
-    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,14,118,212,11,SS_SUNKEN
+    LISTBOX         PATSET_DSTLIST,12,18,206,64,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",PATSET_ADD,24,85,38,14
+    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,85,38,14
+    PUSHBUTTON      "&Delete",PATSET_DEL,110,85,38,14
+    PUSHBUTTON      "Up",PATSET_UP,160,85,16,14
+    PUSHBUTTON      "Dn",PATSET_DOWN,178,85,16,14
+    PUSHBUTTON      ">",PATSET_TOOLMENU,203,85,14,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,14,137,212,11,SS_SUNKEN
     CONTROL         "&Confirm volume label on destination drive.",PATSET_CHK_LABEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,133,220,10
-    RTEXT           "Volume &Label",-1,10,149,68,8
-    EDITTEXT        PATSET_LABEL,81,147,72,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Get label from drive",PATSET_LABEL_GET,154,147,72,14
-    GROUPBOX        "Backup destination folder",-1,5,5,221,80
-    LTEXT           "*When multiple destination folders are specified this button get a volume label from first destination drive.",-1,13,164,213,18,SS_SUNKEN
-    LTEXT           "*When multiple backup destinations are specified, Backup does not copy files to multiple destinations at once. Backup destination is changed at each backup operation.",PATSET_DST_COMMENT,14,88,212,27,SS_SUNKEN
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,159,220,10
+    RTEXT           "Volume &Label",-1,10,175,68,8
+    EDITTEXT        PATSET_LABEL,81,173,72,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Get label from drive",PATSET_LABEL_GET,154,173,72,14
+    GROUPBOX        "Backup destination folder",-1,5,5,221,99
+    LTEXT           "*When multiple destination folders are specified this button get a volume label from first destination drive.",-1,13,190,213,18,SS_SUNKEN
+    LTEXT           "*When multiple backup destinations are specified, Backup does not copy files to multiple destinations at once. Backup destination is changed at each backup operation.",PATSET_DST_COMMENT,14,107,212,27,SS_SUNKEN
     CONTROL         "Backup destination is Dropbox folder",PATSET_DST_DROPBOX,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,188,125,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,221,125,10
 END
 
-patset_timer_dlg DIALOGEX 0, 0, 231, 203
+patset_timer_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
@@ -559,15 +563,15 @@ BEGIN
     LTEXT           "minutes",-1,86,25,21,8
 END
 
-patset_adv_dlg DIALOGEX 0, 0, 231, 203
+patset_adv_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     CONTROL         "Backup to destination folder without create a top folder.",PATSET_NO_DSTDIR,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,211,10
     LTEXT           "The file which is not assumed may be deleted if the usage is mistaken.\n\nPlease be fully careful.\n\nThis can be used only when one backup source is specified.",-1,27,19,175,60,SS_SUNKEN
-    ICON            notify_icon,-1,5,19,20,20
-    PUSHBUTTON      "Reset settings on this page",PATSET_ADV_RESET,124,184,102,14
+    ICON            notify_icon,-1,5,19,18,21
+    PUSHBUTTON      "Reset settings on this page",PATSET_ADV_RESET,124,217,102,14
 END
 
 path_convert_dlg DIALOGEX 0, 0, 222, 77
@@ -666,7 +670,7 @@ BEGIN
     CTEXT           "Do you wish to stop backup?",IDC_STATIC,7,21,172,8
 END
 
-patset_ign2_dlg DIALOGEX 0, 0, 231, 203
+patset_ign2_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -782,7 +786,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     patset_dir_dlg, DIALOG
@@ -790,7 +794,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     patset_flg_dlg, DIALOG
@@ -798,7 +802,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     patset_ign1_dlg, DIALOG
@@ -806,7 +810,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     opt_log_dlg, DIALOG
@@ -911,7 +915,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 225
         TOPMARGIN, 5
-        BOTTOMMARGIN, 192
+        BOTTOMMARGIN, 231
     END
 
     countdown_dlg, DIALOG
@@ -925,9 +929,9 @@ BEGIN
     patset_frame_dlg, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 314
+        RIGHTMARGIN, 315
         TOPMARGIN, 7
-        BOTTOMMARGIN, 238
+        BOTTOMMARGIN, 267
     END
 
     patset_dst_dlg, DIALOG
@@ -935,7 +939,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     patset_timer_dlg, DIALOG
@@ -943,7 +947,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     patset_adv_dlg, DIALOG
@@ -951,7 +955,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 
     path_convert_dlg, DIALOG
@@ -1023,7 +1027,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 198
+        BOTTOMMARGIN, 231
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1035,8 +1039,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,14,0,0
- PRODUCTVERSION 1,14,0,0
+ FILEVERSION 1,15,1,0
+ PRODUCTVERSION 1,15,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1054,12 +1058,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.14.0.0"
+            VALUE "FileVersion", "1.15.1.0"
             VALUE "InternalName", "Backup"
             VALUE "LegalCopyright", "Copyright (C) 1997-2015 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.14.0.0"
+            VALUE "ProductVersion", "1.15.1.0"
         END
     END
     BLOCK "VarFileInfo"

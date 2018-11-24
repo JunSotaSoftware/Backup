@@ -151,4 +151,7 @@
 #define MSGJPN_127  _T("更新 : %s (日付が異なる：元=%s, 先=%s)")
 #define MSGJPN_128  _T("<< パターン名未入力 >>")
 #define MSGJPN_129  _T("ERROR: %s のファイル検索中にエラーが発生しました。(%s)")
+#define MSGJPN_130  _T("削除ファイルの移動先")
+#define MSGJPN_131  _T("   --> %s にファイルを移動します")
+#define MSGJPN_132  _T("ERROR: ファイルの移動に失敗しました (%s -> %s)")
 

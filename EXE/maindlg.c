@@ -961,6 +961,8 @@ void CopyDefaultPat(COPYPAT *Set)
     Set->ShowComment = NO;
     Set->NextDstNum = 0;
 	Set->DstDropbox = NO;
+	Set->MoveInsteadDelete = NO;
+	_tcscpy(Set->MoveToFolder, _T(""));
     Set->NextDst = NULL;
     Set->PatNum = 0;
     return;
