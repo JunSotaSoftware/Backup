@@ -46,11 +46,11 @@
 /*===== プロトタイプ =====*/
 
 static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdLine, int cmdShow);
-static int CommandLineProc(LPTSTR Src, LPTSTR Dst, int Option);
+static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryLevel);
 static void DeleteAllObject(void);
 static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static void ExitProc(HWND hWnd);
-static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, int *Opt);
+static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int *BatteryLevel);
 static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf);
 static void TrayIconMenu(void);
 void LoadTrayIcon(void);
@@ -62,7 +62,8 @@ static const _TCHAR BupClassStr[] = _T("BackUp");
 static HINSTANCE hInstBup;
 static HWND hWndBup = NULL;
 
-int ExecOption = 0;
+LONGLONG ExecOption = 0;
+int ExecBatteryLevel = 0;
 int AutoClose = 0;
 static int NoNotify = NO;
 int Sound;
@@ -108,6 +109,9 @@ SIZE NotifyDlgSize = {-1, -1 };
 int ExitOnEsc = 0;
 int ShowComment = 1;        /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
 int AuthDialog = AUTH_DIALOG_HIDE;
+int SleepSuppressAC = 1;
+int SleepSuppressBattery = 0;
+int SleepSuppressBatteryPercent = 80;
 _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1] = { _T("") };
 _TCHAR LastErrorLogFname[MY_MAX_PATH+1] = { _T("") };
 
@@ -188,7 +192,7 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
     GetModuleFileName(NULL, IniPath, MY_MAX_PATH);
     _tcscpy(GetFileName(IniPath), _T("Backup.ini"));
 
-    CmdLineSts = AnalyzeComLine(lpszCmdLine, Src, Dst, &ExecOption);
+    CmdLineSts = AnalyzeComLine(lpszCmdLine, Src, Dst, &ExecOption, &ExecBatteryLevel);
     if(ExecOption & OPT_INI_FILE)
         _tcscpy(IniPath, Dst);
 
@@ -256,7 +260,7 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
             MakeBackupThread();
 
             if(CmdLineSts == SUCCESS)
-                Sts = CommandLineProc(Src, Dst, ExecOption);
+                Sts = CommandLineProc(Src, Dst, ExecOption, ExecBatteryLevel);
         }
     }
 
@@ -279,7 +283,7 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int CommandLineProc(LPTSTR Src, LPTSTR Dst, int Option)
+static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryLevel)
 {
     static COPYPATLIST cInfo;
     int Sts;
@@ -293,6 +297,19 @@ static int CommandLineProc(LPTSTR Src, LPTSTR Dst, int Option)
         AuthDialog = AUTH_DIALOG_SHOW;
     if(Option & OPT_HIDE_AUTHDIALOG)
         AuthDialog = AUTH_DIALOG_HIDE;
+
+    if (Option & OPT_SUPPRESS_SLEEP_AC)
+        SleepSuppressAC = 1;
+    if (Option & OPT_NO_SUPPRESS_SLEEP_AC)
+        SleepSuppressAC = 0;
+
+    if (Option & OPT_SUPPRESS_SLEEP_BATTERY)
+    {
+        SleepSuppressBattery = 1;
+        SleepSuppressBatteryPercent = ExecBatteryLevel;
+    }
+    if (Option & OPT_NO_SUPPRESS_SLEEP_BATTERY)
+        SleepSuppressBattery = 0;
 
     Sts = SUCCESS;
     if(Option & OPT_ALL)
@@ -567,9 +584,9 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                     DispErrorLogWithViewer();
                     break;
 
-				case MENU_LOGFOLDER :
-					OpenLogDir();
-					break;
+                case MENU_LOGFOLDER :
+                    OpenLogDir();
+                    break;
             }
             break;
 
@@ -782,7 +799,8 @@ void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
 *       LPTSTR Str : コマンドライン文字列
 *       LPTSTR Src : バックアップ元フォルダ (NULL=Src,Dstを取得しない)
 *       LPTSTR Dst : バックアップ先フォルダ
-*       int *Opt : オプション
+*       LONGLONG *Opt : オプション
+*       int *BatteryLevel : バッテリー容量の閾値
 *
 *   Return Value
 *       int ステータス
@@ -794,7 +812,7 @@ void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg)
 *       -h --help -? はヘルプを表示
 *----------------------------------------------------------------------------*/
 
-static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, int *Opt)
+static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int *BatteryLevel)
 {
     int Sts;
     _TCHAR Tmp[MY_MAX_PATH+1];
@@ -805,6 +823,7 @@ static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, int *Opt)
         _tcscpy(Dst, _T(""));
     }
     *Opt = 0;
+    *BatteryLevel = 0;
 
     Sts = SUCCESS;
     Str = GetToken(Str, Tmp);
@@ -870,6 +889,37 @@ static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, int *Opt)
             else if(_tcscmp(&Tmp[1], _T("-hide-authdialog")) == 0)
             {
                 *Opt |= OPT_HIDE_AUTHDIALOG;
+            }
+            else if(_tcscmp(&Tmp[1], _T("-suppress-sleep-ac")) == 0)
+            {
+                *Opt |= OPT_SUPPRESS_SLEEP_AC;
+            }
+            else if(_tcscmp(&Tmp[1], _T("-no-suppress-sleep-ac")) == 0)
+            {
+                *Opt |= OPT_NO_SUPPRESS_SLEEP_AC;
+            }
+            else if(_tcscmp(&Tmp[1], _T("-suppress-sleep-battery")) == 0)
+            {
+                *Opt |= OPT_SUPPRESS_SLEEP_BATTERY;
+                if (*BatteryLevel == 0)
+                {
+                    Str = GetToken(Str, Tmp);
+                    if (Str != NULL)
+                    {
+                        *BatteryLevel = _tstoi(Tmp);
+                    }
+
+                    if (*BatteryLevel == 0)
+                    {
+                        DispErrorBox(MSGJPN_136);
+                        Sts = FAIL;
+                        break;
+                    }
+                }
+            }
+            else if(_tcscmp(&Tmp[1], _T("-no-suppress-sleep-battery")) == 0)
+            {
+                *Opt |= OPT_NO_SUPPRESS_SLEEP_BATTERY;
             }
             else
             {

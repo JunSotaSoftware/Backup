@@ -56,6 +56,7 @@ static FILE     *LogStrm = NULL;
 static int      DeleteLog = NO;
 static LPTSTR   ErrorLogFname = NULL;
 static FILE     *ErrorStrm = NULL;
+static FILETIME StartTime;
 
 /*===== 外部参照 =====*/
 
@@ -88,7 +89,7 @@ int OpenLogfile(void)
     MakeLogFileName(LogFname, RealLogFname);
     MakeLogDir(RealLogFname);
 
-	_tcscpy(LastWroteLogFname, RealLogFname);
+    _tcscpy(LastWroteLogFname, RealLogFname);
 
     if((LogSwitch == LOG_SW_NEW) && (DeleteLog == NO))
         DeleteFile_My(RealLogFname, NO);
@@ -278,8 +279,8 @@ static void CheckLogFileSize(void)
 
 /*-----------------------------------------------------------------------------
  説明   :   ログファイルにタイトル等を書き込む
- 引数   :   Name			[in] パターン名
-			SrcPath     [in] バックアップ元
+ 引数   :   Name            [in] パターン名
+            SrcPath     [in] バックアップ元
             DstPath     [in] バックアップ先
  戻り値 :   なし
  備考   :
@@ -292,11 +293,13 @@ void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath)
     _stprintf(Tmp, _T("#### Backup Ver %s ####"), PROGRAM_VERSION);
     WriteMsgToLogfile(Tmp);
 
-	_stprintf(Tmp, MSGJPN_133, Name);
-	WriteMsgToLogfile(Tmp);
-	
-	_stprintf(Tmp, MSGJPN_0, GetTimeString());
+    _stprintf(Tmp, MSGJPN_133, Name);
     WriteMsgToLogfile(Tmp);
+
+    _stprintf(Tmp, MSGJPN_0, GetTimeString());
+    WriteMsgToLogfile(Tmp);
+
+    GetSystemTimeAsFileTime(&StartTime);
 
     while(*SrcPath != NUL)
     {
@@ -320,9 +323,19 @@ void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath)
 void WriteEndTimeToLogfile(void)
 {
     _TCHAR Tmp[256];
+    FILETIME EndTime;
 
     _stprintf(Tmp, MSGJPN_3, GetTimeString());
+    GetSystemTimeAsFileTime(&EndTime);
     WriteMsgToLogfile(Tmp);
+    LONGLONG diff = ((LARGE_INTEGER*)&EndTime)->QuadPart - ((LARGE_INTEGER*)&StartTime)->QuadPart;
+    LONGLONG diffInSecond = diff / (10000LL * 1000LL);
+    INT hour   = (INT)(diffInSecond / (60LL * 60LL));
+    INT minute = (INT)((diffInSecond / 60LL) % 60LL);
+    INT second = (INT)(diffInSecond % 60LL);
+    _stprintf(Tmp, MSGJPN_134, hour, minute, second);
+    SetTaskMsg(TASKMSG_NOR, MSGJPN_135, Tmp);
+
     return;
 }
 
@@ -438,16 +451,16 @@ int OpenErrorLogfile(void)
         {
             free(ErrorLogFname);
             ErrorLogFname = NULL;
-			_tcscpy(LastErrorLogFname, _T(""));
-		}
-		else
-		{
-			if (_tcslen(LastErrorLogFname) > 0)
-			{
-				DeleteFile_My(LastErrorLogFname, NO);
-			}
-			_tcscpy(LastErrorLogFname, ErrorLogFname);
-		}
+            _tcscpy(LastErrorLogFname, _T(""));
+        }
+        else
+        {
+            if (_tcslen(LastErrorLogFname) > 0)
+            {
+                DeleteFile_My(LastErrorLogFname, NO);
+            }
+            _tcscpy(LastErrorLogFname, ErrorLogFname);
+        }
     }
 
     if(ErrorLogFname != NULL)
@@ -556,8 +569,8 @@ int WriteMsgToErrorLogfile(LPTSTR Msg)
 -----------------------------------------------------------------------------*/
 void DispErrorLogWithViewer(void)
 {
-	if (_tcslen(LastErrorLogFname) > 0)
-		ExecViewer(LastErrorLogFname, ViewerName);
+    if (_tcslen(LastErrorLogFname) > 0)
+        ExecViewer(LastErrorLogFname, ViewerName);
     else
         DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
     return;
@@ -571,23 +584,23 @@ void DispErrorLogWithViewer(void)
 -----------------------------------------------------------------------------*/
 void OpenLogDir(void)
 {
-	LPTSTR Pos;
-	_TCHAR Path[MY_MAX_PATH + 1];
+    LPTSTR Pos;
+    _TCHAR Path[MY_MAX_PATH + 1];
 
-	_tcscpy(Path, LogFname);
+    _tcscpy(Path, LogFname);
 
-	if ((_tcslen(Path) > 3) &&
-		((_tcsncmp(Path + 1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
-	{
-		Pos = Path + 3;
-		Pos = _tcsrchr(Path, _T('\\'));
-		if (Pos != NULL)
-		{
-			*Pos = _T('\0');
-		}
+    if ((_tcslen(Path) > 3) &&
+        ((_tcsncmp(Path + 1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
+    {
+        Pos = Path + 3;
+        Pos = _tcsrchr(Path, _T('\\'));
+        if (Pos != NULL)
+        {
+            *Pos = _T('\0');
+        }
 
-		ShellExecute(NULL, _T("open"), Path, NULL, NULL, SW_SHOWNORMAL);
-	}
+        ShellExecute(NULL, _T("open"), Path, NULL, NULL, SW_SHOWNORMAL);
+    }
 }
 
 

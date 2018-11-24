@@ -81,6 +81,9 @@ extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
 extern int ShowComment;     /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
 extern int AuthDialog;
+extern int SleepSuppressAC;
+extern int SleepSuppressBattery;
+extern int SleepSuppressBatteryPercent;
 extern _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1];
 extern _TCHAR LastErrorLogFname[MY_MAX_PATH+1];
 
@@ -128,13 +131,16 @@ int SaveRegistory(void)
             WriteIntValueToReg(hKey4, _T("ExitEsc"), ExitOnEsc);
             WriteIntValueToReg(hKey4, _T("ShowComment"), ShowComment);
             WriteIntValueToReg(hKey4, _T("AuthDialog"), AuthDialog);
+            WriteIntValueToReg(hKey4, _T("SleepSuppressAC"), SleepSuppressAC);
+            WriteIntValueToReg(hKey4, _T("SleepSuppressBattery"), SleepSuppressBattery);
+            WriteIntValueToReg(hKey4, _T("SleepSuppressBatteryPercent"), SleepSuppressBatteryPercent);
 
             WriteBinaryToReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             WriteBinaryToReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));
             WriteBinaryToReg(hKey4, _T("NotifySize"), &NotifyDlgSize, sizeof(SIZE));
 
-			WriteStringToReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname);
-			WriteStringToReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname);
+            WriteStringToReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname);
+            WriteStringToReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname);
 
             /* 古い形式のレジストリを削除 */
             DeleteValue(hKey4, _T("IntTime"));
@@ -161,26 +167,26 @@ int SaveRegistory(void)
                         WriteMultiStringToReg(hKey5, _T("IgnDir"), Pat.IgnDir);
                         WriteMultiStringToReg(hKey5, _T("IgnFile"), Pat.IgnFile);
                         Tmp = 0;
-                        Tmp |= (Pat.ForceCopy == YES)			? OPT_FORCE            : 0;
-                        Tmp |= (Pat.DelDir == YES)				? OPT_RMDIR            : 0;
-                        Tmp |= (Pat.DelFile == YES)				? OPT_RMFILE           : 0;
-                        Tmp |= (Pat.IgnoreErr == YES)			? OPT_NOERROR          : 0;
-                        Tmp |= (Pat.NotifyDel == YES)			? OPT_NOTIFY_DEL       : 0;
-                        Tmp |= (Pat.IgnNoDel == YES)			? OPT_IGNNODEL         : 0;
-                        Tmp |= (Pat.NewOnly == YES)				? OPT_NEWONLY          : 0;
-                        Tmp |= (Pat.ChkVolLabel == YES)			? OPT_CHK_LABEL        : 0;
-                        Tmp |= (Pat.UseTrashCan == YES)			? OPT_TRASHCAN         : 0;
-                        Tmp |= (Pat.IgnSystemFile == YES)		? OPT_IGN_SYSTEM       : 0;
-                        Tmp |= (Pat.IgnHiddenFile == YES)		? OPT_IGN_HIDDEN       : 0;
-                        Tmp |= (Pat.IgnAttr == YES)				? OPT_IGN_ATTR         : 0;
-                        Tmp |= (Pat.Sound == YES)				? OPT_PLAY_SOUND       : 0;
-                        Tmp |= (Pat.NoMakeTopDir == YES)		? OPT_NO_TOPDIR        : 0;
-                        Tmp |= (Pat.IgnTime == YES)				? OPT_IGN_TIME         : 0;
-                        Tmp |= (Pat.NotifyOvw == YES)			? OPT_NOTIFY_OVW       : 0;
-                        Tmp |= (Pat.ShowComment == YES)			? OPT_SHOW_COMMENT     : 0;
-                        Tmp |= (Pat.IgnBigFile == YES)			? OPT_IGN_BIG_FILE     : 0;
-						Tmp |= (Pat.DstDropbox == YES)			? OPT_DST_DROPBOX      : 0;
-						Tmp |= (Pat.MoveInsteadDelete == YES)	? OPT_MOVE_INSTEAD_DEL : 0;
+                        Tmp |= (Pat.ForceCopy == YES)           ? OPT_FORCE            : 0;
+                        Tmp |= (Pat.DelDir == YES)              ? OPT_RMDIR            : 0;
+                        Tmp |= (Pat.DelFile == YES)             ? OPT_RMFILE           : 0;
+                        Tmp |= (Pat.IgnoreErr == YES)           ? OPT_NOERROR          : 0;
+                        Tmp |= (Pat.NotifyDel == YES)           ? OPT_NOTIFY_DEL       : 0;
+                        Tmp |= (Pat.IgnNoDel == YES)            ? OPT_IGNNODEL         : 0;
+                        Tmp |= (Pat.NewOnly == YES)             ? OPT_NEWONLY          : 0;
+                        Tmp |= (Pat.ChkVolLabel == YES)         ? OPT_CHK_LABEL        : 0;
+                        Tmp |= (Pat.UseTrashCan == YES)         ? OPT_TRASHCAN         : 0;
+                        Tmp |= (Pat.IgnSystemFile == YES)       ? OPT_IGN_SYSTEM       : 0;
+                        Tmp |= (Pat.IgnHiddenFile == YES)       ? OPT_IGN_HIDDEN       : 0;
+                        Tmp |= (Pat.IgnAttr == YES)             ? OPT_IGN_ATTR         : 0;
+                        Tmp |= (Pat.Sound == YES)               ? OPT_PLAY_SOUND       : 0;
+                        Tmp |= (Pat.NoMakeTopDir == YES)        ? OPT_NO_TOPDIR        : 0;
+                        Tmp |= (Pat.IgnTime == YES)             ? OPT_IGN_TIME         : 0;
+                        Tmp |= (Pat.NotifyOvw == YES)           ? OPT_NOTIFY_OVW       : 0;
+                        Tmp |= (Pat.ShowComment == YES)         ? OPT_SHOW_COMMENT     : 0;
+                        Tmp |= (Pat.IgnBigFile == YES)          ? OPT_IGN_BIG_FILE     : 0;
+                        Tmp |= (Pat.DstDropbox == YES)          ? OPT_DST_DROPBOX      : 0;
+                        Tmp |= (Pat.MoveInsteadDelete == YES)   ? OPT_MOVE_INSTEAD_DEL : 0;
                         WriteIntValueToReg(hKey5, _T("Flags"), Tmp);
                         WriteIntValueToReg(hKey5, _T("Wait"), Pat.Wait);
                         WriteStringToReg(hKey5, _T("Label"), Pat.VolLabel);
@@ -190,7 +196,7 @@ int SaveRegistory(void)
                         WriteIntValueToReg(hKey5, _T("Interval"), Pat.IntervalTime);
                         WriteIntValueToReg(hKey5, _T("Big"), Pat.IgnBigSize);
                         WriteIntValueToReg(hKey5, _T("NextDstNum"), Pat.NextDstNum);
-						WriteStringToReg(hKey5, _T("MoveToFolder"), Pat.MoveToFolder);
+                        WriteStringToReg(hKey5, _T("MoveToFolder"), Pat.MoveToFolder);
 
                         CloseSubKey(hKey5);
                     }
@@ -278,13 +284,16 @@ int LoadRegistory(void)
             ReadIntValueFromReg(hKey4, _T("ExitEsc"), &ExitOnEsc);
             ReadIntValueFromReg(hKey4, _T("ShowComment"), &ShowComment);
             ReadIntValueFromReg(hKey4, _T("AuthDialog"), &AuthDialog);
+            ReadIntValueFromReg(hKey4, _T("SleepSuppressAC"), &SleepSuppressAC);
+            ReadIntValueFromReg(hKey4, _T("SleepSuppressBattery"), &SleepSuppressBattery);
+            ReadIntValueFromReg(hKey4, _T("SleepSuppressBatteryPercent"), &SleepSuppressBatteryPercent);
 
             ReadBinaryFromReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             ReadBinaryFromReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));
             ReadBinaryFromReg(hKey4, _T("NotifySize"), &NotifyDlgSize, sizeof(SIZE));
 
-			ReadStringFromReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname, MY_MAX_PATH + 10 + 1);
-			ReadStringFromReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname, MY_MAX_PATH + 1);
+            ReadStringFromReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname, MY_MAX_PATH + 10 + 1);
+            ReadStringFromReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname, MY_MAX_PATH + 1);
 
             OldIntervalTimeFlg = ReadIntValueFromReg(hKey4, _T("IntTime"), &IntervalTime);
 
@@ -335,8 +344,8 @@ int LoadRegistory(void)
                     Pat.NotifyOvw         = (Tmp & OPT_NOTIFY_OVW)       ? YES : NO;
                     Pat.ShowComment       = (Tmp & OPT_SHOW_COMMENT)     ? YES : NO;
                     Pat.IgnBigFile        = (Tmp & OPT_IGN_BIG_FILE)     ? YES : NO;
-					Pat.DstDropbox        = (Tmp & OPT_DST_DROPBOX)      ? YES : NO;
-					Pat.MoveInsteadDelete = (Tmp & OPT_MOVE_INSTEAD_DEL) ? YES : NO;
+                    Pat.DstDropbox        = (Tmp & OPT_DST_DROPBOX)      ? YES : NO;
+                    Pat.MoveInsteadDelete = (Tmp & OPT_MOVE_INSTEAD_DEL) ? YES : NO;
                     ReadIntValueFromReg(hKey5, _T("Wait"), &Pat.Wait);
                     ReadStringFromReg(hKey5, _T("Label"), Pat.VolLabel, MY_MAX_PATH+1);
                     ReadIntValueFromReg(hKey5, _T("Tole"), &Pat.Tolerance);
@@ -352,7 +361,7 @@ int LoadRegistory(void)
                     {
                         Pat.NextDstNum = 0;
                     }
-					ReadStringFromReg(hKey5, _T("MoveToFolder"), Pat.MoveToFolder, MY_MAX_PATH+1);
+                    ReadStringFromReg(hKey5, _T("MoveToFolder"), Pat.MoveToFolder, MY_MAX_PATH+1);
                     AddPatToList(&Pat);
 
                     CloseSubKey(hKey5);

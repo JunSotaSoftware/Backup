@@ -155,4 +155,6 @@
 #define MSGJPN_131  _T("   --> %s にファイルを移動します")
 #define MSGJPN_132  _T("ERROR: ファイルの移動に失敗しました (%s -> %s)")
 #define MSGJPN_133  _T("パターン名：%s")
-
+#define MSGJPN_134  _T("%d時間%d分%d秒")
+#define MSGJPN_135  _T("処理時間：%s")
+#define MSGJPN_136  _T("バッテリーの閾値が指定されていません")

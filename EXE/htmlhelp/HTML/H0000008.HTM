@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD><TITLE>コマンドライン</TITLE>
 <META content="text/html; charset=shift_jis" http-equiv=Content-Type>
-<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<META name=GENERATOR content="MSHTML 11.00.10570.1001"></HEAD>
 <BODY><FONT face="ＭＳ Ｐゴシック">
 <P>コマンドラインで、次のようにバックアップパターンを指定できます。</P>
 <P>●バックアップパターンを選択する場合。（通常）</P>
@@ -42,6 +42,12 @@
 <P><STRONG>-p</STRONG> または 
 <STRONG>--spec</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 設定ファイル(INIファイル)を指定します。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指定しなかった場合は、通常の設定を使用します。</P>
+<P><STRONG>--suppress-sleep-ac&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</STRONG>AC電源を接続している時に、PCがスリープ状態になるのを防ぎます。<BR><STRONG>--no-suppress-sleep-ac&nbsp;&nbsp;&nbsp;&nbsp; 
+</STRONG>AC電源を接続していても、PCがスリープ状態になるのを許可します。</P>
+<P><STRONG>--suppress-sleep-battery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</STRONG>バッテリーで動作中に、PCがスリープ状態になるのを防ぎます。このオプションの後ろに、しきい値となるバッテリーのパーセントを記述してください。<BR><STRONG>--no-suppress-sleep-battery&nbsp;&nbsp; 
+</STRONG>バッテリーでの動作中でも、PCがスリープ状態になるのを許可します。</P>
 <P><STRONG>-h</STRONG> または 
 <STRONG>--help</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 コマンドラインに関するヘルプ（この画面）を表示します。</P>

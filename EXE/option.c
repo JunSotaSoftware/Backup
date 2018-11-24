@@ -67,7 +67,9 @@ extern int RegType;
 extern int ExitOnEsc;
 extern int ShowComment;     /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
 extern int AuthDialog;
-
+extern int SleepSuppressAC;
+extern int SleepSuppressBattery;
+extern int SleepSuppressBatteryPercent;
 
 /*----- オプション設定 --------------------------------------------------------
 *
@@ -303,6 +305,7 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
         { MISC_COMMENT_WIN, 2 }
     };
     #define SHOWCOMMENTBUTTONS  (sizeof(ShowCommentButton)/sizeof(RADIOBUTTON))
+    BOOL isSuccess = FALSE;
 
     switch (message)
     {
@@ -313,6 +316,17 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             SendDlgItemMessage(hDlg, MISC_ESC_EXIT, BM_SETCHECK, ExitOnEsc, 0);
             SetRadioButtonByValue(hDlg, ShowComment, ShowCommentButton, SHOWCOMMENTBUTTONS);
             SendDlgItemMessage(hDlg, MISC_AUTHDIAG, BM_SETCHECK, AuthDialog, 0);
+            SendDlgItemMessage(hDlg, MISC_SUPPRESS_AC, BM_SETCHECK, SleepSuppressAC, 0);
+            SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_SETCHECK, SleepSuppressBattery, 0);
+            SetDlgItemInt(hDlg, MISC_BATTERY_PERCENT, SleepSuppressBatteryPercent, FALSE);
+            if (SleepSuppressBattery)
+            {
+                EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), TRUE);
+            }
+            else
+            {
+                EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), FALSE);
+            }
             return(TRUE);
 
         case WM_NOTIFY:
@@ -326,6 +340,9 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     ExitOnEsc = SendDlgItemMessage(hDlg, MISC_ESC_EXIT, BM_GETCHECK, 0, 0);
                     ShowComment = AskRadioButtonValue(hDlg, ShowCommentButton, SHOWCOMMENTBUTTONS);
                     AuthDialog = SendDlgItemMessage(hDlg, MISC_AUTHDIAG, BM_GETCHECK, 0, 0);
+                    SleepSuppressAC = SendDlgItemMessage(hDlg, MISC_SUPPRESS_AC, BM_GETCHECK, 0, 0);
+                    SleepSuppressBattery = SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0);
+                    SleepSuppressBatteryPercent = GetDlgItemInt(hDlg, MISC_BATTERY_PERCENT, &isSuccess, FALSE);
                     Apply = YES;
                     break;
 
@@ -334,6 +351,21 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
 
                 case PSN_HELP :
                     HtmlHelp(NULL, AskHelpFilePath(), HH_HELP_CONTEXT, IDH_HELP_TOPIC_0000028);
+                    break;
+            }
+            break;
+        case WM_COMMAND:
+            switch (GET_WM_COMMAND_ID(wParam, lParam))
+            {
+                case MISC_SUPPRESS_BATTERY:
+                    if(SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0))
+                    {
+                        EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), TRUE);
+                    }
+                    else
+                    {
+                        EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), FALSE);
+                    }
                     break;
             }
             break;

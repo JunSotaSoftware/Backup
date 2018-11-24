@@ -132,7 +132,7 @@
 #define PATSET_SRCLIST                  1066
 #define TRNOT_SRCLIST                   1067
 #define LOG_VIEWER_BR                   1068
-#define IDC_EDIT1                       1069
+#define MISC_BATTERY_PERCENT            1069
 #define PATSET_DEL_MOVE_FOLDER          1069
 #define PATSET_SRC                      1070
 #define TRNOT_PREV                      1071
@@ -265,6 +265,7 @@
 #define NOBACK_FILE_SORT                1189
 #define NOBACK_SYSTEM_FILE              1190
 #define IDC_CHECK2                      1191
+#define MISC_SUPPRESS_BATTERY           1191
 #define NOBACK_HIDDEN_FILE              1192
 #define PATSET_SOUND                    1193
 #define PATSET_TIMER_INT_SW             1194
@@ -285,6 +286,7 @@
 #define LOG_VERBOSE                     1208
 #define PATSET_DST_DROPBOX              1208
 #define PATSET_DEL_MOVE_TO              1208
+#define MISC_SUPPRESS_AC                1208
 #define PATSET_SHOW_COMMENT             1209
 #define NOBACK_SIZE_FLG                 1210
 #define NOBACK_BIG_FILE                 1211
@@ -347,12 +349,12 @@
 #define MENU_LOGFOLDER                  40020
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        153
+#define _APS_NEXT_RESOURCE_VALUE        154
 #define _APS_NEXT_COMMAND_VALUE         40021
-#define _APS_NEXT_CONTROL_VALUE         1247
+#define _APS_NEXT_CONTROL_VALUE         1249
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

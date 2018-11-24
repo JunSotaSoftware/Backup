@@ -80,6 +80,7 @@ typedef struct {
 /*===== プロトタイプ =====*/
 
 static void BackupThread(void *Dummy);
+static void SuppressSleepThread(void *Dummy);
 static int BackupProc(COPYPATLIST *Pat);
 static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *options);
 static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub, PROC_OPTIONS *options, int *DialogResult);
@@ -146,6 +147,9 @@ int NormalizationType;
 /*===== グローバルなワーク ======*/
 
 extern int LogVerbose;
+extern int SleepSuppressAC;
+extern int SleepSuppressBattery;
+extern int SleepSuppressBatteryPercent;
 
 
 
@@ -163,6 +167,7 @@ int MakeBackupThread(void)
     hRunMutex = CreateMutex( NULL, TRUE, NULL );
     CopyPatList = NULL;
     _beginthread(BackupThread, 0, NULL);
+    _beginthread(SuppressSleepThread, 0, NULL);
 
     return(SUCCESS);
 }
@@ -278,6 +283,69 @@ static void BackupThread(void *Dummy)
     _endthread();
 }
 
+/*----- スリープを抑止するか判断する処理  -------------------------------------
+*
+*   Parameter
+*       なし
+*
+*   Return Value
+*       BOOL ステータス
+*           TRUE/FALSE
+*----------------------------------------------------------------------------*/
+static BOOL CheckSuppressSleep()
+{
+    const BOOL DefaultSuppress = FALSE;
+    SYSTEM_POWER_STATUS SystemPowerStatus;
+    if (GetSystemPowerStatus(&SystemPowerStatus))
+    {
+        switch (SystemPowerStatus.ACLineStatus)
+        {
+        case 0: /* ACLineStatus: Offline (Battery) */
+            if (SleepSuppressBattery && SystemPowerStatus.BatteryLifePercent >= SleepSuppressBatteryPercent)
+            {
+                return TRUE;
+            }
+            return FALSE;
+
+        case 1: /* ACLineStatus: Online (AC) */
+            if (SleepSuppressAC)
+            {
+                return TRUE;
+            }
+            return FALSE;
+        }
+    }
+    return DefaultSuppress;
+}
+
+/*----- スリープを阻止するスレッドのメインループ ------------------------------------
+*
+*   Parameter
+*       void *Dummy : 使わない
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+
+static void SuppressSleepThread(void *Dummy)
+{
+    /*
+        ウェイト時間を 30 秒にしているのはスリープに入るまでの時間の最短が1分なので
+        それより短い間隔で SetThreadExecutionState() を呼び出せるようにするため
+    */
+    while(WaitForSingleObject(hRunMutex, 30 * 1000) == WAIT_TIMEOUT)
+    {
+        if (CopyPatList != NULL)
+        {
+            BOOL IsSuppressSleep = CheckSuppressSleep();
+            if (IsSuppressSleep)
+            {
+                SetThreadExecutionState(ES_SYSTEM_REQUIRED);
+            }
+        }
+    }
+    _endthread();
+}
 
 /*----- バックアップ処理 ------------------------------------------------------
 *
@@ -313,8 +381,8 @@ static int BackupProc(COPYPATLIST *Pat)
         IgnoreErr = Pat->Set.IgnoreErr;
         UseTrashCan = Pat->Set.UseTrashCan;
         NoMakeTopDir = Pat->Set.NoMakeTopDir;
-		MoveInsteadDelete = Pat->Set.MoveInsteadDelete;
-		MoveToFolder = Pat->Set.MoveToFolder;
+        MoveInsteadDelete = Pat->Set.MoveInsteadDelete;
+        MoveToFolder = Pat->Set.MoveToFolder;
 
         DeleteMode = YES;
         if(Pat->Set.NotifyDel == NO)
@@ -367,11 +435,11 @@ static int BackupProc(COPYPATLIST *Pat)
 
         /* バックアップ先の正規化のタイプをチェック */
         // NormalizationType = CheckNormlization(Pat->Set.NextDst);
-		NormalizationType = NORMALIZATION_TYPE_NONE;
-		if (Pat->Set.DstDropbox)
-		{
-			NormalizationType = NORMALIZATION_TYPE_NFC;
-		}
+        NormalizationType = NORMALIZATION_TYPE_NONE;
+        if (Pat->Set.DstDropbox)
+        {
+            NormalizationType = NORMALIZATION_TYPE_NFC;
+        }
 
         /* バックアップ先の作成とチェック */
         if((Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, Pat->Set.IgnAttr)) == SUCCESS)
@@ -1840,8 +1908,8 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
             if(MoveFileToTrashCan(Fname) != 0)
                 Sts = FAIL;
         }
-		else
-		{
+        else
+        {
             Attr = GetFileAttributes_My(Fname, YES);
             if(Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
                 SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES);
@@ -1853,16 +1921,16 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
             }
             else
             {
-				if(MoveInsteadDelete)
-				{
-					if(MoveFileToDeletionFolder(Fname, MoveToFolder) != 0)
-						Sts = FAIL;
-				}
-				else
-				{
-					if(DeleteFile_My(Fname, YES) == FALSE)
-						Sts = FAIL;
-				}
+                if(MoveInsteadDelete)
+                {
+                    if(MoveFileToDeletionFolder(Fname, MoveToFolder) != 0)
+                        Sts = FAIL;
+                }
+                else
+                {
+                    if(DeleteFile_My(Fname, YES) == FALSE)
+                        Sts = FAIL;
+                }
             }
         }
 
@@ -2138,8 +2206,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
     DWORD Type;
-	LPTSTR Pos;
-	_TCHAR Dname2[MY_MAX_PATH2 + 1];
+    LPTSTR Pos;
+    _TCHAR Dname2[MY_MAX_PATH2 + 1];
 
     Sts = SUCCESS;
 
@@ -2147,43 +2215,43 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     MakePathandFile(Dname, Fname, NO);
 
     Type = FILE_ATTRIBUTE_DIRECTORY;
-//    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)		//20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
+//    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)        //20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
     if(_tcscmp(Dname+1, _T(":\\")) != 0)
     {
         /* フォルダ／ファイルがあるかチェック */
         RemoveYenTail(Dname);
         if((_tcschr(Dname, '*') != NULL) || (_tcschr(Dname, '?') != NULL))
         {
-			// ワイルドカード使用のファイル単位でのバックアップ
-			// 20150626 バックアップ元のフォルダ（ドライブ）が存在するかチェック
-			_tcscpy(Dname2, Dname);
-			Pos = _tcsrchr(Dname2, '\\');
-			*(Pos + 1) = 0;
-			if (_tcscmp(Dname2 + 1, _T(":\\")) != 0)	// ドライブの指定？ (D:\*.txt のような場合）
-			{
-				// フォルダがあるかチェック (D:\src\*.txt のような場合に D:\src があるか）
-				Type = 0;
-				RemoveYenTail(Dname2);
-				if (GetFileAttributes_My(Dname2, NO) == 0xFFFFFFFF)
-				{
-					Type = 0xFFFFFFFF;
-					ErrorCount++;
-					SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
-					Sts = FAIL;
-				}
-			}
-			else
-			{
-				// ドライブがあるかチェック (D:\*.txt のような場合に D:\ があるか）
-				Type = 0;
-				if (GetDriveType(Dname2) == DRIVE_NO_ROOT_DIR)
-				{
-					Type = 0xFFFFFFFF;
-					ErrorCount++;
-					SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
-					Sts = FAIL;
-				}
-			}
+            // ワイルドカード使用のファイル単位でのバックアップ
+            // 20150626 バックアップ元のフォルダ（ドライブ）が存在するかチェック
+            _tcscpy(Dname2, Dname);
+            Pos = _tcsrchr(Dname2, '\\');
+            *(Pos + 1) = 0;
+            if (_tcscmp(Dname2 + 1, _T(":\\")) != 0)    // ドライブの指定？ (D:\*.txt のような場合）
+            {
+                // フォルダがあるかチェック (D:\src\*.txt のような場合に D:\src があるか）
+                Type = 0;
+                RemoveYenTail(Dname2);
+                if (GetFileAttributes_My(Dname2, NO) == 0xFFFFFFFF)
+                {
+                    Type = 0xFFFFFFFF;
+                    ErrorCount++;
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
+                    Sts = FAIL;
+                }
+            }
+            else
+            {
+                // ドライブがあるかチェック (D:\*.txt のような場合に D:\ があるか）
+                Type = 0;
+                if (GetDriveType(Dname2) == DRIVE_NO_ROOT_DIR)
+                {
+                    Type = 0xFFFFFFFF;
+                    ErrorCount++;
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
+                    Sts = FAIL;
+                }
+            }
         }
         else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
         {
@@ -2203,7 +2271,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     }
     else
     {
-//        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||		//20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
+//        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||        //20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
         if((GetDriveType(Dname) == DRIVE_NO_ROOT_DIR) ||
            ((Type = GetFileAttributes_My(Dname, NO)) == 0xFFFFFFFF))
         {
@@ -2990,12 +3058,12 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
             NormalizeString(NormalizationD, path+2, -1, newPath+8, length);     /* skip // */
         }
     }
-	else
-	{
-		/* ここには来ないはず */
+    else
+    {
+        /* ここには来ないはず */
         newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
         _tcscpy(newPath, path);
-	}
+    }
     return newPath;
 }
 
@@ -3324,32 +3392,32 @@ static int FnameCompare(LPCTSTR src, LPCTSTR dst)
 *----------------------------------------------------------------------------*/
 static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo)
 {
-	int sts = 0;
-	_TCHAR destFolder[MY_MAX_PATH+1];
-	_TCHAR destFname[MY_MAX_PATH+1];
-	HANDLE fHnd;
+    int sts = 0;
+    _TCHAR destFolder[MY_MAX_PATH+1];
+    _TCHAR destFname[MY_MAX_PATH+1];
+    HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
-	LPCTSTR fname;
-	int num;
+    LPCTSTR fname;
+    int num;
 
-	fname = GetFileName(path);
-	_tcscpy(destFolder, moveTo);
-	SetYenTail(destFolder);
-	_stprintf(destFname, _T("%s%s"), destFolder, fname);
-	num = 1;
+    fname = GetFileName(path);
+    _tcscpy(destFolder, moveTo);
+    SetYenTail(destFolder);
+    _stprintf(destFname, _T("%s%s"), destFolder, fname);
+    num = 1;
     while((fHnd = FindFirstFile_My(destFname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
-	{
-		FindClose(fHnd);
-		_stprintf(destFname, _T("%s%s(%d)"), destFolder, fname, num);
-		num++;
-	}
-	SetTaskMsg(TASKMSG_ERR, MSGJPN_131, destFname);
-	if(MoveFile_My(path, destFname, NO) == 0)
-	{
-		SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, destFname);
-		sts = 1;
-	}
-	return sts;
+    {
+        FindClose(fHnd);
+        _stprintf(destFname, _T("%s%s(%d)"), destFolder, fname, num);
+        num++;
+    }
+    SetTaskMsg(TASKMSG_ERR, MSGJPN_131, destFname);
+    if(MoveFile_My(path, destFname, NO) == 0)
+    {
+        SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, destFname);
+        sts = 1;
+    }
+    return sts;
 }
 
 
