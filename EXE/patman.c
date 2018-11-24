@@ -4,7 +4,7 @@
 /                           バックアップパターン設定
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -67,7 +67,7 @@ static LRESULT CALLBACK PropSheetFrameWndProc(HWND hDlg, UINT message, WPARAM wP
 static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void SetDirButtonHide(HWND hDlg, DWORD ListId, DWORD EditId, DWORD UpId, DWORD DownId, DWORD DelId);
-static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD Id);
+static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD IdSort, DWORD IdConv);
 static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo);
 BOOL CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void DoPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel);
@@ -440,7 +440,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                     break;
 
                 case PATSET_TOOLMENU :
-                    SrcToolMenu(hDlg, TRUE, MENU_SORT);
+                    SrcToolMenu(hDlg, TRUE, MENU_SORT, MENU_PATHCONVERT);
                     SetDirButtonHide(hDlg, PATSET_SRCLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                     break;
 
@@ -545,18 +545,19 @@ Name    :   SrcToolMenu
 Desc    :   SHow tool menu
 Param   :   hdlg    [in] Window handle of the dialog box
             Conv    [in] CONVERT menu item on/off flag
-            Id      [in] Control ID
+            IdSort  [in] Control ID (sort)
+			IdConv  [in] Control ID (path convert)
 Return  :   none
 -------------------------------------------------------------------------------*/
-static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD Id)
+static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD IdSort, DWORD IdConv)
 {
     HMENU hMenu;
     POINT point;
 
     hMenu = CreatePopupMenu();
-    AppendMenu(hMenu, MF_STRING, Id, MSGJPN_113);
+    AppendMenu(hMenu, MF_STRING, IdSort, MSGJPN_113);
     if(Conv)
-        AppendMenu(hMenu, MF_STRING, MENU_PATHCONVERT, MSGJPN_110);
+        AppendMenu(hMenu, MF_STRING, IdConv, MSGJPN_110);
     GetCursorPos(&point);
     TrackPopupMenu(hMenu, TPM_LEFTBUTTON | TPM_RIGHTBUTTON, point.x, point.y, 0, hDlg, NULL);
     DestroyMenu(hMenu);
@@ -1004,7 +1005,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_TOOLMENU :
-                    SrcToolMenu(hDlg, TRUE, MENU_SORT);
+                    SrcToolMenu(hDlg, TRUE, MENU_SORT, MENU_PATHCONVERT);
                     SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                     break;
 
@@ -1130,6 +1131,7 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
     int Cur;
     int Max;
     HWND hWndChild;
+	PATHCONVERTINFO PathInfo;
 
     switch (message)
     {
@@ -1240,13 +1242,21 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_DIR_TOOLMENU :
-                    SrcToolMenu(hDlg, FALSE, MENU_SORT);
+                    SrcToolMenu(hDlg, TRUE, MENU_SORT, MENU_PATHCONVERT);
                     break;
 
                 case MENU_SORT :
                     SortListBoxItem(GetDlgItem(hDlg, NOBACK_DIR_LIST));
                     SetDirButtonHide(hDlg, NOBACK_DIR_LIST, NOBACK_DIR_EDIT, NOBACK_DIR_UP, NOBACK_DIR_DOWN, NOBACK_DIR_DEL);
                     break;
+
+				case MENU_PATHCONVERT:
+					if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo) == YES)
+					{
+						DoPathConvert(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo, YES);
+						GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN + 1);
+					}
+					break;
 
                 case NOBACK_DIR_LIST :
                     switch(GET_WM_COMMAND_CMD(wParam, lParam))
@@ -1330,13 +1340,21 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_FILE_TOOLMENU :
-                    SrcToolMenu(hDlg, FALSE, MENU_SORT2);
+                    SrcToolMenu(hDlg, TRUE, MENU_SORT2, MENU_PATHCONVERT2);
                     break;
 
                 case MENU_SORT2 :
                     SortListBoxItem(GetDlgItem(hDlg, NOBACK_FILE_LIST));
                     SetDirButtonHide(hDlg, NOBACK_FILE_LIST, NOBACK_FILE_EDIT, NOBACK_FILE_UP, NOBACK_FILE_DOWN, NOBACK_FILE_DEL);
                     break;
+
+				case MENU_PATHCONVERT2:
+					if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo) == YES)
+					{
+						DoPathConvert(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo, YES);
+						GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN + 1);
+					}
+					break;
 
                 case NOBACK_FILE_LIST :
                     switch(GET_WM_COMMAND_CMD(wParam, lParam))

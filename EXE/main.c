@@ -4,7 +4,7 @@
 /                               メインプログラム
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -108,6 +108,8 @@ SIZE NotifyDlgSize = {-1, -1 };
 int ExitOnEsc = 0;
 int ShowComment = 1;        /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
 int AuthDialog = AUTH_DIALOG_HIDE;
+_TCHAR LastWroteLogFname[MY_MAX_PATH+10+1] = { _T("") };
+_TCHAR LastErrorLogFname[MY_MAX_PATH+1] = { _T("") };
 
 
 
@@ -564,6 +566,10 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                 case MENU_ERROR_LOG :
                     DispErrorLogWithViewer();
                     break;
+
+				case MENU_LOGFOLDER :
+					OpenLogDir();
+					break;
             }
             break;
 
@@ -679,7 +685,7 @@ static void ExitProc(HWND hWnd)
     }
     DeleteAllObject();
     DeleteLogFilename();
-    DeleteErrorLogfile();
+    DeleteErrorLogFilename();
     HtmlHelp(NULL, NULL, HH_UNINITIALIZE, dwCookie);
     return;
 }

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Backup_eng.rc
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// Backup_eng.rc で使用
 //
 #define MENU_PATHCONVERT                0
 #define IDR_RT_MANIFEST1                1
@@ -341,13 +341,17 @@
 #define MENU_ERROR_LOG                  40014
 #define MENU_REGSAVE                    40015
 #define MENU_REGLOAD                    40016
+#define ID_DUMMY_REPLACEPATHNAME2       40017
+#define MENU_PATHCONVERT2               40018
+#define ID_LOG_OPENLOGFILEFOLDER        40019
+#define MENU_LOGFOLDER                  40020
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        152
-#define _APS_NEXT_COMMAND_VALUE         40017
+#define _APS_NEXT_RESOURCE_VALUE        153
+#define _APS_NEXT_COMMAND_VALUE         40021
 #define _APS_NEXT_CONTROL_VALUE         1247
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

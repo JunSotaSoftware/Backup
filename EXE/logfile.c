@@ -4,7 +4,7 @@
 /                               ログファイル
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -65,6 +65,8 @@ extern int LogLimit;
 extern int LogUnicode;
 extern _TCHAR LogFname[MY_MAX_PATH+1];
 extern _TCHAR ViewerName[MY_MAX_PATH+1];
+extern _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1];
+extern _TCHAR LastErrorLogFname[MY_MAX_PATH+1];
 
 
 
@@ -85,6 +87,8 @@ int OpenLogfile(void)
         RealLogFname = malloc((MY_MAX_PATH+10+1) * sizeof(_TCHAR));
     MakeLogFileName(LogFname, RealLogFname);
     MakeLogDir(RealLogFname);
+
+	_tcscpy(LastWroteLogFname, RealLogFname);
 
     if((LogSwitch == LOG_SW_NEW) && (DeleteLog == NO))
         DeleteFile_My(RealLogFname, NO);
@@ -274,20 +278,24 @@ static void CheckLogFileSize(void)
 
 /*-----------------------------------------------------------------------------
  説明   :   ログファイルにタイトル等を書き込む
- 引数   :   SrcPath     [in] バックアップ元
+ 引数   :   Name			[in] パターン名
+			SrcPath     [in] バックアップ元
             DstPath     [in] バックアップ先
  戻り値 :   なし
  備考   :
 -----------------------------------------------------------------------------*/
-void WriteTitleToLogfile(LPTSTR SrcPath, LPTSTR DstPath)
+void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath)
 {
-    _TCHAR Tmp[256];
+    _TCHAR Tmp[MY_MAX_PATH+20];
 
     WriteMsgToLogfile(_T(""));
     _stprintf(Tmp, _T("#### Backup Ver %s ####"), PROGRAM_VERSION);
     WriteMsgToLogfile(Tmp);
 
-    _stprintf(Tmp, MSGJPN_0, GetTimeString());
+	_stprintf(Tmp, MSGJPN_133, Name);
+	WriteMsgToLogfile(Tmp);
+	
+	_stprintf(Tmp, MSGJPN_0, GetTimeString());
     WriteMsgToLogfile(Tmp);
 
     while(*SrcPath != NUL)
@@ -401,8 +409,8 @@ static LPTSTR GetTimeStringForFname(void)
 -----------------------------------------------------------------------------*/
 void DispLogWithViewer(void)
 {
-    if(RealLogFname != NULL)
-        ExecViewer(RealLogFname, ViewerName);
+    if(_tcslen(LastWroteLogFname) > 0)
+        ExecViewer(LastWroteLogFname, ViewerName);
     else
         DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
     return;
@@ -430,7 +438,16 @@ int OpenErrorLogfile(void)
         {
             free(ErrorLogFname);
             ErrorLogFname = NULL;
-        }
+			_tcscpy(LastErrorLogFname, _T(""));
+		}
+		else
+		{
+			if (_tcslen(LastErrorLogFname) > 0)
+			{
+				DeleteFile_My(LastErrorLogFname, NO);
+			}
+			_tcscpy(LastErrorLogFname, ErrorLogFname);
+		}
     }
 
     if(ErrorLogFname != NULL)
@@ -483,16 +500,15 @@ int CloseErrorLogfile(void)
 
 
 /*-----------------------------------------------------------------------------
- 説明   :   エラー記録専用ログファイルを削除する
+ 説明   :   エラー記録専用ログファイル名情報を削除する
  引数   :   なし
  戻り値 :   ステータス
  備考   :
 -----------------------------------------------------------------------------*/
-int DeleteErrorLogfile(void)
+int DeleteErrorLogFilename(void)
 {
     if(ErrorLogFname != NULL)
     {
-        DeleteFile_My(ErrorLogFname, NO);
         free(ErrorLogFname);
         ErrorLogFname = NULL;
     }
@@ -540,11 +556,38 @@ int WriteMsgToErrorLogfile(LPTSTR Msg)
 -----------------------------------------------------------------------------*/
 void DispErrorLogWithViewer(void)
 {
-    if(ErrorLogFname != NULL)
-        ExecViewer(ErrorLogFname, ViewerName);
+	if (_tcslen(LastErrorLogFname) > 0)
+		ExecViewer(LastErrorLogFname, ViewerName);
     else
         DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
     return;
+}
+
+
+/*-----------------------------------------------------------------------------
+説明   :   ログファイルのフォルダをエクスプローラーで開く
+引数   :   なし
+戻り値 :   なし
+-----------------------------------------------------------------------------*/
+void OpenLogDir(void)
+{
+	LPTSTR Pos;
+	_TCHAR Path[MY_MAX_PATH + 1];
+
+	_tcscpy(Path, LogFname);
+
+	if ((_tcslen(Path) > 3) &&
+		((_tcsncmp(Path + 1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
+	{
+		Pos = Path + 3;
+		Pos = _tcsrchr(Path, _T('\\'));
+		if (Pos != NULL)
+		{
+			*Pos = _T('\0');
+		}
+
+		ShellExecute(NULL, _T("open"), Path, NULL, NULL, SW_SHOWNORMAL);
+	}
 }
 
 

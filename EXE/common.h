@@ -2,7 +2,7 @@
 /                           Ｂａｃｋｕｐの共通設定
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -48,8 +48,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.15")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x010f0000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.16")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01100000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -353,14 +353,15 @@ int OpenLogfile(void);
 int CloseLogfile(void);
 int DeleteLogFilename(void);
 int WriteMsgToLogfile(LPTSTR Msg);
-void WriteTitleToLogfile(LPTSTR SrcPath, LPTSTR DstPath);
+void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath);
 void WriteEndTimeToLogfile(void);
 void DispLogWithViewer(void);
 int OpenErrorLogfile(void);
 int CloseErrorLogfile(void);
-int DeleteErrorLogfile(void);
+int DeleteErrorLogFilename(void);
 int WriteMsgToErrorLogfile(LPTSTR Msg);
 void DispErrorLogWithViewer(void);
+void OpenLogDir(void);
 
 /* option.c */
 

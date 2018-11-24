@@ -4,7 +4,7 @@
 /                           各種の汎用サブルーチン
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -274,7 +274,10 @@ LPTSTR GetFileName(LPTSTR Path)
 {
     LPTSTR Pos;
 
-    if((Pos = _tcschr(Path, _T(':'))) != NULL)
+/* 2017/2/13 ・バックアップ元フォルダとして「C:\tmp」と指定した場合と、「C:\tmp\」のように
+　最後に「\」を指定した場合で、挙動が違うのを修正しました。*/
+#if 0
+	if((Pos = _tcschr(Path, _T(':'))) != NULL)
         Path = Pos + 1;
 
     if((Pos = _tcsrchr(Path, _T('\\'))) != NULL)
@@ -282,6 +285,37 @@ LPTSTR GetFileName(LPTSTR Path)
 
     if((Pos = _tcsrchr(Path, _T('/'))) != NULL)
         Path = Pos + 1;
+#else
+	if ((_tcslen(Path) == 3) &&
+		((_tcscmp(Path + 1, _T(":\\")) == 0) ||
+		 (_tcscmp(Path + 1, _T(":/")) == 0)))							/* D:\ のような指定の時 */
+	{
+		Path = Path + 3;
+	}
+	else if ((_tcslen(Path) == 2) && (_tcscmp(Path + 1, _T(":")) == 0))	/* D: のような指定の時 */
+	{
+		Path = Path + 2;
+	}
+	else
+	{
+		do
+		{
+			Pos = _tcschr(Path, _T('\\'));
+			if (Pos == NULL)
+			{
+				Pos = _tcschr(Path, _T('/'));
+			}
+			if (Pos != NULL)
+			{
+				if (*(Pos + 1) == _T('\0'))
+				{
+					break;
+				}
+				Path = Pos + 1;
+			}
+		} while (Pos != NULL);
+	}
+#endif
 
     return(Path);
 }

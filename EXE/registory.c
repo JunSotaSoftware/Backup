@@ -4,7 +4,7 @@
 /                               レジストリ操作
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -81,6 +81,8 @@ extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
 extern int ShowComment;     /* 0=表示しない,1=ツールチップで表示、2=ウインドウで表示 */
 extern int AuthDialog;
+extern _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1];
+extern _TCHAR LastErrorLogFname[MY_MAX_PATH+1];
 
 
 
@@ -130,6 +132,9 @@ int SaveRegistory(void)
             WriteBinaryToReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             WriteBinaryToReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));
             WriteBinaryToReg(hKey4, _T("NotifySize"), &NotifyDlgSize, sizeof(SIZE));
+
+			WriteStringToReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname);
+			WriteStringToReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname);
 
             /* 古い形式のレジストリを削除 */
             DeleteValue(hKey4, _T("IntTime"));
@@ -277,6 +282,9 @@ int LoadRegistory(void)
             ReadBinaryFromReg(hKey4, _T("MainSize"), &MainDlgSize, sizeof(SIZE));
             ReadBinaryFromReg(hKey4, _T("TransSize"), &TransDlgSize, sizeof(SIZE));
             ReadBinaryFromReg(hKey4, _T("NotifySize"), &NotifyDlgSize, sizeof(SIZE));
+
+			ReadStringFromReg(hKey4, _T("LastWroteLogFile"), LastWroteLogFname, MY_MAX_PATH + 10 + 1);
+			ReadStringFromReg(hKey4, _T("LastErrorLogFile"), LastErrorLogFname, MY_MAX_PATH + 1);
 
             OldIntervalTimeFlg = ReadIntValueFromReg(hKey4, _T("IntTime"), &IntervalTime);
 

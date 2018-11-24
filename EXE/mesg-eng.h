@@ -2,7 +2,7 @@
 /                                   メッセージ
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2017 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -154,4 +154,5 @@
 #define MSGJPN_130  _T("Deletion file move to")
 #define MSGJPN_131  _T("   --> Move file to %s")
 #define MSGJPN_132  _T("ERROR: File move error (%s -> %s)")
+#define MSGJPN_133  _T("Pattern Name：%s")
 
