@@ -2138,6 +2138,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
     DWORD Type;
+	LPTSTR Pos;
+	_TCHAR Dname2[MY_MAX_PATH2 + 1];
 
     Sts = SUCCESS;
 
@@ -2150,9 +2152,38 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     {
         /* フォルダ／ファイルがあるかチェック */
         RemoveYenTail(Dname);
-        if((_tcschr(Dname, '*') != NULL) ||(_tcschr(Dname, '?') != NULL))
+        if((_tcschr(Dname, '*') != NULL) || (_tcschr(Dname, '?') != NULL))
         {
-            Type = 0;
+			// ワイルドカード使用のファイル単位でのバックアップ
+			// 20150626 バックアップ元のフォルダ（ドライブ）が存在するかチェック
+			_tcscpy(Dname2, Dname);
+			Pos = _tcsrchr(Dname2, '\\');
+			*(Pos + 1) = 0;
+			if (_tcscmp(Dname2 + 1, _T(":\\")) != 0)	// ドライブの指定？ (D:\*.txt のような場合）
+			{
+				// フォルダがあるかチェック (D:\src\*.txt のような場合に D:\src があるか）
+				Type = 0;
+				RemoveYenTail(Dname2);
+				if (GetFileAttributes_My(Dname2, NO) == 0xFFFFFFFF)
+				{
+					Type = 0xFFFFFFFF;
+					ErrorCount++;
+					SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
+					Sts = FAIL;
+				}
+			}
+			else
+			{
+				// ドライブがあるかチェック (D:\*.txt のような場合に D:\ があるか）
+				Type = 0;
+				if (GetDriveType(Dname2) == DRIVE_NO_ROOT_DIR)
+				{
+					Type = 0xFFFFFFFF;
+					ErrorCount++;
+					SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname2);
+					Sts = FAIL;
+				}
+			}
         }
         else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
         {
