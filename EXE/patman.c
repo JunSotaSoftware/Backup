@@ -359,7 +359,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
 
             hWndChild = GetDlgItem(hDlg, PATSET_SRCLIST);
             DragAcceptFiles(hWndChild, TRUE);
-            SrcListProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)SrcListWndProc);
+            SrcListProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)SrcListWndProc);
             SetDirButtonHide(hDlg, PATSET_SRCLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
             return(TRUE);
 
@@ -908,7 +908,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
 
             hWndChild = GetDlgItem(hDlg, PATSET_DSTLIST);
             DragAcceptFiles(hWndChild, TRUE);
-            DstProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)DstWndProc);
+            DstProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)DstWndProc);
             SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
             return(TRUE);
 
@@ -1156,11 +1156,11 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
 
             hWndChild = GetDlgItem(hDlg, NOBACK_DIR_LIST);
             DragAcceptFiles(hWndChild, TRUE);
-            DirListProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)DirListWndProc);
+            DirListProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)DirListWndProc);
 
             hWndChild = GetDlgItem(hDlg, NOBACK_FILE_LIST);
             DragAcceptFiles(hWndChild, TRUE);
-            FileListProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)FileListWndProc);
+            FileListProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)FileListWndProc);
 
             SetDirButtonHide(hDlg, NOBACK_DIR_LIST, NOBACK_DIR_EDIT, NOBACK_DIR_UP, NOBACK_DIR_DOWN, NOBACK_DIR_DEL);
             SetDirButtonHide(hDlg, NOBACK_FILE_LIST, NOBACK_FILE_EDIT, NOBACK_FILE_UP, NOBACK_FILE_DOWN, NOBACK_FILE_DEL);

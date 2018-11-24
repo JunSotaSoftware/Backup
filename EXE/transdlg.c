@@ -370,7 +370,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
 
             /* ログ表示ウインドウをサブクラス化 */
             hWndChild = GetDlgItem(hDlg, TRANS_EXEC);
-            LogProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)LogWndProc);
+            LogProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)LogWndProc);
             /* ダイアログサイズの初期化 */
             DlgSizeInit(hDlg, &DlgSize, &TransDlgSize, FALSE);
             Processing = PROCESSING_STOP;

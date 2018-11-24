@@ -156,7 +156,7 @@ int MakeMainDialog(void)
         if(ShowComment == 1)
             InitListBoxTips(hWndPatList, GetBupInst());
 
-        PatListProcPtr = (WNDPROC)SetWindowLong(hWndPatList, GWL_WNDPROC, (LONG)PatListWndProc);
+        PatListProcPtr = (WNDPROC)SetWindowLongPtr(hWndPatList, GWLP_WNDPROC, (LONG_PTR)PatListWndProc);
 
         ShowWindow(hWndMainDlg, SW_SHOW);
 
