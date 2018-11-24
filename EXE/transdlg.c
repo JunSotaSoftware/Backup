@@ -4,7 +4,7 @@
 /                               転送ダイアログ
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions

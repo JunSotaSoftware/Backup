@@ -4,7 +4,7 @@
 /                               ÉåÉWÉXÉgÉäëÄçÏ
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -174,6 +174,7 @@ int SaveRegistory(void)
                         Tmp |= (Pat.NotifyOvw == YES)       ? OPT_NOTIFY_OVW    : 0;
                         Tmp |= (Pat.ShowComment == YES)     ? OPT_SHOW_COMMENT  : 0;
                         Tmp |= (Pat.IgnBigFile == YES)      ? OPT_IGN_BIG_FILE  : 0;
+						Tmp |= (Pat.DstDropbox == YES)      ? OPT_DST_DROPBOX   : 0;
                         WriteIntValueToReg(hKey5, _T("Flags"), Tmp);
                         WriteIntValueToReg(hKey5, _T("Wait"), Pat.Wait);
                         WriteStringToReg(hKey5, _T("Label"), Pat.VolLabel);
@@ -324,6 +325,7 @@ int LoadRegistory(void)
                     Pat.NotifyOvw       = (Tmp & OPT_NOTIFY_OVW)    ? YES : NO;
                     Pat.ShowComment     = (Tmp & OPT_SHOW_COMMENT)  ? YES : NO;
                     Pat.IgnBigFile      = (Tmp & OPT_IGN_BIG_FILE)  ? YES : NO;
+					Pat.DstDropbox      = (Tmp & OPT_DST_DROPBOX)   ? YES : NO;
                     ReadIntValueFromReg(hKey5, _T("Wait"), &Pat.Wait);
                     ReadStringFromReg(hKey5, _T("Label"), Pat.VolLabel, MY_MAX_PATH+1);
                     ReadIntValueFromReg(hKey5, _T("Tole"), &Pat.Tolerance);

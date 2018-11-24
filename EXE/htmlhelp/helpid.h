@@ -30,3 +30,5 @@
 #define	IDH_HELP_TOPIC_0000032	32	/* バックアップの基本的な考え方 */
 #define	IDH_HELP_TOPIC_0000033	33	/* パス名一括置換 */
 #define	IDH_HELP_TOPIC_0000034	34	/* 除外２ */
+#define	IDH_HELP_TOPIC_0000035	35	/* 改版履歴 */
+#define	IDH_HELP_TOPIC_0000036	36	/* 改版履歴 */

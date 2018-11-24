@@ -281,6 +281,7 @@
 #define NOBACK_FILE_UP                  1207
 #define IDC_CHECK1                      1208
 #define LOG_VERBOSE                     1208
+#define PATSET_DST_DROPBOX              1208
 #define PATSET_SHOW_COMMENT             1209
 #define NOBACK_SIZE_FLG                 1210
 #define NOBACK_BIG_FILE                 1211
@@ -338,7 +339,7 @@
 #define MENU_REGLOAD                    40016
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152

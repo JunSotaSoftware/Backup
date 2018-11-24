@@ -4,7 +4,7 @@
 /                               ファイル転送
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -50,6 +50,9 @@
 #define BACKUPREAD_BACKUPWRITE  2   /* BackupRead/BackupWrite関数でファイルをコピーする */
 
 #define FILECOPY_METHOD         COPYFILEEX
+
+#define NORMALIZATION_TYPE_NONE     0   /* 正規化しない */
+#define NORMALIZATION_TYPE_NFC      1   /* NFCに正規化 */
 
 typedef struct dirtree {
     _TCHAR Fname[MY_MAX_PATH+1];
@@ -107,7 +110,10 @@ static int CheckAbort(void);
 static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType);
 static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize);
 static int DoCheckIgnSysHid(WIN32_FIND_DATA *FindBuf, int IgnSys, int IgnHid, int BigSize);
-static LPTSTR MakeLongPath(LPCTSTR path);
+static LPTSTR MakeLongPath(LPCTSTR path, int normalization);
+static LPTSTR MakeLongPathNFD(LPCTSTR path);
+static int CheckNormlization(LPCTSTR dest);
+static int FnameCompare(LPCTSTR src, LPCTSTR dst);
 
 /*===== ローカルなワーク ======*/
 
@@ -131,6 +137,8 @@ static int DeleteMode = YES;
 static int OverwriteMode = YES;
 
 int TviewDispCounter=0;
+
+int NormalizationType;
 
 /*===== グローバルなワーク ======*/
 
@@ -352,13 +360,21 @@ static int BackupProc(COPYPATLIST *Pat)
         SetTaskMsg(TASKMSG_NOR, _T("=============================================="));
         SetTaskMsg(TASKMSG_NOR, MSGJPN_125);
 
+        /* バックアップ先の正規化のタイプをチェック */
+        // NormalizationType = CheckNormlization(Pat->Set.NextDst);
+		NormalizationType = NORMALIZATION_TYPE_NONE;
+		if (Pat->Set.DstDropbox)
+		{
+			NormalizationType = NORMALIZATION_TYPE_NFC;
+		}
+
         /* バックアップ先の作成とチェック */
         if((Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, Pat->Set.IgnAttr)) == SUCCESS)
         {
             GetCurrentDirectory(MY_MAX_PATH+1, Tmp);
-            if(SetCurrentDirectory_My(Pat->Set.NextDst) == TRUE)
+            if(SetCurrentDirectory_My(Pat->Set.NextDst, YES) == TRUE)
             {
-                SetCurrentDirectory_My(Tmp);
+                SetCurrentDirectory_My(Tmp, NO);
                 /* ボリュームラベルのチェック */
                 if(Pat->Set.ChkVolLabel)
                 {
@@ -564,7 +580,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
                (CheckIgnSysHid(Tmp, options->IgnSys, options->IgnHid, -1) == NO))
             {
                 /* 除外するフォルダではない */
-                if((fHnd = FindFirstFile_My(Tmp, &FindBuf)) != INVALID_HANDLE_VALUE)
+                if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
                 {
                     FindClose(fHnd);
                     if((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
@@ -668,7 +684,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
         NamePos = _tcschr(Find, NUL);
 
         _tcscpy(NamePos, _T("*"));
-        if((fHnd = FindFirstFile_My(Find, &FindBuf)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Find, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
         {
             do
             {
@@ -773,7 +789,7 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
                     {
                         if((_tcslen(ScnName) == 0) || (CheckFnameWithArray(Src, ScnName) == YES))
                         {
-                            if((fHnd = FindFirstFile_My(Src, &FindBuf)) != INVALID_HANDLE_VALUE)
+                            if((fHnd = FindFirstFile_My(Src, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
                             {
                                 FindClose(fHnd);
                                 DelFlg = NO;
@@ -937,7 +953,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
     else
     {
         GoMake = 1;
-        if((fHnd = FindFirstFile_My(Tmp, &FindBuf)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
         {
             FindClose(fHnd);
             if((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
@@ -951,7 +967,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
             else
             {
                 GoMake = 0;
-                if(_tcscmp(GetFileName(Tmp), FindBuf.cFileName) != 0)
+//              if(_tcscmp(GetFileName(Tmp), FindBuf.cFileName) != 0)
+                if(FnameCompare(GetFileName(Tmp), FindBuf.cFileName) != 0)
                 {
                     GoMake = 2;     /* 大文字/小文字が違う */
                 }
@@ -961,8 +978,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
                 {
                     if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
                     {
-                        Attr = GetFileAttributes_My(Tmp);
-                        Attr2 = GetFileAttributes_My(Org);
+                        Attr = GetFileAttributes_My(Tmp, YES);
+                        Attr2 = GetFileAttributes_My(Org, NO);
 
                         Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
                         Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
@@ -985,8 +1002,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
                 {
                     if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
                     {
-                        Attr = GetFileAttributes_My(Org);
-                        SetFileAttributes_My(Tmp, Attr);
+                        Attr = GetFileAttributes_My(Org, NO);
+                        SetFileAttributes_My(Tmp, Attr, YES);
                     }
                 }
                 else
@@ -1010,14 +1027,14 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
             else if(GoMake == 2)
             {
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Tmp);
-                MoveFile_My(Tmp, Tmp);  /* 大文字/小文字を合わせる */
+                MoveFile_My(Tmp, Tmp, YES);  /* 大文字/小文字を合わせる */
             }
 
             if(GoAttr == 1)
             {
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_76, Tmp, Attr2, Attr);
-                Attr = GetFileAttributes_My(Org);
-                SetFileAttributes_My(Tmp, Attr);
+                Attr = GetFileAttributes_My(Org, NO);
+                SetFileAttributes_My(Tmp, Attr, YES);
             }
         }
     }
@@ -1057,9 +1074,9 @@ static int GoMakeDir(LPTSTR Path)
             {
                 _tcsncpy(Tmp, Path, Pos - Path);
                 Tmp[Pos - Path] = NUL;
-                CreateDirectory_My(Tmp, NULL);
+                CreateDirectory_My(Tmp, NULL, YES);
             }
-            Sts = !CreateDirectory_My(Path, NULL);
+            Sts = !CreateDirectory_My(Path, NULL, YES);
         }
         else
         {
@@ -1194,7 +1211,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
     OVERWRITENOTIFYDATA overWrite;
 
     Sts = SUCCESS;
-    if((fHndSrc = FindFirstFile_My(Src, &SrcFinfo)) != INVALID_HANDLE_VALUE)
+    if((fHndSrc = FindFirstFile_My(Src, &SrcFinfo, NO)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -1214,7 +1231,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                 _tcscpy(DstFpos, SrcFinfo.cFileName);
 
                 if((options->ForceCopy == NO) &&
-                   ((fHndDst = FindFirstFile_My(Dst, &DstFinfo)) != INVALID_HANDLE_VALUE))
+                   ((fHndDst = FindFirstFile_My(Dst, &DstFinfo, YES)) != INVALID_HANDLE_VALUE))
                 {
                     FindClose(fHndDst);
 
@@ -1248,13 +1265,14 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 
                     if(Copy != 1)
                     {
-                        if(_tcscmp(SrcFinfo.cFileName, DstFinfo.cFileName) != 0)
+//                      if(_tcscmp(SrcFinfo.cFileName, DstFinfo.cFileName) != 0)
+                        if(FnameCompare(SrcFinfo.cFileName, DstFinfo.cFileName) != 0)
                         {
 #ifdef NO_OPERATION
                             DoPrintf(MSGJPN_73, Dst);
 #else
                             SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Dst);
-                            MoveFile_My(Dst, Dst);  /* 大文字/小文字を合わせる */
+                            MoveFile_My(Dst, Dst, YES);  /* 大文字/小文字を合わせる */
 #endif
                         }
 
@@ -1264,7 +1282,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                             DoPrintf(MSGJPN_75, Dst);
 #else
                             SetTaskMsg(TASKMSG_NOR, MSGJPN_76, Dst, SrcFinfo.dwFileAttributes, DstFinfo.dwFileAttributes);
-                            SetFileAttributes_My(Dst, SrcFinfo.dwFileAttributes);
+                            SetFileAttributes_My(Dst, SrcFinfo.dwFileAttributes, YES);
 #endif
                         }
                     }
@@ -1481,13 +1499,13 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     SecRead.lpSecurityDescriptor = NULL;
     SecRead.bInheritHandle = FALSE;
     if((hRead = CreateFile_My(Src, GENERIC_READ,
-        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
     {
         SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
         SecWrite.lpSecurityDescriptor = NULL;
         SecWrite.bInheritHandle = FALSE;
         if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)) != INVALID_HANDLE_VALUE)
+            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
         {
             SizeLow = GetFileSize(hRead, &(DWORD)Size);
             Size <<= 32;
@@ -1543,8 +1561,8 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     /* ファイルの属性を合わせる */
     if(Sts == TRUE)
     {
-        if((Attr = GetFileAttributes_My(Src)) != 0xFFFFFFFF)
-            SetFileAttributes_My(Dst, Attr);
+        if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
+            SetFileAttributes_My(Dst, Attr, YES);
     }
 //  SetFileProgress(0, 0);
 
@@ -1581,13 +1599,13 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     SecRead.lpSecurityDescriptor = NULL;
     SecRead.bInheritHandle = FALSE;
     if((hRead = CreateFile_My(Src, GENERIC_READ,
-        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
     {
         SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
         SecWrite.lpSecurityDescriptor = NULL;
         SecWrite.bInheritHandle = FALSE;
         if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)) != INVALID_HANDLE_VALUE)
+            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
         {
             SizeLow = GetFileSize(hRead, &(DWORD)Size);
             Size <<= 32;
@@ -1654,8 +1672,8 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     /* ファイルの属性を合わせる */
     if(Sts == TRUE)
     {
-        if((Attr = GetFileAttributes_My(Src)) != 0xFFFFFFFF)
-            SetFileAttributes_My(Dst, Attr);
+        if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
+            SetFileAttributes_My(Dst, Attr, YES);
     }
 //  SetFileProgress(0, 0);
 
@@ -1671,8 +1689,8 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     FILETIME ModTime;
 
     BOOL sts = TRUE;
-    LPTSTR lSrc = MakeLongPath(Src);
-    LPTSTR lDst = MakeLongPath(Dst);
+    LPTSTR lSrc = MakeLongPath(Src, NO);
+    LPTSTR lDst = MakeLongPath(Dst, YES);
     COPYCALLBACKINFO *info = malloc(sizeof(COPYCALLBACKINFO));
     info->Cancel = FALSE;
     info->Wait = Wait;
@@ -1693,13 +1711,13 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
         SecRead.lpSecurityDescriptor = NULL;
         SecRead.bInheritHandle = FALSE;
         if((hRead = CreateFile_My(Src, GENERIC_READ,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
         {
             SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
             SecWrite.lpSecurityDescriptor = NULL;
             SecWrite.bInheritHandle = FALSE;
             if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-                FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE)
+                FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, OPEN_EXISTING, 0, NULL, YES)) != INVALID_HANDLE_VALUE)
             {
                 if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
                 {
@@ -1819,18 +1837,18 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
         }
         else
         {
-            Attr = GetFileAttributes_My(Fname);
+            Attr = GetFileAttributes_My(Fname, YES);
             if(Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
-                SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL);
+                SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES);
 
             if(Attr & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if(RemoveDirectory_My(Fname) == FALSE)
+                if(RemoveDirectory_My(Fname, YES) == FALSE)
                     Sts = FAIL;
             }
             else
             {
-                if(DeleteFile_My(Fname) == FALSE)
+                if(DeleteFile_My(Fname, YES) == FALSE)
                     Sts = FAIL;
             }
         }
@@ -2122,10 +2140,10 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
         {
             Type = 0;
         }
-        else if((Type = GetFileAttributes_My(Dname)) != 0xFFFFFFFF)
+        else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
         {
             /* 大文字／小文字を合わせるための処理 */
-            if((fHnd = FindFirstFile_My(Dname, &FindBuf)) != INVALID_HANDLE_VALUE)
+            if((fHnd = FindFirstFile_My(Dname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
             {
                 FindClose(fHnd);
                 _tcscpy(GetFileName(Dname), FindBuf.cFileName);
@@ -2141,7 +2159,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     else
     {
         if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||
-           ((Type = GetFileAttributes_My(Dname)) == 0xFFFFFFFF))
+           ((Type = GetFileAttributes_My(Dname, NO)) == 0xFFFFFFFF))
         {
             ErrorCount++;
             SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname);
@@ -2217,7 +2235,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     _tcscpy(Src, SrcRoot);
     SetYenTail(Src);
     _tcscat(Src, _T("*"));
-    if((fHnd = FindFirstFile_My(Src, &FindBuf)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -2564,7 +2582,7 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
 
     Sts = SUCCESS;
     *Base = NULL;
-    if((fHnd = FindFirstFile_My(ScnPath, &FindBuf)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(ScnPath, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -2708,20 +2726,12 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi)
 /*----- タイムスタンプをあわせる ----------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : バックアップ元／パス名を返すワーク
-*       LPTSTR Fname : ファイル名を返すワーク (NULL=返さない)
-*       int Multi : ファイル名をマルチ文字列にするかどうか (YES/NO)
+*       LPTSTR Src : バックアップ元
+*       LPTSTR Dst : バックアップ先
 *       UINT DrvType : ドライブのタイプ
 *
 *   Return Value
 *       なし
-*
-*   Note
-*       Path = _T("C:\Home;*.log;*.txt") , Multi = NO の場合の戻り値
-*           Path = "C:\Home" , Fname = "*.log;*.txt"
-*
-*       Path = "C:\Home;*.log;*.txt" , Multi = YES の場合の戻り値
-*           Path = "C:\Home" , Fname = "*.log\0*.txt\0"
 *----------------------------------------------------------------------------*/
 
 static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
@@ -2742,17 +2752,17 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
         Sec.nLength = sizeof(SECURITY_ATTRIBUTES);
         Sec.lpSecurityDescriptor = NULL;
         Sec.bInheritHandle = FALSE;
-        if((hFile = CreateFile_My(Src, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL)) != INVALID_HANDLE_VALUE)
+        if((hFile = CreateFile_My(Src, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL, NO)) != INVALID_HANDLE_VALUE)
         {
             Sts = GetFileTime(hFile, &CreTime, &AccTime, &ModTime);
             CloseHandle(hFile);
             if(Sts != 0)
             {
                 // GENERIC_WRITEを指定するためにReadOnlyを解除
-                if((Attr = GetFileAttributes_My(Dst)) != 0xFFFFFFFF)
-                    SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY);
+                if((Attr = GetFileAttributes_My(Dst, YES)) != 0xFFFFFFFF)
+                    SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY, YES);
 
-                if((hFile = CreateFile_My(Dst, GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL)) != INVALID_HANDLE_VALUE)
+                if((hFile = CreateFile_My(Dst, GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL, YES)) != INVALID_HANDLE_VALUE)
                 {
 //                  if(DrvType == DRIVE_CDROM)
 //                  {
@@ -2768,7 +2778,7 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 
                 // アトリビュートを元に戻しておく
                 if(Attr != 0xFFFFFFFF)
-                    SetFileAttributes_My(Dst, Attr);
+                    SetFileAttributes_My(Dst, Attr, YES);
             }
         }
     }
@@ -2796,7 +2806,7 @@ static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize)
     int                 Sts;
 
     Sts = NO;
-    if((fHnd = FindFirstFile_My(Fname, &FindBuf)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(Fname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
     {
         FindClose(fHnd);
         Sts = DoCheckIgnSysHid(&FindBuf, IgnSys, IgnHid, BigSize);
@@ -2847,27 +2857,99 @@ static int DoCheckIgnSysHid(WIN32_FIND_DATA *FindBuf, int IgnSys, int IgnHid, in
 *
 *   Parameter
 *       path : パス名
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       パス名 (使用後はfreeすること）
 *----------------------------------------------------------------------------*/
 
-static LPTSTR MakeLongPath(LPCTSTR path)
+static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
 {
     LPTSTR newPath;
 
+    BOOL toNFC = FALSE;
+    int length = _tcslen(path) + 1;
+    if (normalization == YES)
+    {
+        if (NormalizationType == NORMALIZATION_TYPE_NFC)
+        {
+            length = NormalizeString(NormalizationC, path, -1, NULL, 0);
+            if (length > 0)
+            {
+                toNFC = TRUE;
+            }
+            else
+            {
+                length = _tcslen(path) + 1;
+            }
+        }
+    }
+
     if(_tcsncmp(path, _T("\\\\"), 2) != 0)
     {
-        newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 4 + 1));
+        newPath = malloc(sizeof(_TCHAR) * (length + 4));
         _tcscpy(newPath, _T("\\\\?\\"));
-        _tcscat(newPath, path);
+        if (toNFC)
+        {
+            NormalizeString(NormalizationC, path, -1, newPath+4, length);
+        }
+        else
+        {
+            _tcscpy(newPath+4, path);
+        }
     }
     else
     {
-        newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 8 + 1));
+        newPath = malloc(sizeof(_TCHAR) * (length + 8));
         _tcscpy(newPath, _T("\\\\?\\UNC\\"));
-        _tcscat(newPath, path + 2);
+        if (toNFC)
+        {
+            NormalizeString(NormalizationC, path+2, -1, newPath+8, length);     /* skip // */
+        }
+        else
+        {
+            _tcscpy(newPath+8, path+2);     /* skip // */
+        }
     }
+    return newPath;
+}
+
+
+/*----- MAX_PATH以上のパス名に対応させる（常にNFDに変換） --------------------------
+*
+*   Parameter
+*       path : パス名
+*
+*   Return Value
+*       パス名 (使用後はfreeすること）
+*----------------------------------------------------------------------------*/
+
+static LPTSTR MakeLongPathNFD(LPCTSTR path)
+{
+    LPTSTR newPath;
+
+    int length = NormalizeString(NormalizationD, path, -1, NULL, 0);
+    if (length > 0)
+    {
+        if(_tcsncmp(path, _T("\\\\"), 2) != 0)
+        {
+            newPath = malloc(sizeof(_TCHAR) * (length + 4));
+            _tcscpy(newPath, _T("\\\\?\\"));
+            NormalizeString(NormalizationD, path, -1, newPath+4, length);
+        }
+        else
+        {
+            newPath = malloc(sizeof(_TCHAR) * (length + 8));
+            _tcscpy(newPath, _T("\\\\?\\UNC\\"));
+            NormalizeString(NormalizationD, path+2, -1, newPath+8, length);     /* skip // */
+        }
+    }
+	else
+	{
+		/* ここには来ないはず */
+        newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+        _tcscpy(newPath, path);
+	}
     return newPath;
 }
 
@@ -2876,16 +2958,17 @@ static LPTSTR MakeLongPath(LPCTSTR path)
 *
 *   Parameter
 *       SetCurrentDirectory関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       SetCurrentDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL SetCurrentDirectory_My(LPCTSTR lpPathName)
+BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpPathName);
+    path = MakeLongPath(lpPathName, normalization);
     ret = SetCurrentDirectory(path);
     free(path);
 
@@ -2896,19 +2979,25 @@ BOOL SetCurrentDirectory_My(LPCTSTR lpPathName)
 *
 *   Parameter
 *       FindFirstFile関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       FindFirstFile関数と同じ
 *----------------------------------------------------------------------------*/
-HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
+HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization)
 {
     HANDLE ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, normalization);
     ret = FindFirstFile(path, lpFindFileData);
     free(path);
-
+    if ((ret == INVALID_HANDLE_VALUE) && (normalization == YES) && (NormalizationType == NORMALIZATION_TYPE_NFC))
+    {
+        path = MakeLongPathNFD(lpFileName);
+        ret = FindFirstFile(path, lpFindFileData);
+        free(path);
+    }
     return ret;
 }
 
@@ -2916,16 +3005,17 @@ HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
 *
 *   Parameter
 *       GetFileAttributes関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       GetFileAttributes関数と同じ
 *----------------------------------------------------------------------------*/
-DWORD GetFileAttributes_My(LPCTSTR lpFileName)
+DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization)
 {
     DWORD ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, normalization);
     ret = GetFileAttributes(path);
     free(path);
 
@@ -2946,7 +3036,7 @@ DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
     DWORD ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, NO);
     ret = GetFileAttributes(path);
     if( pLastError )
     {
@@ -2960,16 +3050,17 @@ DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
 *
 *   Parameter
 *       SetFileAttributes関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       SetFileAttributes関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes)
+BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, normalization);
     ret = SetFileAttributes(path, dwFileAttributes);
     free(path);
 
@@ -2980,18 +3071,19 @@ BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes)
 *
 *   Parameter
 *       MoveFile関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       MoveFile関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
+BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization)
 {
     BOOL ret;
     LPTSTR path1;
     LPTSTR path2;
 
-    path1 = MakeLongPath(lpExistingFileName);
-    path2 = MakeLongPath(lpNewFileName);
+    path1 = MakeLongPath(lpExistingFileName, normalization);
+    path2 = MakeLongPath(lpNewFileName, normalization);
     ret = MoveFile(path1, path2);
     free(path1);
     free(path2);
@@ -3003,16 +3095,17 @@ BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
 *
 *   Parameter
 *       CreateFile関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       CreateFile関数と同じ
 *----------------------------------------------------------------------------*/
-HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
+HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization)
 {
     HANDLE ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, normalization);
     ret = CreateFile(path, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
     free(path);
 
@@ -3023,16 +3116,17 @@ HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMod
 *
 *   Parameter
 *       RemoveDirectory関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       RemoveDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL RemoveDirectory_My(LPCTSTR lpPathName)
+BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpPathName);
+    path = MakeLongPath(lpPathName, normalization);
     ret = RemoveDirectory(path);
     free(path);
 
@@ -3043,16 +3137,17 @@ BOOL RemoveDirectory_My(LPCTSTR lpPathName)
 *
 *   Parameter
 *       CreateDirectory関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       CreateDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpPathName);
+    path = MakeLongPath(lpPathName, normalization);
     ret = CreateDirectory(path, lpSecurityAttributes);
     free(path);
 
@@ -3063,19 +3158,112 @@ BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttr
 *
 *   Parameter
 *       DeleteFile関数と同じ
+*       normalization : 正規化フラグ (YES/NO)
 *
 *   Return Value
 *       DeleteFile関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL DeleteFile_My(LPCTSTR lpFileName)
+BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName);
+    path = MakeLongPath(lpFileName, normalization);
     ret = DeleteFile(path);
     free(path);
 
+    return ret;
+}
+
+/*
+* CheckNormlization関数は、バックアップ先がDropboxかどうかを判断することを目的に
+* 作成したもの。
+* バックアップ先がDropboxのフォルダの場合、UnicodeのNFD（合成文字を使う）のファイル名で
+* 書き込んでも、Dropboxの機能によりNFCに正規化される。それを検出しようと目論んだ。
+* だが、以下の理由により、CheckNormlization関数はうまく動作しない。
+* NFDの名前のファイルを書き込んでから、それをDropboxがNFCに変換するまで、若干の時間がかかる。
+* 変換が完了するまではNFDのファイルが見つかってしまい、さらに、どれくらい待てばNFCに変換されるかが
+* 不明であるため、NFCに変換される＝Dropboxかどうかの確実な判断ができない。
+*/
+#if 0
+/*----- バックアップ先の正規化のタイプを取得 ------------------------------------
+*
+*   Parameter
+*       LPCTSTR dest : バックアップ先のパス
+*
+*   Return Value
+*       int 正規化のタイプ (NORMALIZATION_TYPE_xxx)
+*----------------------------------------------------------------------------*/
+static int CheckNormlization(LPCTSTR dest)
+{
+    int type = NORMALIZATION_TYPE_NONE;
+    LPCTSTR nfdPath = _T(".e\x0301");
+    TCHAR path[MAX_PATH];
+    int error = GetTempFileName(dest, nfdPath, 0, path);
+
+    Sleep(1000);    //NFCへの変換待ち
+
+    if (error != 0)
+    {
+        WIN32_FIND_DATA buf;
+        HANDLE hFind = FindFirstFile(path, &buf);
+        if (hFind != INVALID_HANDLE_VALUE)
+        {
+            FindClose(hFind);
+            DeleteFile(path);
+        }
+        else
+        {
+            TCHAR nfcPath[MAX_PATH];
+            error = NormalizeString(NormalizationC, path, -1, nfcPath, MAX_PATH);
+            if (error > 0)
+            {
+                hFind = FindFirstFile(nfcPath, &buf);
+                if (hFind != INVALID_HANDLE_VALUE)
+                {
+                    FindClose(hFind);
+                    DeleteFile(nfcPath);
+                    type = NORMALIZATION_TYPE_NFC;
+                }
+                else
+                {
+                    DeleteFile(path);
+                }
+            }
+            else
+            {
+                DeleteFile(path);
+            }
+        }
+    }
+    return type;
+}
+#endif
+
+/*----- NFCに正規化してファイル名を比較 ----------------------------------------
+*
+*   Parameter
+*       LPCTSTR src : ファイル名1
+*       LPCTSTR dst : ファイル名2
+*
+*   Return Value
+*       int 比較結果 (_tcscmpの値)
+*----------------------------------------------------------------------------*/
+static int FnameCompare(LPCTSTR src, LPCTSTR dst)
+{
+    int ret;
+    if (NormalizationType == NORMALIZATION_TYPE_NFC)
+    {
+        _TCHAR nfcSrc[MAX_PATH];
+        _TCHAR nfcDst[MAX_PATH];
+        NormalizeString(NormalizationC, src, -1, nfcSrc, MAX_PATH);
+        NormalizeString(NormalizationC, dst, -1, nfcDst, MAX_PATH);
+        ret = _tcscmp(nfcSrc, nfcDst);
+    }
+    else
+    {
+        ret = _tcscmp(src, dst);
+    }
     return ret;
 }
 

@@ -4,27 +4,27 @@
 /							リストボックスティップス
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
-/ Redistribution and use in source and binary forms, with or without 
-/ modification, are permitted provided that the following conditions 
+/ Redistribution and use in source and binary forms, with or without
+/ modification, are permitted provided that the following conditions
 / are met:
 /
-/  1. Redistributions of source code must retain the above copyright 
+/  1. Redistributions of source code must retain the above copyright
 /     notice, this list of conditions and the following disclaimer.
-/  2. Redistributions in binary form must reproduce the above copyright 
-/     notice, this list of conditions and the following disclaimer in the 
+/  2. Redistributions in binary form must reproduce the above copyright
+/     notice, this list of conditions and the following disclaimer in the
 /     documentation and/or other materials provided with the distribution.
 /
-/ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR 
-/ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-/ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-/ IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, 
-/ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-/ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF 
-/ USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-/ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-/ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+/ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+/ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+/ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/ IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+/ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+/ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+/ USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+/ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+/ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 / THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /============================================================================*/
 
@@ -78,7 +78,7 @@ static RECT cur_rect;
  引数	:	hWnd	親ウインドウのハンドル
 			hInst	インスタンスハンドル
  戻り値	:	int		ステータス (SUCCESS/FAIL)
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 int InitListBoxTips(HWND hWnd, HINSTANCE hInst)
 {
@@ -120,7 +120,7 @@ int InitListBoxTips(HWND hWnd, HINSTANCE hInst)
  説明	:	リストボックスティップスのウインドウを削除
  引数	:	なし
  戻り値	:	なし
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 void DeleteListBoxTips(void)
 {
@@ -134,7 +134,7 @@ void DeleteListBoxTips(void)
  説明	:	リストボックスティップスのウインドウを消去
  引数	:	なし
  戻り値	:	なし
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 void EraseListBoxTips(void)
 {
@@ -148,7 +148,7 @@ void EraseListBoxTips(void)
  説明	:	リストボックスティップスの表示チェック
  引数	:	lParam	WM_MOUSEMOVEのLPARAM値
  戻り値	:	なし
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 void CheckTipsDisplay(LPARAM lParam)
 {
@@ -196,7 +196,7 @@ void CheckTipsDisplay(LPARAM lParam)
 			lpszTitleText	文字列
 			Status			現在の状態
  戻り値	:	なし
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 {
@@ -235,10 +235,10 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 			rectDisplay.right += 2;
 			rectDisplay.bottom += 2;
 
-			SetWindowPos(hWndTips, HWND_TOPMOST, 
-				rectDisplay.left, rectDisplay.top, 
-				rectDisplay.right - rectDisplay.left, 
-				rectDisplay.bottom - rectDisplay.top, 
+			SetWindowPos(hWndTips, HWND_TOPMOST,
+				rectDisplay.left, rectDisplay.top,
+				rectDisplay.right - rectDisplay.left,
+				rectDisplay.bottom - rectDisplay.top,
 				SWP_SHOWWINDOW|SWP_NOACTIVATE );
 
 			/* 文字列を表示 */
@@ -265,7 +265,7 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 			point		カーソルの位置
 			cellrect	アイテムの矩形を返すワーク
  戻り値	:	int		行番号 (-1=該当なし)
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 {
@@ -318,7 +318,7 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 			wParam	メッセージの WPARAM 引数
 			lParam	メッセージの LPARAM 引数
  戻り値	:	メッセージに対応する戻り値
- 備考	:	
+ 備考	:
 -----------------------------------------------------------------------------*/
 static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

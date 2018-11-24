@@ -122,8 +122,8 @@ FONT 9, "MS UI Gothic", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.13a",-1,29,13,98,8
-    CTEXT           "Copyright(C) 1997-2014 Sota",-1,7,27,141,8
+    CTEXT           "Backup  Ver.1.14",-1,29,13,98,8
+    CTEXT           "Copyright(C) 1997-2015 Sota",-1,7,27,141,8
     CTEXT           "BackupはFreewareです",-1,7,42,141,8
 END
 
@@ -485,22 +485,23 @@ patset_dst_dlg DIALOGEX 0, 0, 207, 210
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS UI Gothic", 0, 0, 0x0
 BEGIN
-    LISTBOX         PATSET_DSTLIST,11,18,185,60,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
-    PUSHBUTTON      "追加(&A)...",PATSET_ADD,16,81,34,14
-    PUSHBUTTON      "変更(&E)...",PATSET_EDIT,57,81,34,14
-    PUSHBUTTON      "削除(&R)",PATSET_DEL,99,81,34,14
-    PUSHBUTTON      "↑",PATSET_UP,146,81,13,14
-    PUSHBUTTON      "↓",PATSET_DOWN,162,81,13,14
-    PUSHBUTTON      "▼",PATSET_TOOLMENU,184,81,10,14
+    LISTBOX         PATSET_DSTLIST,11,18,185,47,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "追加(&A)...",PATSET_ADD,16,68,34,14
+    PUSHBUTTON      "変更(&E)...",PATSET_EDIT,57,68,34,14
+    PUSHBUTTON      "削除(&R)",PATSET_DEL,99,68,34,14
+    PUSHBUTTON      "↑",PATSET_UP,146,68,13,14
+    PUSHBUTTON      "↓",PATSET_DOWN,162,68,13,14
+    PUSHBUTTON      "▼",PATSET_TOOLMENU,184,68,10,14
     CONTROL         "バックアップ先メディアのボリュームラベルをチェックする(&C)",PATSET_CHK_LABEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,156,197,10
-    RTEXT           "ボリュームラベル(&L)",-1,7,172,56,8
-    EDITTEXT        PATSET_LABEL,66,170,72,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "ドライブから取得(&G)",PATSET_LABEL_GET,139,170,63,14
-    LTEXT           "※複数のバックアップ先を指定した時、一度のバックアップで複数の\n　バックアップ先にコピーされるのではなく、バックアップする度に\n　バックアップ先が順繰りに変更されます。",PATSET_DST_COMMENT,12,103,190,27,SS_SUNKEN
-    GROUPBOX        "バックアップ先フォルダ",-1,5,5,197,96
-    LTEXT           "※ドライブから取得ボタンは、複数のバックアップ先が指定されている\n　時は、最初のバックアップ先のドライブから取得します。",-1,12,187,190,18,SS_SUNKEN
-    LTEXT           "※エクスプローラからフォルダをドラッグ＆ドロップできます。",-1,12,132,190,11,SS_SUNKEN
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,135,197,10
+    RTEXT           "ボリュームラベル(&L)",-1,7,151,56,8
+    EDITTEXT        PATSET_LABEL,66,149,72,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "ドライブから取得(&G)",PATSET_LABEL_GET,139,149,63,14
+    LTEXT           "※複数のバックアップ先を指定した時、一度のバックアップで複数の\n　バックアップ先にコピーされるのではなく、バックアップする度に\n　バックアップ先が順繰りに変更されます。",PATSET_DST_COMMENT,12,87,190,27,SS_SUNKEN
+    GROUPBOX        "バックアップ先フォルダ",-1,5,5,197,80
+    LTEXT           "※ドライブから取得ボタンは、複数のバックアップ先が指定されている\n　時は、最初のバックアップ先のドライブから取得します。",-1,12,166,190,18,SS_SUNKEN
+    LTEXT           "※エクスプローラからフォルダをドラッグ＆ドロップできます。",-1,12,116,190,11,SS_SUNKEN
+    CONTROL         "バックアップ先はDropboxのフォルダ(&P)",PATSET_DST_DROPBOX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,195,115,10
 END
 
 patset_timer_dlg DIALOGEX 0, 0, 207, 209
@@ -1021,8 +1022,8 @@ done_bmp                BITMAP                  "box_bmp2.bmp"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,13,1,0
- PRODUCTVERSION 1,13,1,0
+ FILEVERSION 1,14,0,0
+ PRODUCTVERSION 1,14,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1040,12 +1041,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.13.1.0"
+            VALUE "FileVersion", "1.14.0.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2014 Sota"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2015 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup アプリケーション"
-            VALUE "ProductVersion", "1.13.1.0"
+            VALUE "ProductVersion", "1.14.0.0"
         END
     END
     BLOCK "VarFileInfo"

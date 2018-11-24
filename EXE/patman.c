@@ -4,7 +4,7 @@
 /                           バックアップパターン設定
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -886,6 +886,8 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             SendDlgItemMessage(hDlg, PATSET_LABEL, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
             SendDlgItemMessage(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)TmpPat.VolLabel);
 
+            SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_SETCHECK, TmpPat.DstDropbox, 0);
+
             if(TmpPat.ChkVolLabel == NO)
             {
                 EnableWindow(GetDlgItem(hDlg, PATSET_LABEL), FALSE);
@@ -918,6 +920,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
                     TmpPat.ChkVolLabel = SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0);
                     SendDlgItemMessage(hDlg, PATSET_LABEL, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.VolLabel);
+                    TmpPat.DstDropbox = SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_GETCHECK, 0, 0);
                     break;
             }
             break;

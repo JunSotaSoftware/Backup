@@ -2,7 +2,7 @@
 /                           Ｂａｃｋｕｐの共通設定
 /
 /============================================================================
-/ Copyright (C) 1997-2007 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -48,8 +48,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.13a")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x010d0100      /* バージョン */
+#define PROGRAM_VERSION         _T("1.14")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x010e0000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -101,8 +101,9 @@
 #define OPT_SHOW_COMMENT    0x00400000
 #define OPT_IGN_BIG_FILE    0x00800000
 #define OPT_NO_NOTIFY_DEL   0x01000000
-#define OPT_SHOW_AUTHDIALOG   0x02000000
-#define OPT_HIDE_AUTHDIALOG   0x04000000
+#define OPT_SHOW_AUTHDIALOG 0x02000000
+#define OPT_HIDE_AUTHDIALOG 0x04000000
+#define OPT_DST_DROPBOX		0x08000000
 
 /*===== トレイアイコン制御 =====*/
 
@@ -216,6 +217,7 @@ typedef struct {
     int IgnTime;                    /* タイムスタンプの違いは無視 */
     int ShowComment;                /* バックアップ開始時にコメントをウインドウで表示する */
     int NextDstNum;                 /* 次のバックアップ先番号 */
+	int DstDropbox;					/* バックアップ先はDropbox */
     /* 以下は設定値ではない。内部処理で使用する。 */
     _TCHAR *NextDst;                /* 次のバックアップ先へのポインタ */
     int PatNum;                     /* パターン番号 */
@@ -322,16 +324,16 @@ void SetBackupPause(void);
 void SetBackupRestart(void);
 void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi);
 
-BOOL SetCurrentDirectory_My(LPCTSTR lpPathName);
-HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData);
-DWORD GetFileAttributes_My(LPCTSTR lpFileName);
+BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization);
+HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization);
+DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization);
 DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError);
-BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes);
-BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
-HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
-BOOL RemoveDirectory_My(LPCTSTR lpPathName);
-BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
-BOOL DeleteFile_My(LPCTSTR lpFileName);
+BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization);
+BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization);
+HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization);
+BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization);
+BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization);
+BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization);
 
 /* Registory.c */
 
