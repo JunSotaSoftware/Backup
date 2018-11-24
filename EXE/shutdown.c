@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /									Backup
-/							Windows‚ÌƒVƒƒƒbƒgƒ_ƒEƒ“
+/							Windowsã®ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³
 /
 /============================================================================
 / Copyright (C) 1997-2015 Sota. All rights reserved.
@@ -42,15 +42,15 @@
 #include "resource.h"
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 /*-----------------------------------------------------------------------------
- –¼‘O	:	ChangeSystemPowerMode
- à–¾	:	Windows‚Ìƒpƒ[ƒXƒe[ƒg‚ð•ÏX‚·‚é
- ˆø”	:	State	ƒXƒe[ƒg
- –ß‚è’l :	BOOL	ƒXƒe[ƒ^ƒX (TRUE=¬Œ÷)
+ åå‰	:	ChangeSystemPowerMode
+ èª¬æ˜Ž	:	Windowsã®ãƒ‘ãƒ¯ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹
+ å¼•æ•°	:	State	ã‚¹ãƒ†ãƒ¼ãƒˆ
+ æˆ»ã‚Šå€¤ :	BOOL	ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (TRUE=æˆåŠŸ)
 -----------------------------------------------------------------------------*/
 BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 {
@@ -68,7 +68,7 @@ BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 			TokenPri.PrivilegeCount = 1;
 			TokenPri.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 			AdjustTokenPrivileges(hToken, FALSE, &TokenPri, 0, NULL, 0);
-			/* AdjustTokenPrivileges ‚Íí‚É TRUE ‚ð•Ô‚·? */
+			/* AdjustTokenPrivileges ã¯å¸¸ã« TRUE ã‚’è¿”ã™? */
 			Err = GetLastError();
 			if(Err == ERROR_SUCCESS)
 			{
@@ -137,10 +137,10 @@ BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 
 
 /*-----------------------------------------------------------------------------
- –¼‘O	:	DoCountDown
- à–¾	:	ƒVƒƒƒbƒgƒ_ƒEƒ“‘O‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“ƒEƒCƒ“ƒhƒE
- ˆø”	:	State	ƒXƒe[ƒg
- –ß‚è’l :	int	ƒXƒe[ƒ^ƒX (YES=ƒVƒƒƒbƒgƒ_ƒEƒ“‚·‚é)
+ åå‰	:	DoCountDown
+ èª¬æ˜Ž	:	ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³å‰ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
+ å¼•æ•°	:	State	ã‚¹ãƒ†ãƒ¼ãƒˆ
+ æˆ»ã‚Šå€¤ :	int	ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (YES=ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³ã™ã‚‹)
 -----------------------------------------------------------------------------*/
 int DoCountDown(AUTOCLOSE_ACTION State)
 {
@@ -149,13 +149,13 @@ int DoCountDown(AUTOCLOSE_ACTION State)
 
 
 /*-----------------------------------------------------------------------------
- –¼‘O	:	DoCountDown
- à–¾	:	ƒJƒEƒ“ƒgƒ_ƒEƒ“ƒEƒCƒ“ƒhƒE‚ÌƒR[ƒ‹ƒoƒbƒN
- ˆø”	:	hDlg	ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-			message	ƒƒbƒZ[ƒW”Ô†
-			wParam	ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-			lParam	ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
- –ß‚è’l :	BOOL	TRUE/FALSE
+ åå‰	:	DoCountDown
+ èª¬æ˜Ž	:	ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
+ å¼•æ•°	:	hDlg	ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+			message	ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+			wParam	ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+			lParam	ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+ æˆ»ã‚Šå€¤ :	BOOL	TRUE/FALSE
 -----------------------------------------------------------------------------*/
 BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {

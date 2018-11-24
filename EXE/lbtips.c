@@ -1,7 +1,7 @@
-/*===========================================================================
+﻿/*===========================================================================
 /
 /									Backup
-/							���X�g�{�b�N�X�e�B�b�v�X
+/							リストボックスティップス
 /
 /============================================================================
 / Copyright (C) 1997-2015 Sota. All rights reserved.
@@ -41,17 +41,17 @@
 #include "resource.h"
 
 
-/*===== ��` =====*/
+/*===== 定義 =====*/
 
-/* ���݂̏�� */
+/* 現在の状態 */
 typedef enum {
-	ERASED,			/* �\�����Ă��Ȃ� */
-	PENDING,		/* �\������܂ł̎��ԑ҂� */
-	DISPLAYED		/* �\���� */
+	ERASED,			/* 表示していない */
+	PENDING,		/* 表示するまでの時間待ち */
+	DISPLAYED		/* 表示中 */
 } TIPSTATUS;
 
 
-/*===== �v���g�^�C�v =====*/
+/*===== プロトタイプ =====*/
 
 int InitListBoxTips(HWND hWnd, HINSTANCE hInst);
 void DeleteListBoxTips(void);
@@ -62,23 +62,23 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect);
 static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
-/*===== ���[�J���ȃ��[�N =====*/
+/*===== ローカルなワーク =====*/
 
-static HWND hWndTips;				/* tips�̃E�C���h�E�n���h�� */
-static HWND hWndLbox;				/* LISTBOX�̃E�C���h�E�n���h�� */
-static UINT TimerID;				/* �^�C�}ID */
-static TIPSTATUS Status = ERASED;	/* ���݂̏�� */
-static POINT MousePos;				/* �}�E�X�̈ʒu�ۑ��p */
-static int ItemNum;					/* �}�E�X�ʒu��LISTBOX���ڔԍ� */
+static HWND hWndTips;				/* tipsのウインドウハンドル */
+static HWND hWndLbox;				/* LISTBOXのウインドウハンドル */
+static UINT TimerID;				/* タイマID */
+static TIPSTATUS Status = ERASED;	/* 現在の状態 */
+static POINT MousePos;				/* マウスの位置保存用 */
+static int ItemNum;					/* マウス位置のLISTBOX項目番号 */
 static RECT cur_rect;
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X�̃E�C���h�E���쐬
- ����	:	hWnd	�e�E�C���h�E�̃n���h��
-			hInst	�C���X�^���X�n���h��
- �߂�l	:	int		�X�e�[�^�X (SUCCESS/FAIL)
- ���l	:
+ 説明	:	リストボックスティップスのウインドウを作成
+ 引数	:	hWnd	親ウインドウのハンドル
+			hInst	インスタンスハンドル
+ 戻り値	:	int		ステータス (SUCCESS/FAIL)
+ 備考	:
 -----------------------------------------------------------------------------*/
 int InitListBoxTips(HWND hWnd, HINSTANCE hInst)
 {
@@ -117,10 +117,10 @@ int InitListBoxTips(HWND hWnd, HINSTANCE hInst)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X�̃E�C���h�E���폜
- ����	:	�Ȃ�
- �߂�l	:	�Ȃ�
- ���l	:
+ 説明	:	リストボックスティップスのウインドウを削除
+ 引数	:	なし
+ 戻り値	:	なし
+ 備考	:
 -----------------------------------------------------------------------------*/
 void DeleteListBoxTips(void)
 {
@@ -131,10 +131,10 @@ void DeleteListBoxTips(void)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X�̃E�C���h�E������
- ����	:	�Ȃ�
- �߂�l	:	�Ȃ�
- ���l	:
+ 説明	:	リストボックスティップスのウインドウを消去
+ 引数	:	なし
+ 戻り値	:	なし
+ 備考	:
 -----------------------------------------------------------------------------*/
 void EraseListBoxTips(void)
 {
@@ -145,10 +145,10 @@ void EraseListBoxTips(void)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X�̕\���`�F�b�N
- ����	:	lParam	WM_MOUSEMOVE��LPARAM�l
- �߂�l	:	�Ȃ�
- ���l	:
+ 説明	:	リストボックスティップスの表示チェック
+ 引数	:	lParam	WM_MOUSEMOVEのLPARAM値
+ 戻り値	:	なし
+ 備考	:
 -----------------------------------------------------------------------------*/
 void CheckTipsDisplay(LPARAM lParam)
 {
@@ -161,7 +161,7 @@ void CheckTipsDisplay(LPARAM lParam)
 
 	if(Status == PENDING)
 	{
-		/* ���ԑ҂��̊ԂɃ}�E�X���������ꂽ����� */
+		/* 時間待ちの間にマウスが動かされたら解除 */
 		KillTimer(hWndLbox, TimerID);
 		Status = ERASED;
 	}
@@ -170,7 +170,7 @@ void CheckTipsDisplay(LPARAM lParam)
 	{
 		if(row != -1)
 		{
-			/* LISTBOX�̍��ڂ̒��ɂ���̂ŁA�\�����ԑ҂��Ɉڍs */
+			/* LISTBOXの項目の中にあるので、表示時間待ちに移行 */
 			cur_rect = cellrect;
 			TimerID = SetTimer(hWndTips, TIMER_TIPS, 500, NULL);
 			Status = PENDING;
@@ -181,7 +181,7 @@ void CheckTipsDisplay(LPARAM lParam)
 	{
 		if(PtInRect(&cur_rect, MousePos) == FALSE)
 		{
-			/* �\�����ɍ��ڂ̊O�֏o���̂ŏ��� */
+			/* 表示中に項目の外へ出たので消去 */
 			EraseListBoxTips();
 			Status = ERASED;
 		}
@@ -191,12 +191,12 @@ void CheckTipsDisplay(LPARAM lParam)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X��\��
- ����	:	Pos				�\���ʒu
-			lpszTitleText	������
-			Status			���݂̏��
- �߂�l	:	�Ȃ�
- ���l	:
+ 説明	:	リストボックスティップスを表示
+ 引数	:	Pos				表示位置
+			lpszTitleText	文字列
+			Status			現在の状態
+ 戻り値	:	なし
+ 備考	:
 -----------------------------------------------------------------------------*/
 static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 {
@@ -209,7 +209,7 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 	{
 		if(GetFocus() != NULL)
 		{
-			/* ListBox�E�C���h�E�̃t�H���gTIPS�E�C���h�E�ɃR�s�[ */
+			/* ListBoxウインドウのフォントTIPSウインドウにコピー */
 			dc = GetDC(hWndLbox);
 			pFont = (HFONT)SendMessage(hWndLbox, WM_GETFONT, 0, 0);
 			ReleaseDC(hWndLbox, dc);
@@ -217,11 +217,11 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 			dc = GetDC(hWndTips);
 			pFontDC = SelectObject(dc, pFont);
 
-			/* �\���F��ݒ� */
+			/* 表示色を設定 */
 			SetTextColor(dc, GetSysColor(COLOR_INFOTEXT));
 			SetBkMode(dc, TRANSPARENT);
 
-			/* �E�C���h�E�̑傫����ݒ� */
+			/* ウインドウの大きさを設定 */
 			ClientToScreen(hWndLbox, &Pos);
 #if 0
 			rectDisplay.top = Pos.y + GetSystemMetrics(SM_CYCURSOR);
@@ -241,14 +241,14 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 				rectDisplay.bottom - rectDisplay.top,
 				SWP_SHOWWINDOW|SWP_NOACTIVATE );
 
-			/* �������\�� */
+			/* 文字列を表示 */
 			rectDisplay.right -= rectDisplay.left;
 			rectDisplay.bottom -= rectDisplay.top;
 			rectDisplay.left = 0;
 			rectDisplay.top = 0;
 			DrawText(dc, lpszTitleText, _tcslen(lpszTitleText), &rectDisplay, DT_LEFT);
 
-			/* ���ڂ̊O�֏o�����Ƃ��m���Ɍ��o�ł���悤�ɃL���v�`�� */
+			/* 項目の外へ出たことを確実に検出できるようにキャプチャ */
 			SetCapture(hWndLbox);
 
 			SelectObject(dc, pFontDC);
@@ -260,12 +260,12 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X��\������ʒu��Ԃ�
- ����	:	hWnd		ListBox�̃E�C���h�E�n���h��
-			point		�J�[�\���̈ʒu
-			cellrect	�A�C�e���̋�`��Ԃ����[�N
- �߂�l	:	int		�s�ԍ� (-1=�Y���Ȃ�)
- ���l	:
+ 説明	:	リストボックスティップスを表示する位置を返す
+ 引数	:	hWnd		ListBoxのウインドウハンドル
+			point		カーソルの位置
+			cellrect	アイテムの矩形を返すワーク
+ 戻り値	:	int		行番号 (-1=該当なし)
+ 備考	:
 -----------------------------------------------------------------------------*/
 static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 {
@@ -288,7 +288,7 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 			{
 				if(PtInRect(&Rect, point))
 				{
-					/* LISTBOX��ITEM�̈ꕔ���������Ă��Ȃ��Ƃ��̂��߂̏��u */
+					/* LISTBOXのITEMの一部しか見えていないときのための処置 */
 					if(Rect.left < RectWin.left)
 						Rect.left = RectWin.left;
 					if(Rect.top < RectWin.top)
@@ -312,13 +312,13 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 
 
 /*-----------------------------------------------------------------------------
- ����	:	���X�g�{�b�N�X�e�B�b�v�X�E�C���h�E�̃R�[���o�b�N
- ����	:	hWnd	�E�C���h�E�n���h��
-			message	���b�Z�[�W�ԍ�
-			wParam	���b�Z�[�W�� WPARAM ����
-			lParam	���b�Z�[�W�� LPARAM ����
- �߂�l	:	���b�Z�[�W�ɑΉ�����߂�l
- ���l	:
+ 説明	:	リストボックスティップスウインドウのコールバック
+ 引数	:	hWnd	ウインドウハンドル
+			message	メッセージ番号
+			wParam	メッセージの WPARAM 引数
+			lParam	メッセージの LPARAM 引数
+ 戻り値	:	メッセージに対応する戻り値
+ 備考	:
 -----------------------------------------------------------------------------*/
 static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

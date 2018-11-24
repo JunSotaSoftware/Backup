@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                           Šeí‚Ì”Ä—pƒTƒuƒ‹[ƒ`ƒ“
+/                           å„ç¨®ã®æ±ç”¨ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³
 /
 /============================================================================
 / Copyright (C) 1997-2017 Sota. All rights reserved.
@@ -43,16 +43,16 @@
 
 
 
-/*----- •¶š—ñ‚ÌÅŒã‚É "\" ‚ğ•t‚¯‚éi""‚É‚Í•t‚¯‚È‚¢j--------------------------
+/*----- æ–‡å­—åˆ—ã®æœ€å¾Œã« "\" ã‚’ä»˜ã‘ã‚‹ï¼ˆ""ã«ã¯ä»˜ã‘ãªã„ï¼‰--------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
+*       LPTSTR Str : æ–‡å­—åˆ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 void SetYenTail(LPTSTR Str)
@@ -62,17 +62,17 @@ void SetYenTail(LPTSTR Str)
 }
 
 
-/*----- •¶š—ñ‚ÌÅŒã‚É•¶š—ñ‚ğ•t‚¯‚éi""‚É‚Í•t‚¯‚È‚¢j-------------------------
+/*----- æ–‡å­—åˆ—ã®æœ€å¾Œã«æ–‡å­—åˆ—ã‚’ä»˜ã‘ã‚‹ï¼ˆ""ã«ã¯ä»˜ã‘ãªã„ï¼‰-------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
-*       LPTSTR Ch : ’Ç‰Á‚·‚é•¶š—ñ
+*       LPTSTR Str : æ–‡å­—åˆ—
+*       LPTSTR Ch : è¿½åŠ ã™ã‚‹æ–‡å­—åˆ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 void SetCharTail(LPTSTR Str, LPTSTR Ch)
@@ -86,16 +86,16 @@ void SetCharTail(LPTSTR Str, LPTSTR Ch)
 }
 
 
-/*----- •¶š—ñ‚ÌÅŒã‚Ì "\" ‚ğæ‚èœ‚­ -----------------------------------------
+/*----- æ–‡å­—åˆ—ã®æœ€å¾Œã® "\" ã‚’å–ã‚Šé™¤ã -----------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
+*       LPTSTR Str : æ–‡å­—åˆ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 void RemoveYenTail(LPTSTR Str)
@@ -112,16 +112,16 @@ void RemoveYenTail(LPTSTR Str)
 }
 
 
-/*----- •¶š—ñ‚©‚ç‰üsƒR[ƒh‚ğæ‚èœ‚­ ----------------------------------------
+/*----- æ–‡å­—åˆ—ã‹ã‚‰æ”¹è¡Œã‚³ãƒ¼ãƒ‰ã‚’å–ã‚Šé™¤ã ----------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
+*       LPTSTR Str : æ–‡å­—åˆ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 void RemoveReturnCode(LPTSTR Str)
@@ -137,14 +137,14 @@ void RemoveReturnCode(LPTSTR Str)
 }
 
 
-/*----- •¶š—ñ“à‚Ì“Á’è‚Ì•¶š‚Ì”‚ğ”‚¦‚é --------------------------------------
+/*----- æ–‡å­—åˆ—å†…ã®ç‰¹å®šã®æ–‡å­—ã®æ•°ã‚’æ•°ãˆã‚‹ --------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
-*       _TCHAR Ch : •¶š
+*       LPTSTR Str : æ–‡å­—åˆ—
+*       _TCHAR Ch : æ–‡å­—
 *
 *   Return Value
-*       •¶š‚Ì”
+*       æ–‡å­—ã®æ•°
 *----------------------------------------------------------------------------*/
 
 int CountChar(LPTSTR Str, _TCHAR Ch)
@@ -161,16 +161,16 @@ int CountChar(LPTSTR Str, _TCHAR Ch)
 }
 
 
-/*----- •¶š—ñ“à‚Ì“Á’è‚Ì•¶š‚ğ‘S‚Ä’u‚«Š·‚¦‚é ----------------------------------
+/*----- æ–‡å­—åˆ—å†…ã®ç‰¹å®šã®æ–‡å­—ã‚’å…¨ã¦ç½®ãæ›ãˆã‚‹ ----------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ (•¶š—ñ’†‚Ì'\0'‚à‹–‰Â)
-*       int Len : •¶š—ñ‚Ì’·‚³
-*       _TCHAR Src : ŒŸõ•¶š
-*       _TCHAR Dst : ’uŠ·•¶š
+*       LPTSTR Str : æ–‡å­—åˆ— (æ–‡å­—åˆ—ä¸­ã®'\0'ã‚‚è¨±å¯)
+*       int Len : æ–‡å­—åˆ—ã®é•·ã•
+*       _TCHAR Src : æ¤œç´¢æ–‡å­—
+*       _TCHAR Dst : ç½®æ›æ–‡å­—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst)
@@ -185,17 +185,17 @@ void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst)
 }
 
 
-/*----- ‚Q‚Â‚Ì•¶š—ñ‚Ìæ“ª‚©‚çˆê’v‚·‚é•”•ª‚Ì‚İ‚ğc‚· --------------------------
+/*----- ï¼’ã¤ã®æ–‡å­—åˆ—ã®å…ˆé ­ã‹ã‚‰ä¸€è‡´ã™ã‚‹éƒ¨åˆ†ã®ã¿ã‚’æ®‹ã™ --------------------------
 *
 *   Parameter
-*       LPTSTR Str1 : •¶š—ñ1
-*       LPTSTR Str2 : •¶š—ñ2
+*       LPTSTR Str1 : æ–‡å­—åˆ—1
+*       LPTSTR Str2 : æ–‡å­—åˆ—2
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str1 ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str1 ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 void GetSamePartOfString(LPTSTR Str1, LPTSTR Str2)
@@ -215,19 +215,19 @@ void GetSamePartOfString(LPTSTR Str1, LPTSTR Str2)
 }
 
 
-/*----- •¶š—ñ’†‚Ì‚ ‚é•¶š—ñ‚ğ•Ê‚Ì•¶š—ñ‚É’u‚«Š·‚¦‚é --------------------------
+/*----- æ–‡å­—åˆ—ä¸­ã®ã‚ã‚‹æ–‡å­—åˆ—ã‚’åˆ¥ã®æ–‡å­—åˆ—ã«ç½®ãæ›ãˆã‚‹ --------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñ
-*       LPTSTR Find : ŒŸõ•¶š—ñ
-*       LPTSTR Repl : ’uŠ·•¶š—ñ
-*       int Scan : ŒŸõ‚Ì‚İ‚¨‚±‚È‚¤
+*       LPTSTR Str : æ–‡å­—åˆ—
+*       LPTSTR Find : æ¤œç´¢æ–‡å­—åˆ—
+*       LPTSTR Repl : ç½®æ›æ–‡å­—åˆ—
+*       int Scan : æ¤œç´¢ã®ã¿ãŠã“ãªã†
 *
 *   Return Value
-*       int ŠY“–‚·‚é‚à‚Ì‚ªŒ©‚Â‚©‚Á‚½‚©‚Ç‚¤‚©
+*       int è©²å½“ã™ã‚‹ã‚‚ã®ãŒè¦‹ã¤ã‹ã£ãŸã‹ã©ã†ã‹
 *
 *   Note
-*       ƒIƒŠƒWƒiƒ‹‚Ì•¶š—ñ LPTSTR Str ‚ª•ÏX‚³‚ê‚Ü‚·B
+*       ã‚ªãƒªã‚¸ãƒŠãƒ«ã®æ–‡å­—åˆ— LPTSTR Str ãŒå¤‰æ›´ã•ã‚Œã¾ã™ã€‚
 *----------------------------------------------------------------------------*/
 
 int ReplaceAllStr(LPTSTR Str, LPTSTR Find, LPTSTR Repl, int Scan)
@@ -258,24 +258,24 @@ int ReplaceAllStr(LPTSTR Str, LPTSTR Find, LPTSTR Repl, int Scan)
 }
 
 
-/*----- ƒpƒX–¼‚Ì’†‚Ìƒtƒ@ƒCƒ‹–¼‚Ìæ“ª‚ğ•Ô‚· ------------------------------------
+/*----- ãƒ‘ã‚¹åã®ä¸­ã®ãƒ•ã‚¡ã‚¤ãƒ«åã®å…ˆé ­ã‚’è¿”ã™ ------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
+*       LPTSTR Path : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       LPTSTR ƒtƒ@ƒCƒ‹–¼‚Ìæ“ª
+*       LPTSTR ãƒ•ã‚¡ã‚¤ãƒ«åã®å…ˆé ­
 *
 *   Note
-*       ƒfƒBƒŒƒNƒgƒŠ‚Ì‹æØ‚è‹L†‚Í "\" ‚Æ "/" ‚Ì—¼•û‚ª—LŒø
+*       ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®åŒºåˆ‡ã‚Šè¨˜å·ã¯ "\" ã¨ "/" ã®ä¸¡æ–¹ãŒæœ‰åŠ¹
 *----------------------------------------------------------------------------*/
 
 LPTSTR GetFileName(LPTSTR Path)
 {
     LPTSTR Pos;
 
-/* 2017/2/13 EƒoƒbƒNƒAƒbƒvŒ³ƒtƒHƒ‹ƒ_‚Æ‚µ‚ÄuC:\tmpv‚Æw’è‚µ‚½ê‡‚ÆAuC:\tmp\v‚Ì‚æ‚¤‚É
-@ÅŒã‚Éu\v‚ğw’è‚µ‚½ê‡‚ÅA‹““®‚ªˆá‚¤‚Ì‚ğC³‚µ‚Ü‚µ‚½B*/
+/* 2017/2/13 ãƒ»ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒãƒ•ã‚©ãƒ«ãƒ€ã¨ã—ã¦ã€ŒC:\tmpã€ã¨æŒ‡å®šã—ãŸå ´åˆã¨ã€ã€ŒC:\tmp\ã€ã®ã‚ˆã†ã«
+ã€€æœ€å¾Œã«ã€Œ\ã€ã‚’æŒ‡å®šã—ãŸå ´åˆã§ã€æŒ™å‹•ãŒé•ã†ã®ã‚’ä¿®æ­£ã—ã¾ã—ãŸã€‚*/
 #if 0
 	if((Pos = _tcschr(Path, _T(':'))) != NULL)
         Path = Pos + 1;
@@ -288,11 +288,11 @@ LPTSTR GetFileName(LPTSTR Path)
 #else
 	if ((_tcslen(Path) == 3) &&
 		((_tcscmp(Path + 1, _T(":\\")) == 0) ||
-		 (_tcscmp(Path + 1, _T(":/")) == 0)))							/* D:\ ‚Ì‚æ‚¤‚Èw’è‚Ì */
+		 (_tcscmp(Path + 1, _T(":/")) == 0)))							/* D:\ ã®ã‚ˆã†ãªæŒ‡å®šã®æ™‚ */
 	{
 		Path = Path + 3;
 	}
-	else if ((_tcslen(Path) == 2) && (_tcscmp(Path + 1, _T(":")) == 0))	/* D: ‚Ì‚æ‚¤‚Èw’è‚Ì */
+	else if ((_tcslen(Path) == 2) && (_tcscmp(Path + 1, _T(":")) == 0))	/* D: ã®ã‚ˆã†ãªæŒ‡å®šã®æ™‚ */
 	{
 		Path = Path + 2;
 	}
@@ -321,13 +321,13 @@ LPTSTR GetFileName(LPTSTR Path)
 }
 
 
-/*----- ƒpƒX–¼‚Ì’†‚ÌŠg’£q‚Ìæ“ª‚ğ•Ô‚· ----------------------------------------
+/*----- ãƒ‘ã‚¹åã®ä¸­ã®æ‹¡å¼µå­ã®å…ˆé ­ã‚’è¿”ã™ ----------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
+*       LPTSTR Path : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       LPTSTR Šg’£q‚Ìæ“ª
+*       LPTSTR æ‹¡å¼µå­ã®å…ˆé ­
 *----------------------------------------------------------------------------*/
 
 LPTSTR GetFileExt(LPTSTR Path)
@@ -348,19 +348,19 @@ LPTSTR GetFileExt(LPTSTR Path)
 }
 
 
-/*----- •¶š—ñƒAƒŒƒC‚Ì’·‚³‚ğ‹‚ß‚é --------------------------------------------
+/*----- æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ã®é•·ã•ã‚’æ±‚ã‚ã‚‹ --------------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñƒAƒŒƒC (––”ö‚ÍNUL‚Q‚Â)
+*       LPTSTR Str : æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ (æœ«å°¾ã¯NULï¼’ã¤)
 *
 *   Return Value
-*       int ’·‚³
+*       int é•·ã•
 *
 *   Note
-*       I’[‚Ì2‚Â‚ÌNUL‚Ì‚¤‚¿‚ÌÅŒã‚Ì•¨‚Í”‚¦‚È‚¢
+*       çµ‚ç«¯ã®2ã¤ã®NULã®ã†ã¡ã®æœ€å¾Œã®ç‰©ã¯æ•°ãˆãªã„
 *           StrMultiLen("") = 0
 *           StrMultiLen("abc\0xyz\0") = 8
-*           StrMultiLen("abc") = I’[‚ª‚Q‚Â‚ÌNUL‚Å‚È‚¢‚Ì‚Å‹‚ß‚ç‚ê‚È‚¢
+*           StrMultiLen("abc") = çµ‚ç«¯ãŒï¼’ã¤ã®NULã§ãªã„ã®ã§æ±‚ã‚ã‚‰ã‚Œãªã„
 *----------------------------------------------------------------------------*/
 
 int StrMultiLen(LPTSTR Str)
@@ -379,19 +379,19 @@ int StrMultiLen(LPTSTR Str)
 }
 
 
-/*----- •¶š—ñƒAƒŒƒC’†‚Ì•¶š—ñ‚Ì”‚ğ”‚¦‚é -------------------------------------
+/*----- æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ä¸­ã®æ–‡å­—åˆ—ã®æ•°ã‚’æ•°ãˆã‚‹ -------------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñƒAƒŒƒC (––”ö‚ÍNUL‚Q‚Â)
+*       LPTSTR Str : æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ (æœ«å°¾ã¯NULï¼’ã¤)
 *
 *   Return Value
-*       int •¶š—ñ‚ÌŒÂ”
+*       int æ–‡å­—åˆ—ã®å€‹æ•°
 *
 *   Note
-*       I’[‚Ì2‚Â‚ÌNUL‚Ì‚¤‚¿‚ÌÅŒã‚Ì•¨‚Í”‚¦‚È‚¢
+*       çµ‚ç«¯ã®2ã¤ã®NULã®ã†ã¡ã®æœ€å¾Œã®ç‰©ã¯æ•°ãˆãªã„
 *           StrMultiLen("") = 0
 *           StrMultiLen("abc\0xyz\0") = 2
-*           StrMultiLen("abc") = I’[‚ª‚Q‚Â‚ÌNUL‚Å‚È‚¢‚Ì‚Å‹‚ß‚ç‚ê‚È‚¢
+*           StrMultiLen("abc") = çµ‚ç«¯ãŒï¼’ã¤ã®NULã§ãªã„ã®ã§æ±‚ã‚ã‚‰ã‚Œãªã„
 *----------------------------------------------------------------------------*/
 
 int StrMultiCount(LPTSTR Str)
@@ -410,17 +410,17 @@ int StrMultiCount(LPTSTR Str)
 }
 
 
-/*----- •¶š—ñƒAƒŒƒC’†‚©‚ç1‚Â‚Ì•¶š—ñ‚ğæ“¾‚·‚é --------------------------------
+/*----- æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ä¸­ã‹ã‚‰1ã¤ã®æ–‡å­—åˆ—ã‚’å–å¾—ã™ã‚‹ --------------------------------
 *
 *   Parameter
-*       LPTSTR Str : •¶š—ñƒAƒŒƒC (––”ö‚ÍNUL‚Q‚Â)
-*       int Num : ‰½”Ô–Ú‚Ì•¶š—ñ‚ğ•Ô‚·‚©
+*       LPTSTR Str : æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ (æœ«å°¾ã¯NULï¼’ã¤)
+*       int Num : ä½•ç•ªç›®ã®æ–‡å­—åˆ—ã‚’è¿”ã™ã‹
 *
 *   Return Value
-*       int •¶š—ñ
+*       int æ–‡å­—åˆ—
 *
 *   Note
-*       •¶š—ñƒAƒŒƒC‚Ì’†‚Éw’è”Ô†‚Ì•¶š—ñ‚ª‚È‚¢‚ÍAÅ‰‚Ì•¶š—ñ‚ğ•Ô‚·
+*       æ–‡å­—åˆ—ã‚¢ãƒ¬ã‚¤ã®ä¸­ã«æŒ‡å®šç•ªå·ã®æ–‡å­—åˆ—ãŒãªã„æ™‚ã¯ã€æœ€åˆã®æ–‡å­—åˆ—ã‚’è¿”ã™
 *----------------------------------------------------------------------------*/
 LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num)
 {
@@ -441,13 +441,13 @@ LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num)
 }
 
 
-/*----- mÀsn‚ÆmæÁn‚¾‚¯‚Ìƒ_ƒCƒAƒƒO‚Ì‹¤’ÊƒR[ƒ‹ƒoƒbƒNŠÖ” --------------
+/*----- ï¼»å®Ÿè¡Œï¼½ã¨ï¼»å–æ¶ˆï¼½ã ã‘ã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®å…±é€šã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•° --------------
 *
 *   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
 *       BOOL TRUE/FALSE
@@ -478,21 +478,21 @@ BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹‘I‘ğ ----------------------------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠ ----------------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       LPTSTR Fname : ƒtƒ@ƒCƒ‹–¼‚ğ•Ô‚·ƒoƒbƒtƒ@
-*       LPTSTR Title : ƒ^ƒCƒgƒ‹
-*       LPTSTR Filters : ƒtƒBƒ‹ƒ^[•¶š—ñ
-*       LPTSTR Ext : ƒfƒtƒHƒ‹ƒgŠg’£q
-*       int Flags : ’Ç‰Á‚·‚éƒtƒ‰ƒO
-*       int Save : uŠJ‚­v‚©u•Û‘¶v‚© (0=ŠJ‚­, 1=•Û‘¶)
-*       LPTSTR Dir : ƒfƒtƒHƒ‹ƒgƒtƒHƒ‹ƒ_
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Fname : ãƒ•ã‚¡ã‚¤ãƒ«åã‚’è¿”ã™ãƒãƒƒãƒ•ã‚¡
+*       LPTSTR Title : ã‚¿ã‚¤ãƒˆãƒ«
+*       LPTSTR Filters : ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼æ–‡å­—åˆ—
+*       LPTSTR Ext : ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆæ‹¡å¼µå­
+*       int Flags : è¿½åŠ ã™ã‚‹ãƒ•ãƒ©ã‚°
+*       int Save : ã€Œé–‹ãã€ã‹ã€Œä¿å­˜ã€ã‹ (0=é–‹ã, 1=ä¿å­˜)
+*       LPTSTR Dir : ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ•ã‚©ãƒ«ãƒ€
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
-*           TRUE/FALSE=æÁ
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*           TRUE/FALSE=å–æ¶ˆ
 *----------------------------------------------------------------------------*/
 
 int SelectFile(HWND hWnd, LPTSTR Fname, LPTSTR Title, LPTSTR Filters, LPTSTR Ext, int Flags, int Save, LPTSTR Dir)
@@ -540,17 +540,17 @@ int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg,LPARAM lParam,LPARAM lpData)
 _TCHAR CurFolder[MY_MAX_PATH+1];
 
 
-/*----- ƒfƒBƒŒƒNƒgƒŠ‚ğ‘I‘ğ ----------------------------------------------------
+/*----- ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’é¸æŠ ----------------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       LPTSTR Buf : ƒfƒBƒŒƒNƒgƒŠ–¼‚ğ•Ô‚·ƒoƒbƒtƒ@i‰ŠúƒfƒBƒŒƒNƒgƒŠ–¼j
-*       int MaxLen : ƒoƒbƒtƒ@‚ÌƒTƒCƒY
-*       LPTSTR Title : ƒ^ƒCƒgƒ‹
+*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Buf : ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã‚’è¿”ã™ãƒãƒƒãƒ•ã‚¡ï¼ˆåˆæœŸãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåï¼‰
+*       int MaxLen : ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
+*       LPTSTR Title : ã‚¿ã‚¤ãƒˆãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
-*           TRUE/FALSE=æÁ
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*           TRUE/FALSE=å–æ¶ˆ
 *----------------------------------------------------------------------------*/
 
 int SelectDir(HWND hWnd, LPTSTR Buf, int MaxLen, LPTSTR Title)
@@ -606,20 +606,20 @@ int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg,LPARAM lParam,LPARAM lpData)
 }
 
 
-/*----- ’l‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ğƒ`ƒFƒbƒN‚·‚é --------------------------
+/*----- å€¤ã«é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹ --------------------------
 *
 *   Parameter
-*       HWND hDlg : ƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       int Value : ’l
-*       const RADIOBUTTON *Buttons : ƒ‰ƒWƒIƒ{ƒ^ƒ“‚Æ’l‚ÌŠÖ˜A•t‚¯ƒe[ƒuƒ‹
-*       int Num : ƒ{ƒ^ƒ“‚Ì”
+*       HWND hDlg : ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒœãƒƒã‚¯ã‚¹ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       int Value : å€¤
+*       const RADIOBUTTON *Buttons : ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã¨å€¤ã®é–¢é€£ä»˜ã‘ãƒ†ãƒ¼ãƒ–ãƒ«
+*       int Num : ãƒœã‚¿ãƒ³ã®æ•°
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       ’l‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½ƒ{ƒ^ƒ“‚ª–³‚¢‚ÍAƒe[ƒuƒ‹‚ÌÅ‰‚É“o˜^‚³‚ê‚Ä‚¢‚éƒ{ƒ^
-*       ƒ“‚ğƒ`ƒFƒbƒN‚·‚é
+*       å€¤ã«é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒœã‚¿ãƒ³ãŒç„¡ã„æ™‚ã¯ã€ãƒ†ãƒ¼ãƒ–ãƒ«ã®æœ€åˆã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ãƒœã‚¿
+*       ãƒ³ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
 *----------------------------------------------------------------------------*/
 
 void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int Num)
@@ -633,8 +633,8 @@ void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int
         if(Value == Buttons->Value)
         {
             SendDlgItemMessage(hDlg, Buttons->ButID, BM_SETCHECK, 1, 0);
-            /* ƒ‰ƒWƒIƒ{ƒ^ƒ“‚ğ•ÏX‚µ‚½‚É‘¼‚Ì€–Ú‚ÌƒnƒCƒh‚È‚Ç‚ğs‚È‚¤–‚ª   */
-            /* ‚ ‚é‚Ì‚ÅA‚»‚Ì‚½‚ß‚É WM_COMMAND ‚ğ‘—‚é                       */
+            /* ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã‚’å¤‰æ›´ã—ãŸæ™‚ã«ä»–ã®é …ç›®ã®ãƒã‚¤ãƒ‰ãªã©ã‚’è¡Œãªã†äº‹ãŒ   */
+            /* ã‚ã‚‹ã®ã§ã€ãã®ãŸã‚ã« WM_COMMAND ã‚’é€ã‚‹                       */
             SendMessage(hDlg, WM_COMMAND, MAKEWPARAM(Buttons->ButID, 0), 0);
             break;
         }
@@ -649,19 +649,19 @@ void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int
 }
 
 
-/*----- ƒ`ƒFƒbƒN‚³‚ê‚Ä‚¢‚éƒ{ƒ^ƒ“‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½’l‚ğ•Ô‚· ----------------------
+/*----- ãƒã‚§ãƒƒã‚¯ã•ã‚Œã¦ã„ã‚‹ãƒœã‚¿ãƒ³ã«é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸå€¤ã‚’è¿”ã™ ----------------------
 *
 *   Parameter
-*       HWND hDlg : ƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       const RADIOBUTTON *Buttons : ƒ‰ƒWƒIƒ{ƒ^ƒ“‚Æ’l‚ÌŠÖ˜A•t‚¯ƒe[ƒuƒ‹
-*       int Num : ƒ{ƒ^ƒ“‚Ì”
+*       HWND hDlg : ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒœãƒƒã‚¯ã‚¹ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       const RADIOBUTTON *Buttons : ãƒ©ã‚¸ã‚ªãƒœã‚¿ãƒ³ã¨å€¤ã®é–¢é€£ä»˜ã‘ãƒ†ãƒ¼ãƒ–ãƒ«
+*       int Num : ãƒœã‚¿ãƒ³ã®æ•°
 *
 *   Return Value
-*       int ’l
+*       int å€¤
 *
 *   Note
-*       ‚Ç‚Ìƒ{ƒ^ƒ“‚àƒ`ƒFƒbƒN‚³‚ê‚Ä‚¢‚È‚¢‚ÍAƒe[ƒuƒ‹‚ÌÅ‰‚É“o˜^‚³‚ê‚Ä‚¢‚éƒ{
-*       ƒ^ƒ“‚Ì’l‚ğ•Ô‚·
+*       ã©ã®ãƒœã‚¿ãƒ³ã‚‚ãƒã‚§ãƒƒã‚¯ã•ã‚Œã¦ã„ãªã„æ™‚ã¯ã€ãƒ†ãƒ¼ãƒ–ãƒ«ã®æœ€åˆã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ãƒœ
+*       ã‚¿ãƒ³ã®å€¤ã‚’è¿”ã™
 *----------------------------------------------------------------------------*/
 
 int AskRadioButtonValue(HWND hDlg, const RADIOBUTTON *Buttons, int Num)
@@ -683,14 +683,14 @@ int AskRadioButtonValue(HWND hDlg, const RADIOBUTTON *Buttons, int Num)
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ•¶š—ñ‚É•ÏŠ·‚·‚é --------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‚’æ–‡å­—åˆ—ã«å¤‰æ›ã™ã‚‹ --------------------------------------
 *
 *   Parameter
-*       double Size : ƒtƒ@ƒCƒ‹ƒTƒCƒY
-*       LPTSTR Buf : •¶š—ñ‚ğ•Ô‚·ƒoƒbƒtƒ@
+*       double Size : ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º
+*       LPTSTR Buf : æ–‡å­—åˆ—ã‚’è¿”ã™ãƒãƒƒãƒ•ã‚¡
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void MakeSizeString(double Size, LPTSTR Buf)
@@ -722,13 +722,13 @@ void MakeSizeString(double Size, LPTSTR Buf)
 }
 
 
-/*----- ƒƒbƒZ[ƒWˆ— --------------------------------------------------------
+/*----- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† --------------------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void BackgrndMessageProc(void)
@@ -744,13 +744,13 @@ void BackgrndMessageProc(void)
 }
 
 
-/*----- ƒŠƒXƒgƒ{ƒbƒNƒX‚Ì“à—e‚ğƒ\[ƒg‚·‚é --------------------------------------
+/*----- ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®å†…å®¹ã‚’ã‚½ãƒ¼ãƒˆã™ã‚‹ --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ƒŠƒXƒgƒ{ƒbƒNƒX‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       HWND hWnd : ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SortListBoxItem(HWND hWnd)
@@ -789,14 +789,14 @@ void SortListBoxItem(HWND hWnd)
 }
 
 
-/*----- ƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ‚ğ‹‚ß‚é --------------------------------------------
+/*----- ãƒ«ãƒ¼ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æ±‚ã‚ã‚‹ --------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
-*       LPTSTR Buf : ƒoƒbƒtƒ@
+*       LPTSTR Path : ãƒ‘ã‚¹å
+*       LPTSTR Buf : ãƒãƒƒãƒ•ã‚¡
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void GetRootPath(LPTSTR Path, LPTSTR Buf)
@@ -829,13 +829,13 @@ void GetRootPath(LPTSTR Path, LPTSTR Buf)
 }
 
 
-/*----- FS‚Ìí—Ş‚ğ•Ô‚· --------------------------------------------------------
+/*----- FSã®ç¨®é¡ã‚’è¿”ã™ --------------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
+*       LPTSTR Path : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       int FS‚Ìí—Ş (FS_FAT/FS_OTHER)
+*       int FSã®ç¨®é¡ (FS_FAT/FS_OTHER)
 *----------------------------------------------------------------------------*/
 
 int GetDriveFormat(LPTSTR Path)
@@ -857,15 +857,15 @@ int GetDriveFormat(LPTSTR Path)
 }
 
 
-/*----- ƒ{ƒŠƒ…[ƒ€ƒ‰ƒxƒ‹‚ğ•Ô‚· ------------------------------------------------
+/*----- ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ©ãƒ™ãƒ«ã‚’è¿”ã™ ------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
-*       LPTSTR Buf : ƒoƒbƒtƒ@
-*       int Size : ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+*       LPTSTR Path : ãƒ‘ã‚¹å
+*       LPTSTR Buf : ãƒãƒƒãƒ•ã‚¡
+*       int Size : ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 *
 *   Return Value
-*       BOOL ƒXƒe[ƒ^ƒX (TRUE=³í)
+*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (TRUE=æ­£å¸¸)
 *----------------------------------------------------------------------------*/
 
 BOOL GetVolumeLabel(LPTSTR Path, LPTSTR Buf, int Size)
@@ -882,13 +882,13 @@ BOOL GetVolumeLabel(LPTSTR Path, LPTSTR Buf, int Size)
 }
 
 
-/*----- ƒhƒ‰ƒCƒu‚Ìí—Ş‚ğ•Ô‚· --------------------------------------------------
+/*----- ãƒ‰ãƒ©ã‚¤ãƒ–ã®ç¨®é¡ã‚’è¿”ã™ --------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒpƒX–¼
+*       LPTSTR Path : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       UINT ƒhƒ‰ƒCƒu‚Ìí—Ş (DRIVE_xxx)
+*       UINT ãƒ‰ãƒ©ã‚¤ãƒ–ã®ç¨®é¡ (DRIVE_xxx)
 *----------------------------------------------------------------------------*/
 
 UINT GetDriveTypeFromPath(LPTSTR Path)
@@ -902,13 +902,13 @@ UINT GetDriveTypeFromPath(LPTSTR Path)
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹‚ğƒSƒ~” ‚Éíœ ------------------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚´ãƒŸç®±ã«å‰Šé™¤ ------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒtƒ@ƒCƒ‹–¼
+*       LPTSTR Path : ãƒ•ã‚¡ã‚¤ãƒ«å
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX (0=³íI—¹)
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (0=æ­£å¸¸çµ‚äº†)
 *----------------------------------------------------------------------------*/
 
 int MoveFileToTrashCan(LPTSTR Path)
@@ -928,17 +928,17 @@ int MoveFileToTrashCan(LPTSTR Path)
 }
 
 
-/*----- ƒhƒ‰ƒbƒO&ƒhƒƒbƒv‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ğƒy[ƒW‚É‘—‚é -------------------------
+/*----- ãƒ‰ãƒ©ãƒƒã‚°&ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒšãƒ¼ã‚¸ã«é€ã‚‹ -------------------------
 *
 *   Parameter
-*       HWND hWnd : ‘—‚èæ‚Ìƒ_ƒCƒAƒƒO
-*       UINT message  : ‘—‚éƒƒbƒZ[ƒW
-*       WPARAM wParam : WM_DROPFILESƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : WM_DROPFILESƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
-*       int Type : ‹–‰Â‚·‚éƒ^ƒCƒv (SEND_xxx)
+*       HWND hWnd : é€ã‚Šå…ˆã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
+*       UINT message  : é€ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+*       WPARAM wParam : WM_DROPFILESãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : WM_DROPFILESãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+*       int Type : è¨±å¯ã™ã‚‹ã‚¿ã‚¤ãƒ— (SEND_xxx)
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int Type)
@@ -986,14 +986,14 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 }
 
 
-/*----- ƒrƒ…[ƒ‚ğ‹N“® --------------------------------------------------------
+/*----- ãƒ“ãƒ¥ãƒ¼ãƒ¯ã‚’èµ·å‹• --------------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Fname : ƒtƒ@ƒCƒ‹–¼
+*       LPTSTR Fname : ãƒ•ã‚¡ã‚¤ãƒ«å
 *       LPTSTR App :
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void ExecViewer(LPTSTR Fname, LPTSTR App)
@@ -1003,9 +1003,9 @@ void ExecViewer(LPTSTR Fname, LPTSTR App)
     _TCHAR AssocProg[MY_MAX_PATH+1];
     _TCHAR ComLine[MY_MAX_PATH*2+10];
 
-    /* FindExecutable()‚ÍŠÖ˜A•t‚¯‚ç‚ê‚½ƒvƒƒOƒ‰ƒ€‚ÌƒpƒX–¼‚ÉƒXƒy[ƒX‚ª   */
-    /* ŠÜ‚Ü‚ê‚Ä‚¢‚éAŠÔˆá‚Á‚½ƒpƒX–¼‚ğ•Ô‚·–‚ª‚ ‚éB                   */
-    /* ‚»‚±‚ÅAŠÖ˜A•t‚¯‚ç‚ê‚½ƒvƒƒOƒ‰ƒ€‚Ì‹N“®‚ÍShellExecute()‚ğg‚¤B   */
+    /* FindExecutable()ã¯é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®ãƒ‘ã‚¹åã«ã‚¹ãƒšãƒ¼ã‚¹ãŒ   */
+    /* å«ã¾ã‚Œã¦ã„ã‚‹æ™‚ã€é–“é•ã£ãŸãƒ‘ã‚¹åã‚’è¿”ã™äº‹ãŒã‚ã‚‹ã€‚                   */
+    /* ãã“ã§ã€é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®èµ·å‹•ã¯ShellExecute()ã‚’ä½¿ã†ã€‚   */
 
     if((_tcslen(App) == 0) && (FindExecutable(Fname, NULL, AssocProg) > (HINSTANCE)32))
     {
@@ -1030,18 +1030,18 @@ void ExecViewer(LPTSTR Fname, LPTSTR App)
 }
 
 
-/*----- İ’è’l‚Ì”ÍˆÍƒ`ƒFƒbƒN --------------------------------------------------
+/*----- è¨­å®šå€¤ã®ç¯„å›²ãƒã‚§ãƒƒã‚¯ --------------------------------------------------
 *
 *   Parameter
-*       int *Cur : İ’è’l
-*       int Max : Å‘å’l
-*       int Min : Å¬’l
+*       int *Cur : è¨­å®šå€¤
+*       int Max : æœ€å¤§å€¤
+*       int Min : æœ€å°å€¤
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Parameter change
-*       int *Cur : İ’è’l
+*       int *Cur : è¨­å®šå€¤
 *----------------------------------------------------------------------------*/
 
 void CheckRange2(int *Cur, int Max, int Min)
@@ -1054,14 +1054,14 @@ void CheckRange2(int *Cur, int Max, int Min)
 }
 
 
-/*----- FILETIME(UTC)‚ğ“ú•t•¶š—ñ(JST)‚É•ÏŠ· ----------------------------------
+/*----- FILETIME(UTC)ã‚’æ—¥ä»˜æ–‡å­—åˆ—(JST)ã«å¤‰æ› ----------------------------------
 *
 *   Parameter
-*       FILETIME *Time : ƒtƒ@ƒCƒ‹ƒ^ƒCƒ€
-*       LPTSTR Buf : “ú•t•¶š—ñ‚ğ•Ô‚·ƒ[ƒN
+*       FILETIME *Time : ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒ 
+*       LPTSTR Buf : æ—¥ä»˜æ–‡å­—åˆ—ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void FileTime2TimeString(FILETIME *Time, LPTSTR Buf)
@@ -1078,18 +1078,18 @@ void FileTime2TimeString(FILETIME *Time, LPTSTR Buf)
 }
 
 
-/*----- ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğƒNƒŠƒA‚·‚é  ------------------------
+/*----- ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹  ------------------------
 *
 *   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       int idComboBox  : ƒNƒŠƒA‚·‚é‘ÎÛ‚ÌID
+*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       int idComboBox  : ã‚¯ãƒªã‚¢ã™ã‚‹å¯¾è±¡ã®ID
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 static void ClearComboBox(HWND hDlg, int idComboBox)
 {
-    /* CB_RESETCONTENT ‚Í Vista ˆÈ~‚µ‚©g‚¦‚È‚¢‚Ì‚ÅˆêŒÂ‚¸‚ÂÁ‚· */
+    /* CB_RESETCONTENT ã¯ Vista ä»¥é™ã—ã‹ä½¿ãˆãªã„ã®ã§ä¸€å€‹ãšã¤æ¶ˆã™ */
     int i;
     int count = SendDlgItemMessage(hDlg, idComboBox, CB_GETCOUNT, 0, 0);
     for (i = 0; i < count; i++)
@@ -1098,15 +1098,15 @@ static void ClearComboBox(HWND hDlg, int idComboBox)
     }
 }
 
-/*----- ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚Ì“à—e‚ğ•Ê‚ÌƒRƒ“ƒ{ƒ{ƒbƒNƒX‚É•¡»‚·‚é  ------------------------
+/*----- ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã®å†…å®¹ã‚’åˆ¥ã®ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã«è¤‡è£½ã™ã‚‹  ------------------------
 *
 *   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       int idCopyFrom  : ƒRƒs[Œ³ID
-*       int idCopyTo : ƒRƒs[æID
+*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       int idCopyFrom  : ã‚³ãƒ”ãƒ¼å…ƒID
+*       int idCopyTo : ã‚³ãƒ”ãƒ¼å…ˆID
 *
 *   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
 {
@@ -1115,7 +1115,7 @@ void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
     int i;
     TCHAR * buffer = NULL;
 
-    /* ƒRƒs[æ‚ÌƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğƒNƒŠƒA‚·‚é */
+    /* ã‚³ãƒ”ãƒ¼å…ˆã®ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹ */
     ClearComboBox(hDlg, idCopyTo);
 
     ItemCount = SendDlgItemMessage(hDlg, idCopyFrom, CB_GETCOUNT, 0, 0);

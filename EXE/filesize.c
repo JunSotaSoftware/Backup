@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                               ƒtƒ@ƒCƒ‹—e—ÊŒŸõ
+/                               ãƒ•ã‚¡ã‚¤ãƒ«å®¹é‡æ¤œç´¢
 /
 /============================================================================
 / Copyright (C) 1997-2015 Sota. All rights reserved.
@@ -43,7 +43,7 @@
 #include "resource.h"
 
 
-/*===== \‘¢‘Ì =====*/
+/*===== æ§‹é€ ä½“ =====*/
 
 typedef struct {
     LPTSTR  ScnName;
@@ -57,22 +57,22 @@ typedef struct {
     double  Size;
 } SIZE_COUNT_INFO;
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static LRESULT CALLBACK SizeDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info);
 
-/*==== ƒ[ƒJƒ‹‚Èƒ[ƒN =====*/
+/*==== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ =====*/
 
 static int DlgSts;
 
 
 /*-----------------------------------------------------------------------------
- à–¾   :   ƒtƒ@ƒCƒ‹—e—ÊŒŸõ‚Ìƒ_ƒCƒAƒƒO‚ð•\Ž¦
- ˆø”   :   hWnd    eƒEƒCƒ“ƒhƒE‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-            Pat     ƒoƒbƒNƒAƒbƒvƒpƒ^[ƒ“
- –ß‚è’l :   ‚È‚µ
- ”õl   :
+ èª¬æ˜Ž   :   ãƒ•ã‚¡ã‚¤ãƒ«å®¹é‡æ¤œç´¢ã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤º
+ å¼•æ•°   :   hWnd    è¦ªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+            Pat     ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ‘ã‚¿ãƒ¼ãƒ³
+ æˆ»ã‚Šå€¤ :   ãªã—
+ å‚™è€ƒ   :
 -----------------------------------------------------------------------------*/
 void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
 {
@@ -96,7 +96,7 @@ void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
     hDlg = CreateDialog(GetBupInst(), MAKEINTRESOURCE(filesize_dlg), hWnd, SizeDlgWndProc);
     ShowWindow(hDlg, SW_SHOW);
 
-    /* ŒŸõ‚·‚éƒpƒX–¼‚ð•\Ž¦ */
+    /* æ¤œç´¢ã™ã‚‹ãƒ‘ã‚¹åã‚’è¡¨ç¤º */
     TmpPat = Pat;
     while(TmpPat != NULL)
     {
@@ -111,7 +111,7 @@ void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
 
     SendDlgItemMessage(hDlg, FSIZE_MESSAGE, WM_SETTEXT, 0, (LPARAM)MSGJPN_107);
 
-    /* ŒŸõ */
+    /* æ¤œç´¢ */
     while((Pat != NULL) && (DlgSts == 0))
     {
         Path = Pat->Set.Src;
@@ -154,13 +154,13 @@ void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
 
 
 /*-----------------------------------------------------------------------------
- à–¾   :   ƒtƒ@ƒCƒ‹—e—ÊŒŸõƒ_ƒCƒAƒƒO‚ÌƒR[ƒ‹ƒoƒbƒN
- ˆø”   :   hDlg    ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-            message ƒƒbƒZ[ƒW”Ô†
-            wParam  ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-            lParam  ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
- –ß‚è’l :   ƒƒbƒZ[ƒW‚É‘Î‰ž‚·‚é–ß‚è’l
- ”õl   :
+ èª¬æ˜Ž   :   ãƒ•ã‚¡ã‚¤ãƒ«å®¹é‡æ¤œç´¢ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
+ å¼•æ•°   :   hDlg    ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+            message ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+            wParam  ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+            lParam  ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+ æˆ»ã‚Šå€¤ :   ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
+ å‚™è€ƒ   :
 -----------------------------------------------------------------------------*/
 static LRESULT CALLBACK SizeDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -191,12 +191,12 @@ static LRESULT CALLBACK SizeDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 
 /*-----------------------------------------------------------------------------
- à–¾   :   ƒtƒ@ƒCƒ‹—e—ÊŒŸõ
- ˆø”   :   hDlg        ƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-            Path        ŒŸõƒpƒX–¼
-            Info        ŒŸõî•ñ
- –ß‚è’l :   ‚È‚µ
- ”õl   :   ŒŸõŒ‹‰Ê‚ðƒ_ƒCƒAƒƒOƒ{ƒbƒNƒX‚É•\Ž¦‚·‚é
+ èª¬æ˜Ž   :   ãƒ•ã‚¡ã‚¤ãƒ«å®¹é‡æ¤œç´¢
+ å¼•æ•°   :   hDlg        ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒœãƒƒã‚¯ã‚¹ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+            Path        æ¤œç´¢ãƒ‘ã‚¹å
+            Info        æ¤œç´¢æƒ…å ±
+ æˆ»ã‚Šå€¤ :   ãªã—
+ å‚™è€ƒ   :   æ¤œç´¢çµæžœã‚’ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒœãƒƒã‚¯ã‚¹ã«è¡¨ç¤ºã™ã‚‹
 -----------------------------------------------------------------------------*/
 static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 {
@@ -221,7 +221,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 #ifdef DEBUG_LOG
         DoPrintf(_T(" - A"));
 #endif
-        /* ƒtƒHƒ‹ƒ_^ƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©ƒ`ƒFƒbƒN */
+        /* ãƒ•ã‚©ãƒ«ãƒ€ï¼ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ */
         RemoveYenTail(Src);
         if((_tcschr(Src, '*') != NULL) ||(_tcschr(Src, '?') != NULL))
         {
@@ -254,7 +254,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 #ifdef DEBUG_LOG
         DoPrintf(_T(" - folder\n"));
 #endif
-        /*===== ƒtƒHƒ‹ƒ_ =====*/
+        /*===== ãƒ•ã‚©ãƒ«ãƒ€ =====*/
         SetYenTail(Src);
         Pos = _tcschr(Src, NUL);
         _tcscpy(Pos, _T("*"));
@@ -270,7 +270,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
                 if(((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) && (Info->IgnSys == YES)) ||
                    ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) && (Info->IgnHid == YES)))
                 {
-                    /* ƒJƒEƒ“ƒg‚µ‚È‚¢ */
+                    /* ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„ */
                 }
                 else
                 {
@@ -314,7 +314,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 #ifdef DEBUG_LOG
         DoPrintf(_T(" - file\n"));
 #endif
-        /*===== ƒtƒ@ƒCƒ‹ =====*/
+        /*===== ãƒ•ã‚¡ã‚¤ãƒ« =====*/
         if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
         {
             do
@@ -328,7 +328,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
                    ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) && (Info->IgnSys == YES)) ||
                    ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) && (Info->IgnHid == YES)))
                 {
-                    /* ƒJƒEƒ“ƒg‚µ‚È‚¢ */
+                    /* ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„ */
                 }
                 else
                 {
