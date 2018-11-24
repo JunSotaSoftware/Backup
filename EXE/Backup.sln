@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Backup", "Backup.vcxproj", "{33B71127-3211-4CC7-8D90-B8DACB8878F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Backup_English", "Backup_English.vcxproj", "{0F812B51-CD4D-4440-8F0A-2230D51A4F70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33B71127-3211-4CC7-8D90-B8DACB8878F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33B71127-3211-4CC7-8D90-B8DACB8878F7}.Debug|Win32.Build.0 = Debug|Win32
+		{33B71127-3211-4CC7-8D90-B8DACB8878F7}.Release|Win32.ActiveCfg = Release|Win32
+		{33B71127-3211-4CC7-8D90-B8DACB8878F7}.Release|Win32.Build.0 = Release|Win32
+		{0F812B51-CD4D-4440-8F0A-2230D51A4F70}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0F812B51-CD4D-4440-8F0A-2230D51A4F70}.Debug|Win32.Build.0 = Debug|Win32
+		{0F812B51-CD4D-4440-8F0A-2230D51A4F70}.Release|Win32.ActiveCfg = Release|Win32
+		{0F812B51-CD4D-4440-8F0A-2230D51A4F70}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

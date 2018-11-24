@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>魚外</TITLE>
+<META content="text/html; charset=shift_jis" http-equiv=Content-Type>
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><FONT face="ＭＳ Ｐゴシック">
+<P><IMG src="..\pic\dlg_set_ignore1.png"></P>
+<P>除外の設定を行なうことで、バックアップしないフォルダやファイルを指定できます。<BR>以下の例をご覧ください。</P>
+<P><FONT color=#0000ff><STRONG>例）</STRONG></FONT><BR>バックアップ元が以下の状態だとします。<BR><IMG 
+src="..\pic\dst1path.png"></P>
+<P>以下のように、除外を指定します。</P>
+<P><FONT 
+color=#0000ff>バックアップ元のフォルダ／ファイル<BR></FONT>　　C:\HOME\DATA<BR>　　C:\HOME\SAMPLE\mailform.txt<BR><FONT 
+color=#0000ff>バックアップ先のフォルダ<BR>　　</FONT>E:\<BR><FONT 
+color=#0000ff>除外するフォルダ<BR></FONT>　　SECRET<BR><FONT 
+color=#0000ff>除外するファイル<BR></FONT>　　*.txt</P>
+<P>このパターンでバックアップを行なうと、バックアップ先は次のようになります。<BR><IMG src="..\pic\dst2path.png"></P>
+<P>なお、除外するファイルに *.txt という指定があるにもかかわらず、mailform.txt 
+というファイルがバックアップされています。mailform.txt 
+はファイル単位でバックアップ元に指定したものですが、このようなファイルは除外するファイルの対象にはなりません。</P>
+<P><STRONG>■バックアップしないフォルダ</STRONG></P>
+<P>バックアップしないフォルダを指定します。<BR>ここでフォルダを指定すると、その中のサブフォルダもバックアップしません。</P>
+<P><STRONG><FONT 
+color=#0000ff>追加</FONT></STRONG>ボタンを押して、バックアップしないフォルダ名を入力してください。<BR>フォルダ名は、大文字／小文字は区別されません。</P>
+<P>フォルダの指定方法は、２通りあります。</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>●フォルダ名のみ指定する場合</STRONG></P>
+  <BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+    <P><FONT color=#0000ff>例）</FONT> <STRONG>Tmp</STRONG></P>
+    <P>このようにフォルダ名のみ指定した時は、バックアップ元にある全ての<STRONG>Tmp</STRONG>という名前のフォルダがバックアップされなくなります。</P></BLOCKQUOTE>
+  <P><STRONG>●フルパスで指定する場合</STRONG></P>
+  <BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+    <P><FONT color=#0000ff>例）</FONT> <STRONG>C:\Home\Tmp</STRONG></P>
+    <P>このようにフルパスで指定すると、<STRONG>C:\Home\Tmp</STRONG>のみがバックアップされなくなります。</P></BLOCKQUOTE></BLOCKQUOTE>
+<P><STRONG>■バックアップしないファイル</STRONG></P>
+<P>バックアップしないファイルを指定します。</P>
+<P>バックアップ元にフォルダを指定している時、ここで指定した名前のファイルがそのフォルダの中にある場合、そのファイルはバックアップしません。</P>
+<P>バックアップ元にフォルダではなくファイル名を指定している時は、ここで同じ名前のファイル名を指定してもバックアップを行います。<BR><A 
+href="H0000032.HTM">バックアップの基本的な考え方</A>の項目も参考にしてください。</P>
+<P><FONT 
+color=#0000ff><STRONG>追加</STRONG></FONT>ボタンを押して、バックアップしないファイル名を入力してください。<BR>ファイル名は、大文字／小文字は区別されません。</P>
+<P>ファイルの指定方法は、２通りあります。</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>●ファイル名のみ指定する場合</STRONG></P>
+  <BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+    <P><FONT color=#0000ff>例）</FONT><STRONG> *.bak</STRONG></P>
+    <P>このようにファイル名のみ指定した時は、バックアップ元にある全ての<STRONG>*.bak</STRONG>という名前のファイルがバックアップされなくなります。</P></BLOCKQUOTE>
+  <P><STRONG>●フルパスで指定する場合</STRONG></P>
+  <BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+    <P><FONT color=#0000ff>例）</FONT> <STRONG>C:\Home\*.txt</STRONG></P>
+    <P>このようにフルパスで指定すると、<STRONG>C:\Home\*.txt</STRONG>のみがバックアップされなくなります。</P></BLOCKQUOTE></BLOCKQUOTE>
+<P><STRONG>■ファイル容量</STRONG></P>
+<P>現在設定しているパターンで、バックアップ元にあるファイルの総容量を調査します。</P></FONT></BODY></HTML>

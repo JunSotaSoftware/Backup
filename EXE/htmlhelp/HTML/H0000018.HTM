@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
+<HTML>
+<HEAD>
+	<META http-equiv="Content-Type" content="text/html; charset=shift_jis">
+	<META NAME="GENERATOR" Content="KsHTMLHelphi">
+	<TITLE>バックアップ元とバックアップ先の関係</TITLE>
+</HEAD>
+
+<BODY><FONT face="ＭＳ Ｐゴシック">
+<P><BR>バックアップ元のディスクは、以下のようになっていたとします。<BR>（図では、大文字はフォルダ、小文字はファイルを表わしています。）</P>
+<P>{bmc srcpath.bmp}</P>
+<P>●パターン１</P>
+<P>バックアップ元<BR>C:\HOME\DATA<BR>C:\HOME\SAMPLE\mailform.txt<BR>バックアップ先<BR>E:\BACKUP<BR>除外するフォルダ<BR>なし<BR>除外するファイル<BR>なし</P>
+<P>このパターンでバックアップを行なうと、バックアップ先は次のようになります。</P>
+<P>{bmc dst1path.bmp}</P>
+<P>●パターン２</P>
+<P>バックアップ元のフォルダ／ファイル<BR>C:\HOME\DATA<BR>C:\HOME\SAMPLE\mailform.txt<BR>バックアップ先のフォルダ<BR>E:\<BR>除外するフォルダ<BR>SECRET<BR>除外するファイル<BR>*.txt</P>
+<P>このパターンでバックアップを行なうと、バックアップ先は次のようになります。</P>
+<P>{bmc dst2path.bmp}</P>
+<P>除外するファイルに *.txt という指定があるにもかかわらず、mailform.txt 
+というファイルがバックアップされています。mailform.txt 
+はファイル単位でバックアップ元に指定したものですが、このようなファイルは除外するファイルの対象にはなりません。<BR></P>
+</BODY>
+</HTML>

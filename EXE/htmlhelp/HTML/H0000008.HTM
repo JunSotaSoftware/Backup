@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>コマンドライン</TITLE>
+<META content="text/html; charset=shift_jis" http-equiv=Content-Type>
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><FONT face="ＭＳ Ｐゴシック">
+<P>コマンドラインで、次のようにバックアップパターンを指定できます。</P>
+<P>●バックアップパターンを選択する場合。（通常）</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>backup&nbsp; [-s] [-c]</STRONG></P></BLOCKQUOTE>
+<P>●登録されているバックアップパターンの名前を指定して実行する場合。</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>backup&nbsp; -n パターン名 [-s] [-c] [-i] [-p 
+設定ファイル名]</STRONG></P></BLOCKQUOTE>
+<P>●登録されている全てのバックアップパターンで実行する場合。</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>backup&nbsp; -a&nbsp; [-s] [-c] [-i] [-p 
+設定ファイル名]</STRONG></P></BLOCKQUOTE>
+<P>●バックアップ元、バックアップ先を直接指定する場合。</P>
+<BLOCKQUOTE style="MARGIN-RIGHT: 0px" dir=ltr>
+  <P><STRONG>backup&nbsp; バックアップ元&nbsp; バックアップ先&nbsp; [-f] [-d] [-r] [-e] [-s] 
+  [-c] [-i] [--nonotify]</STRONG></P></BLOCKQUOTE>
+<P>オプションの説明</P>
+<P><STRONG>-s</STRONG> または 
+<STRONG>--start</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;バックアップ開始の確認を行ないません。<BR><STRONG>-c</STRONG> 
+または <STRONG>--close</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+バックアップ終了後、ただちにプログラムを閉じます。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;パターン設定でシャットダウンなどを選んでいても、<STRONG>-c</STRONG>の指定が優先されます。<BR><STRONG>-i</STRONG> 
+または <STRONG>--minimized</STRONG>&nbsp; 最小化して実行します。</P>
+<P><STRONG>-n</STRONG> または 
+<STRONG>--name</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+バックアップパターン名の指定してバックアップを行ないます。<BR><STRONG>-a</STRONG> または 
+<STRONG>--all</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+全バックアップパターンでバックアップを行ないます。</P>
+<P><STRONG>-f</STRONG> または 
+<STRONG>--force</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+常に全ファイルをコピーします。<BR><STRONG>-d</STRONG> または 
+<STRONG>--rmdir</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+バックアップ元にないフォルダをバックアップ先から削除します。<BR><STRONG>-r</STRONG> または 
+<STRONG>--rmfile</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+バックアップ元にないファイルをバックアップ先から削除します。<BR><STRONG>-e</STRONG> または 
+<STRONG>--noerror</STRONG>&nbsp;&nbsp;&nbsp;エラーを無視して処理を続行します。<BR><STRONG>--nonotify</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+ファイル削除の確認ウインドウを表示せず、ファイルをバックアップ先から削除します。</P>
+<P><STRONG>-p</STRONG> または 
+<STRONG>--spec</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+設定ファイル(INIファイル)を指定します。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指定しなかった場合は、通常の設定を使用します。</P>
+<P><STRONG>-h</STRONG> または 
+<STRONG>--help</STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+コマンドラインに関するヘルプ（この画面）を表示します。</P>
+<P><FONT color=#0000ff>例１）</FONT> <STRONG>e:\Home</STRONG> から 
+<STRONG>g:\</STRONG> 
+へミラーリングをする設定でバックアップ。起動後直ちに開始。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<STRONG>backup E:\Home g:\ -d -r -s</STRONG></P>
+<P><FONT color=#0000ff>例２）</FONT> バックアップパターン<STRONG> Home Backup</STRONG> 
+の内容でバックアップ。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<STRONG> backup -n 
+"Home Backup"</STRONG></P>
+<P><FONT color=#0000ff>例３）</FONT> バックアップパターン <STRONG>パターン１</STRONG> 
+の内容でバックアップ。確認せずに開始し、終わったらプログラムを閉じる。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<STRONG>backup -n パターン１ -s -c</STRONG> </P>
+<P><FONT color=#ff0000>注意</FONT></P>
+<P>-s（または--start）オプションを付けると、バックアップ開始の確認を行ないません。指定を間違えないように注意してください。</P>
+<P>-d や 
+-e、それに--nonotifyを指定すると、確認することなくバックアップ先の不要なファイルを削除します。指定を間違えないように注意してください。</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></BODY></HTML>

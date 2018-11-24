@@ -1,0 +1,1072 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+backup                  ICON                    "backup.ico"
+backup_tiny_1           ICON                    "backup_1.ico"
+backup_tiny_2           ICON                    "backup_2.ico"
+backup_tiny_3           ICON                    "backup_3.ico"
+backup_tiny_4           ICON                    "backup_4.ico"
+backup_tiny_5           ICON                    "backup_5.ico"
+backup_tiny_6           ICON                    "backup_6.ico"
+backup_tiny_7           ICON                    "backup_7.ico"
+backup_tiny_8           ICON                    "backup_8.ico"
+backup_tiny_9           ICON                    "backup_9.ico"
+backup_tiny_a           ICON                    "backup_a.ico"
+backup_tiny_b           ICON                    "backup_b.ico"
+grip_icon               ICON                    "icon1.ico"
+notify_icon             ICON                    "icon2.ico"
+notify2_icon            ICON                    "ico00001.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+tr_notify_dlg DIALOGEX 0, 0, 198, 186
+STYLE DS_SETFONT | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION | WS_THICKFRAME
+CAPTION "バックアップ開始"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,41,167,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,104,167,50,14
+    LTEXT           "バックアップ元",-1,25,6,43,8
+    LISTBOX         TRNOT_SRCLIST,25,15,148,58,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "バックアップ先",TRNOT_MSG1,25,76,43,8
+    EDITTEXT        TRNOT_DST,25,86,148,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "<<(&P)",TRNOT_PREV,5,40,19,14
+    PUSHBUTTON      "(&N)>>",TRNOT_NEXT,174,40,19,14
+    LTEXT           "バックアップが終了したら(&X)",TRNOT_MSG3,5,119,104,8
+    COMBOBOX        TRNOT_SYSTEM,5,129,188,79,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "バックアップを開始します。",TRNOT_MSG2,5,147,188,16,SS_CENTERIMAGE | WS_BORDER,WS_EX_CLIENTEDGE
+    ICON            grip_icon,TRNOT_GRIP,180,164,18,21
+    LTEXT           "ボリュームラベル",TRNOT_MSG4,24,104,51,8
+    EDITTEXT        TRNOT_VOL,79,101,94,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+FILEOPENORD DIALOG 109, 35, 165, 134
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Open"
+FONT 9, "MS UI Gothic"
+BEGIN
+    LISTBOX         lst2,7,32,92,68,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        cmb2,7,114,92,68,CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,105,6,50,14,WS_GROUP
+    PUSHBUTTON      "ｷｬﾝｾﾙ",IDCANCEL,105,24,50,14,WS_GROUP
+    PUSHBUTTON      "&Help",psh15,105,46,50,14,WS_GROUP
+    CONTROL         "&Read Only",chx1,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,105,68,50,12
+    LTEXT           "File &Name:",stc3,168,0,76,10
+    EDITTEXT        edt1,168,10,90,12,ES_AUTOHSCROLL | ES_OEMCONVERT | NOT WS_TABSTOP
+    LISTBOX         lst1,168,26,90,68,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL
+    LTEXT           "List Files of &Type:",stc2,168,98,90,9
+    COMBOBOX        cmb1,168,108,90,36,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_BORDER | WS_VSCROLL
+    LTEXT           "フォルダ(&D):",-1,7,6,92,9
+    LTEXT           "",stc1,7,18,92,9,SS_NOPREFIX
+    LTEXT           "ドライブ(&V):",stc4,7,104,92,9
+END
+
+about_dlg DIALOGEX 0, 0, 155, 76
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backupについて"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
+    ICON            backup,-1,7,2,20,20
+    CTEXT           "Backup  Ver.1.11",-1,29,13,98,8
+    CTEXT           "Copyright(C) 1997-2012 Sota",-1,7,27,141,8
+    CTEXT           "BackupはFreewareです",-1,7,42,141,8
+END
+
+main_dlg DIALOGEX 0, 0, 227, 177
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "バックアップパターン(&P)",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,129,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "バックアップ開始(&S)",MAIN_START,8,159,77,14
+    PUSHBUTTON      "全パターン開始(&A)",MAIN_ALLSTART,92,159,77,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "終了(&X)",MAIN_QUIT,176,159,43,14
+    PUSHBUTTON      "新規追加(&N)...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "設定変更(&M)...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "コピー(&C)",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "削除(&D)...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "↑",MAIN_UP,189,86,14,14
+    PUSHBUTTON      "↓",MAIN_DOWN,206,86,14,14
+    PUSHBUTTON      "ファイル容量(&Z)",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,153,226,1
+END
+
+transfer_dlg DIALOGEX 0, 0, 227, 177
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "一時停止",TRANS_STOP,7,159,105,14
+    PUSHBUTTON      "戻る(&Q)",TRANS_RETURN,123,159,43,14
+    ICON            grip_icon,TRANS_GRIP,208,156,18,21
+    PUSHBUTTON      "終了(&X)",TRANS_QUIT,177,159,43,14
+    LTEXT           "処理中のフォルダ",IDC_STATIC,7,4,90,8
+    CONTROL         "Tree1",TRANS_DIRLIST,"SysTreeView32",TVS_HASLINES | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL,7,14,139,81
+    EDITTEXT        TRANS_EXEC,7,112,213,42,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    CONTROL         "",TRANS_BOX1,"Static",SS_ETCHEDFRAME,149,14,71,81
+    LTEXT           "処理内容",TRANS_TITLE2,149,4,64,8
+    CONTROL         "",TRANS_LINE1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "Progress1",TRANS_PROGRESS,"msctls_progress32",WS_BORDER,7,99,213,9
+    CONTROL         "",TRANS_PIC_SCAN,"Static",SS_BITMAP | SS_CENTERIMAGE,152,29,13,14
+    CONTROL         "",TRANS_PIC_RMDIR,"Static",SS_BITMAP | SS_CENTERIMAGE,152,41,13,14
+    CONTROL         "",TRANS_PIC_RMFILE,"Static",SS_BITMAP | SS_CENTERIMAGE,152,53,13,14
+    CONTROL         "",TRANS_PIC_MKDIR,"Static",SS_BITMAP | SS_CENTERIMAGE,152,65,13,14
+    CONTROL         "",TRANS_PIC_COPY,"Static",SS_BITMAP | SS_CENTERIMAGE,152,77,13,14
+    LTEXT           "フォルダ検索",TRANS_SCAN,166,31,46,8
+    LTEXT           "フォルダ削除",TRANS_RMDIR,166,43,46,8
+    LTEXT           "ファイル削除",TRANS_RMFILE,166,55,47,8
+    LTEXT           "フォルダ作成",TRANS_MKDIR,166,67,47,8
+    LTEXT           "ファイル複写",TRANS_COPY,166,80,43,8
+    CONTROL         "",TRANS_PIC_PREPARE,"Static",SS_BITMAP | SS_CENTERIMAGE,152,17,13,14
+    LTEXT           "バックアップ準備",TRANS_PREPARE,166,19,46,8
+END
+
+patset_name_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "パターン名(&N)",-1,5,5,91,8
+    EDITTEXT        PATSET_NAME,5,15,197,13,ES_AUTOHSCROLL
+    LTEXT           "コメント(&C)",-1,5,35,41,8
+    EDITTEXT        PATSET_COMMENT,5,46,197,65,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "コメントに使用できるマクロ：\n    $L＝バックアップ先のボリュームラベル",-1,70,113,132,19,SS_SUNKEN
+    CONTROL         "バックアップ開始時にコメントをウインドウで表示する(&S)",PATSET_SHOW_COMMENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,138,197,10
+END
+
+patset_dir_dlg DIALOGEX 0, 0, 207, 210
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LISTBOX         PATSET_SRCLIST,11,18,185,146,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "追加(&A)...",PATSET_ADD,16,168,34,14
+    PUSHBUTTON      "変更(&E)...",PATSET_EDIT,57,168,34,14
+    PUSHBUTTON      "削除(&R)",PATSET_DEL,99,168,34,14
+    PUSHBUTTON      "↑",PATSET_UP,146,168,13,14
+    PUSHBUTTON      "↓",PATSET_DOWN,162,168,13,14
+    PUSHBUTTON      "▼",PATSET_TOOLMENU,184,168,10,14
+    GROUPBOX        "バックアップ元フォルダ／ファイル",-1,5,5,197,182
+    LTEXT           "※エクスプローラからフォルダやファイルをドラッグ＆ドロップできます。",-1,12,193,190,11,SS_SUNKEN
+END
+
+patset_flg_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "バックアップ元にないフォルダはバックアップ先から削除(&D)",PATSET_RMDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,197,10
+    CONTROL         "バックアップ元にないファイルはバックアップ先から削除(&F)",PATSET_RMFILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,17,197,10
+    CONTROL         "「除外」に指定したものをバックアップ先から削除しない(&B)",PATSET_IGNNODEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,29,197,10
+    CONTROL         "ごみ箱へ削除(&T)",PATSET_USE_TRASHCAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,42,197,10
+    CONTROL         "ファイルを削除する前に確認(&N)",PATSET_NOTIFY_DEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,55,197,10
+    CONTROL         "常に全ファイルをコピー(&A)",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,76,197,10
+    CONTROL         "ファイルの属性の違いは無視する(&R)",PATSET_IGNATTR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,88,197,10
+    CONTROL         "ファイルの時刻の違いは無視する(&M)",PATSET_IGNTIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,100,197,10
+    EDITTEXT        PATSET_TOLERANCE,5,112,22,13,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",PATSET_TOLERANCE_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,27,110,9,14
+    LTEXT           "秒未満の時刻の違いは無視する(&I)",-1,30,114,151,8
+    CONTROL         "バックアップ先が新しい時はコピーしない(&W)",PATSET_NEWONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,128,197,10
+    CONTROL         "ファイルを上書きする前に確認(&O)",PATSET_NOTIFY_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,140,197,10
+    CONTROL         "エラーを無視して処理続行(&X)",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,159,197,10
+    GROUPBOX        "転送速度(&S)",-1,5,175,170,29
+    CONTROL         "Slider1",PATSET_WAIT,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,30,186,121,12
+    LTEXT           "速い",-1,12,188,14,8
+    LTEXT           "遅い",-1,155,188,14,8
+END
+
+patset_ign1_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LISTBOX         NOBACK_DIR_LIST,11,17,185,58,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "追加(&A)...",NOBACK_DIR_ADD,18,77,38,14
+    PUSHBUTTON      "変更(&E)...",NOBACK_DIR_EDIT,61,77,38,14
+    PUSHBUTTON      "削除(&R)",NOBACK_DIR_DEL,104,77,38,14
+    PUSHBUTTON      "↑",NOBACK_DIR_UP,151,77,13,14
+    PUSHBUTTON      "↓",NOBACK_DIR_DOWN,166,77,13,14
+    PUSHBUTTON      "▼",NOBACK_DIR_TOOLMENU,185,77,10,14
+    LISTBOX         NOBACK_FILE_LIST,11,111,185,58,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "追加(&I)...",NOBACK_FILE_ADD,18,171,38,14
+    PUSHBUTTON      "変更(&X)...",NOBACK_FILE_EDIT,61,171,38,14
+    PUSHBUTTON      "削除(&Z)",NOBACK_FILE_DEL,104,171,38,14
+    PUSHBUTTON      "↑",NOBACK_FILE_UP,151,171,13,14
+    PUSHBUTTON      "↓",NOBACK_FILE_DOWN,166,171,13,14
+    PUSHBUTTON      "▼",NOBACK_FILE_TOOLMENU,185,171,10,14
+    LTEXT           "※エクスプローラからフォルダやファイルをドラッグ＆ドロップできます。",-1,12,193,190,11,SS_SUNKEN
+    GROUPBOX        "バックアップしないフォルダ",-1,5,5,197,89
+    GROUPBOX        "バックアップしないファイル",-1,5,100,197,89
+END
+
+opt_log_dlg DIALOGEX 0, 0, 227, 197
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "ログファイルを作成する(&L)",LOG_SWITCH,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,152,10
+    GROUPBOX        "方法(&S)",-1,12,18,183,86,WS_GROUP
+    CONTROL         "ログファイルに追加書き込みする",LOG_APPEND,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,19,30,124,10
+    CONTROL         "ログファイルに上書きする",LOG_NEW,"Button",BS_AUTORADIOBUTTON,19,89,124,10
+    GROUPBOX        "ログファイルのサイズ",-1,33,44,155,41,WS_GROUP
+    CONTROL         "無制限",LOG_NOLIMIT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,39,55,37,10
+    CONTROL         "制限あり",LOG_LIMIT,"Button",BS_AUTORADIOBUTTON,39,68,41,10
+    RTEXT           "最大",-1,88,69,18,8
+    EDITTEXT        LOG_LIMIT_SIZE,109,66,26,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "キロバイト",-1,137,69,42,8
+    CONTROL         "ログをunicodeで書き込む(&U)",LOG_UNICODE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,109,152,10
+    LTEXT           "ログファイルのファイル名(&F)",-1,6,125,106,8
+    EDITTEXT        LOG_FNAME,5,135,164,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",LOG_FNAME_BR,169,134,13,13
+    PUSHBUTTON      "初期設定",LOG_FNAME_INIT,182,134,40,13
+    LTEXT           "ファイル名に使用できるマクロ   $D = 日付, $$ = $",-1,22,149,155,13,SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "ログファイルを表示する時のビューワ(&V)",-1,6,169,128,8
+    EDITTEXT        LOG_VIEWER,5,179,204,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",LOG_VIEWER_BR,209,178,13,13
+END
+
+opt_misc_dlg DIALOGEX 0, 0, 227, 197
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "ウインドウの位置を保存する(&S)",MISC_SAVEPOS,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,142,10
+    CONTROL         "アイコンをアイコントレイに入れる（次回起動時から） (&T)",MISC_TRAYICON,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,20,217,10
+    CONTROL         "ESCキーでプログラムを終了する(&E)",MISC_ESC_EXIT,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,33,142,10
+    GROUPBOX        "コメントの表示方法 (変更は次回起動時に反映)",-1,5,49,201,29
+    CONTROL         "表示しない(&N)",MISC_COMMENT_NO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,9,63,57,10
+    CONTROL         "チップ表示(&P)",MISC_COMMENT_TIP,"Button",BS_AUTORADIOBUTTON,72,63,56,10
+    CONTROL         "ウインドウ表示(&W)",MISC_COMMENT_WIN,"Button",BS_AUTORADIOBUTTON,133,63,68,10
+    CONTROL         "設定をレジストリではなくINIファイルに保存する(&I)",MISC_REGTYPE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,85,157,10
+END
+
+reginit_dlg DIALOG 0, 0, 155, 91
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "全設定の消去"
+FONT 9, "MS UI Gothic"
+BEGIN
+    DEFPUSHBUTTON   "消去しない",IDCANCEL,41,53,71,31
+    PUSHBUTTON      "消去する",IDOK,116,70,32,14,NOT WS_TABSTOP
+    LTEXT           "バックアップパターンの設定を含め、Backup関係の全ての設定情報を消去して終了します。",-1,30,7,118,24
+    CTEXT           "設定を消去しますか？",-1,7,37,141,8
+    ICON            notify_icon,-1,7,7,20,21
+END
+
+filesize_dlg DIALOGEX 0, 0, 171, 143
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "ファイル容量"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "閉じる",IDOK,5,125,50,14,WS_DISABLED
+    PUSHBUTTON      "検索中止(S)",IDCANCEL,60,125,50,14
+    PUSHBUTTON      "ヘルプ",9,116,125,50,14
+    LTEXT           "検索するフォルダ",-1,5,5,87,8
+    LISTBOX         FSIZE_SRCLIST,5,16,161,41,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",-1,"Static",SS_ETCHEDFRAME,5,77,161,43
+    LTEXT           "ファイルの数：",-1,14,83,61,8
+    LTEXT           "0",FSIZE_FILES,79,83,48,8
+    LTEXT           "フォルダの数：",-1,14,95,61,8
+    LTEXT           "0",FSIZE_FOLDERS,79,95,48,8
+    LTEXT           "ファイルの総容量：",-1,14,107,61,8
+    LTEXT           "0",FSIZE_SIZE,79,107,48,8
+    CTEXT           "",FSIZE_MESSAGE,11,63,150,8
+    CONTROL         "",-1,"Static",SS_ETCHEDFRAME,5,59,161,16
+END
+
+del_notify_dlg DIALOGEX 0, 0, 243, 77
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "削除の確認"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "はい(&Y)",IDOK,7,39,77,14
+    PUSHBUTTON      "いいえ(&N)",IDCANCEL,89,39,77,14
+    PUSHBUTTON      "以後全て削除する(&A)",DELNOT_YESALL,7,57,77,14
+    PUSHBUTTON      "以後全て削除しない(&I)",DELNOT_NOALL,89,57,77,14
+    PUSHBUTTON      "中止(&S)",DELNOT_ABORT,171,57,65,14
+    LTEXT           "以下のファイルを削除します。よろしいですか。",-1,7,7,229,8
+    EDITTEXT        DELNOT_FNAME,7,19,229,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+inpfile_folder_dlg DIALOGEX 0, 0, 207, 107
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ファイル/フォルダの指定"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "ファイル名/フォルダ名(&F)",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,142,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "ファイル検索(&S)",INPFILE_FILE_BR,150,11,50,14
+    PUSHBUTTON      "フォルダ検索(&D)",INPFILE_FOLDER_BR,150,28,50,14
+    DEFPUSHBUTTON   "OK",IDOK,17,86,50,14
+    PUSHBUTTON      "ｷｬﾝｾﾙ",IDCANCEL,78,86,50,14
+    PUSHBUTTON      "ヘルプ",IDHELP,139,86,50,14
+    LTEXT           "指定方法の例：\n  C:\\Home\\Data\n  C:\\Home\\Data\\abc.txt\n  C:\\Home\\Data\\*.txt\n  C:\\Home\\Data；*.txt；*.jpg",-1,17,36,123,43,SS_SUNKEN
+END
+
+inpfile_dlg DIALOG 0, 0, 207, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ファイルの指定"
+FONT 9, "MS UI Gothic"
+BEGIN
+    LTEXT           "ファイル名(&F)",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,179,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "....",INPFILE_FILE_BR,186,18,13,14
+    DEFPUSHBUTTON   "OK",IDOK,41,41,50,14
+    PUSHBUTTON      "ｷｬﾝｾﾙ",IDCANCEL,115,41,50,14
+END
+
+inpfolder_dlg DIALOG 0, 0, 207, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "フォルダの指定"
+FONT 9, "MS UI Gothic"
+BEGIN
+    LTEXT           "フォルダ名(&F)",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",INPFILE_FOLDER_BR,186,18,14,14
+    DEFPUSHBUTTON   "OK",IDOK,40,41,50,14
+    PUSHBUTTON      "ｷｬﾝｾﾙ",IDCANCEL,115,41,50,14
+END
+
+dragdrop_err_dlg DIALOG 0, 0, 187, 63
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ドラッグ&ドロップ"
+FONT 9, "MS UI Gothic"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,66,42,50,14
+    CTEXT           "",DLG_MSG1,7,7,173,24
+END
+
+quick_dlg DIALOGEX 0, 0, 207, 211
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "クイックバックアップ"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "バックアップ元フォルダ／ファイル(&S)",-1,7,7,107,8
+    EDITTEXT        QUICK_SRC,7,17,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",QUICK_SRC_BR,185,17,13,13
+    LTEXT           "バックアップ先フォルダ(&D)",-1,7,53,77,8
+    EDITTEXT        QUICK_DST,7,63,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",QUICK_DST_BR,185,63,13,13
+    CONTROL         "バックアップ元にないフォルダはバックアップ先から削除(&R)",PATSET_RMDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,101,193,10
+    CONTROL         "バックアップ元にないファイルはバックアップ先から削除(&F)",PATSET_RMFILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,113,193,10
+    CONTROL         "ファイルを削除する前に確認(&N)",PATSET_NOTIFY_DEL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,125,193,10
+    CONTROL         "ごみ箱へ削除(&T)",PATSET_USE_TRASHCAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,137,193,10
+    CONTROL         "常に全ファイルをコピー(&A)",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,150,193,10
+    CONTROL         "バックアップ先が新しい時はコピーしない(&W)",PATSET_NEWONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,162,193,10
+    CONTROL         "エラーを無視して処理続行(&X)",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,174,193,10
+    DEFPUSHBUTTON   "バックアップ開始(&G)",IDOK,7,190,74,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,90,190,50,14
+    LTEXT           "※各項目にはエクスプローラから、フォルダや\n   ファイルをドラッグ＆ドロップできます。",-1,58,79,142,18,SS_SUNKEN
+    PUSHBUTTON      "ヘルプ",IDHELP,149,190,50,14
+    PUSHBUTTON      "ファイル容量(&Z)",QUICK_SIZE,150,32,50,14
+    LTEXT           "※複数指定するときはセミコロンで\n　区切ってください。",-1,44,32,104,18,SS_SUNKEN
+END
+
+folder_notify_dlg DIALOG 0, 0, 185, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS UI Gothic"
+BEGIN
+    DEFPUSHBUTTON   "戻る",IDOK,67,28,50,14
+    CTEXT           "",DLG_MSG1,7,10,171,8
+END
+
+del_pat_notify_dlg DIALOG 0, 0, 187, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "パターンの削除"
+FONT 9, "MS UI Gothic"
+BEGIN
+    DEFPUSHBUTTON   "はい(&Y)",IDOK,37,26,50,14
+    PUSHBUTTON      "いいえ(&N)",IDCANCEL,99,26,50,14
+    CTEXT           "",DLG_MSG1,7,7,173,8
+END
+
+main_comment_dlg DIALOGEX 0, 0, 227, 177
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "バックアップパターン(&P)",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,97,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "バックアップ開始(&S)",MAIN_START,8,159,77,14
+    PUSHBUTTON      "全パターン開始(&A)",MAIN_ALLSTART,92,159,77,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "終了(&X)",MAIN_QUIT,176,159,43,14
+    PUSHBUTTON      "新規追加(&N)...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "設定変更(&M)...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "コピー(&C)",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "削除(&D)...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "↑",MAIN_UP,189,86,14,14
+    PUSHBUTTON      "↓",MAIN_DOWN,206,86,14,14
+    PUSHBUTTON      "ファイル容量(&Z)",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,152,226,1
+    EDITTEXT        MAIN_COMMENT,8,119,155,29,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
+END
+
+patset_system_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "バックアップが終了したら(&X)",-1,5,5,104,8
+    COMBOBOX        PATSET_SYSTEM,5,15,153,92,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "バックアップが終了したら音を鳴らす(&S)",PATSET_SOUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,35,130,10
+    EDITTEXT        PATSET_SOUNDFILE,65,47,99,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",PATSET_SOUNDFILE_BR,164,47,13,14
+    PUSHBUTTON      "テスト",PATSET_SOUND_TEST,178,47,24,14
+    LTEXT           "Waveファイル(&W)",-1,5,51,58,8,0,WS_EX_RIGHT
+END
+
+countdown_dlg DIALOGEX 0, 0, 155, 67
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST
+CAPTION "Backup"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "キャンセル",IDOK,49,47,56,14
+    CTEXT           "バックアップが終了したので",-1,7,9,141,8
+    CTEXT           "スタティック",CDOWN_MSG,7,31,141,8
+    CTEXT           "スタティック",CDOWN_MSG2,7,19,141,8
+END
+
+patset_dst_dlg DIALOGEX 0, 0, 207, 210
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LISTBOX         PATSET_DSTLIST,11,18,185,60,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "追加(&A)...",PATSET_ADD,16,81,34,14
+    PUSHBUTTON      "変更(&E)...",PATSET_EDIT,57,81,34,14
+    PUSHBUTTON      "削除(&R)",PATSET_DEL,99,81,34,14
+    PUSHBUTTON      "↑",PATSET_UP,146,81,13,14
+    PUSHBUTTON      "↓",PATSET_DOWN,162,81,13,14
+    PUSHBUTTON      "▼",PATSET_TOOLMENU,184,81,10,14
+    CONTROL         "バックアップ先メディアのボリュームラベルをチェックする(&C)",PATSET_CHK_LABEL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,156,197,10
+    RTEXT           "ボリュームラベル(&L)",-1,7,172,56,8
+    EDITTEXT        PATSET_LABEL,66,170,72,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "ドライブから取得(&G)",PATSET_LABEL_GET,139,170,63,14
+    LTEXT           "※複数のバックアップ先を指定した時、一度のバックアップで複数の\n　バックアップ先にコピーされるのではなく、バックアップする度に\n　バックアップ先が順繰りに変更されます。",PATSET_DST_COMMENT,12,103,190,27,SS_SUNKEN
+    GROUPBOX        "バックアップ先フォルダ",-1,5,5,197,96
+    LTEXT           "※ドライブから取得ボタンは、複数のバックアップ先が指定されている\n　時は、最初のバックアップ先のドライブから取得します。",-1,12,187,190,18,SS_SUNKEN
+    LTEXT           "※エクスプローラからフォルダをドラッグ＆ドロップできます。",-1,12,132,190,11,SS_SUNKEN
+END
+
+patset_timer_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "一定時間待ってバックアップを繰り返す(&C)",PATSET_TIMER_INT_SW,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,152,10
+    LTEXT           "待ち時間(&I)",-1,5,24,44,8,0,WS_EX_RIGHT
+    EDITTEXT        PATSET_TIMER_INT_TIME,52,21,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Spin1",PATSET_TIMER_INT_TIME_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,81,21,9,14
+    LTEXT           "（分）",-1,86,25,21,8
+END
+
+patset_frame_dlg DIALOGEX 0, 0, 293, 245
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    LTEXT           "設定の一覧(&1)",-1,7,7,49,8
+    CONTROL         "",PATSET_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_NOSCROLL | WS_BORDER | WS_TABSTOP,7,17,69,201
+    DEFPUSHBUTTON   "OK",IDOK,68,224,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,124,224,50,14
+    PUSHBUTTON      "ヘルプ",IDHELP,236,224,50,14
+    LTEXT           "スタティック",PATSET_DIALOG_POS,79,7,207,210,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "ファイル容量",MENU_FILESIZE,180,224,50,14
+END
+
+patset_adv_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "バックアップ先にフォルダを一段作らない(&N)",PATSET_NO_DSTDIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,143,10
+    LTEXT           "使用方法を間違えると、想定外のファイルが削除されてしまう場合があります。\n\nこの項目は、ヘルプを見て十分に理解した上で使用してください。\n\nバックアップ元を1つ指定した時だけ使用できます。",-1,27,19,175,62,SS_SUNKEN
+    ICON            notify2_icon,-1,5,19,20,20
+    PUSHBUTTON      "このページの設定をリセット",PATSET_ADV_RESET,100,190,102,14
+END
+
+path_convert_dlg DIALOGEX 0, 0, 219, 105
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "パス名一括置換"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "選択しているファイルのパス名の一部を、一括して置換します。",-1,7,4,205,8
+    LTEXT           "パス名の(&R)",-1,7,16,37,8
+    EDITTEXT        PATHCNV_FROM,7,27,205,14,ES_AUTOHSCROLL
+    LTEXT           "の部分を(&W)",-1,7,44,37,8
+    EDITTEXT        PATHCNV_TO,7,55,205,14,ES_AUTOHSCROLL
+    LTEXT           "に置き換える。",-1,7,72,43,8
+    DEFPUSHBUTTON   "OK",IDOK,24,86,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,84,86,50,14
+    PUSHBUTTON      "ヘルプ",IDHELP,144,86,50,14
+END
+
+path_convert_ign_dlg DIALOGEX 0, 0, 206, 47
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "パス名一括置換"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "はい",IDOK,47,28,50,14
+    PUSHBUTTON      "いいえ",IDCANCEL,108,28,50,14
+    CTEXT           "除外の項目にも置換対象となるパス名が見つかりました。\n除外の項目もパス名一括置換をおこないますか？",-1,7,5,192,18
+END
+
+overwrite_notify_dlg DIALOGEX 0, 0, 243, 123
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "上書きの確認"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "はい(&Y)",IDOK,7,86,77,14
+    PUSHBUTTON      "いいえ(&N)",IDCANCEL,89,86,77,14
+    PUSHBUTTON      "以後全て上書きする(&A)",DELNOT_YESALL,7,104,77,14
+    PUSHBUTTON      "以後全て上書きしない(&I)",DELNOT_NOALL,89,104,77,14
+    PUSHBUTTON      "中止(&S)",DELNOT_ABORT,171,104,65,14
+    EDITTEXT        DELNOT_FNAME,7,33,229,12,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "ファイル名",-1,7,23,61,8
+    RTEXT           "複写元：",-1,7,53,38,8
+    RTEXT           "複写先：",-1,7,67,38,8
+    EDITTEXT        DELNOT_SRC_TIME,52,53,72,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_DST_TIME,52,67,72,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_SRC_SIZE,134,53,80,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_DST_SIZE,134,67,80,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    LTEXT           "",DELNOT_MESSAGE,7,7,229,8
+END
+
+show_comment_dlg DIALOGEX 0, 0, 194, 121
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "バックアップ前の確認"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    DEFPUSHBUTTON   "次へ(&N)>",IDOK,35,102,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,107,102,50,14
+    EDITTEXT        SHOWCOM_TEXT,7,5,180,91,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
+END
+
+shutdown_err_dlg DIALOGEX 0, 0, 187, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,36,50,14
+    CTEXT           "Windowsの電源設定が変更できません",-1,7,6,173,8
+    EDITTEXT        DLG_MSG1,7,19,173,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+common_msg_dlg DIALOGEX 0, 0, 248, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,101,37,50,14
+    CTEXT           "",DLG_MSG1,7,7,234,27
+END
+
+log_err_notify_dlg DIALOGEX 0, 0, 187, 69
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ログファイルの作成"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "はい(&Y)",IDOK,37,48,50,14
+    PUSHBUTTON      "いいえ(&N)",IDCANCEL,99,48,50,14
+    CTEXT           "ログを記録するファイルが作成できません。\nオプションのログファイル名の設定をチェックしてください。\n\nログを記録せずにバックアップを続行しますか？",-1,7,7,173,34
+END
+
+quit_notify_dlg DIALOGEX 0, 0, 186, 58
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "バックアップ処理中"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    DEFPUSHBUTTON   "はい",IDOK,36,37,50,14
+    PUSHBUTTON      "いいえ",IDCANCEL,97,37,50,14
+    CTEXT           "バックアップの処理中です。",IDC_STATIC,7,7,172,8
+    CTEXT           "バックアップを中断してよろしいですか。",IDC_STATIC,7,21,172,8
+END
+
+patset_ign2_dlg DIALOGEX 0, 0, 207, 209
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    CONTROL         "システムファイル/フォルダはバックアップしない(&S)",NOBACK_SYSTEM_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,162,10
+    CONTROL         "隠しファイル/フォルダはバックアップしない(&H)",NOBACK_HIDDEN_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,21,149,10
+    CONTROL         "指定サイズ以上のファイルはバックアップしない(&B)",NOBACK_BIG_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,37,145,10
+    LTEXT           "メガバイト以上のファイルはバックアップしない(&M)",IDC_STATIC,65,55,126,8
+    EDITTEXT        NOBACK_BIG_SIZE,23,52,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "(1以上の数値を指定してください。0は無効になります。)",IDC_STATIC,28,69,163,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+main_menu MENU
+BEGIN
+    POPUP "ファイル(&F)"
+    BEGIN
+        MENUITEM "バックアップ開始(&B)...",             MENU_BACKUP
+        MENUITEM "クイックバックアップ(&Q)...",           MENU_QUICK_BACKUP
+        MENUITEM SEPARATOR
+        POPUP "設定(&S)"
+        BEGIN
+            MENUITEM "設定をファイルに保存(&S)...",           MENU_REGSAVE
+            MENUITEM "設定をファイルから復元(&L)...",          MENU_REGLOAD
+            MENUITEM SEPARATOR
+            MENUITEM "全設定の消去...",                   MENU_REGINIT
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "終了(&X)",                      MENU_FILE_EXIT
+    END
+    POPUP "オプション(&O)"
+    BEGIN
+        MENUITEM "環境設定(&S)...",                 MENU_SETENV
+    END
+    POPUP "ログ(&L)"
+    BEGIN
+        MENUITEM "ログファイルを表示(&S)",               MENU_DISPLOG
+        MENUITEM "最後のバックアップ時のエラーを表示(&E)",       MENU_ERROR_LOG
+    END
+    POPUP "ヘルプ(&H)"
+    BEGIN
+        MENUITEM "目次(&C)",                      MENU_HELP_CONTENT
+        MENUITEM "Q&&A集（インターネットに接続します)(&T)",    MENU_HELP_QA
+        MENUITEM SEPARATOR
+        MENUITEM "Backupについて(&A)...",           MENU_HELP_ABOUT
+    END
+END
+
+dummy MENU
+BEGIN
+    POPUP "Dummy"
+    BEGIN
+        MENUITEM "ファイル容量",                      MENU_FILESIZE
+        MENUITEM "名前を指定して開始",                   MENU_START_NAME
+        MENUITEM "開く",                          MENU_OPEN
+        MENUITEM "パス一括変換",                      MENU_PATHCONVERT
+        MENUITEM "ソート",                         MENU_SORT
+        MENUITEM "ソート2",                        MENU_SORT2
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    tr_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 193
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 181
+    END
+
+    about_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 71
+    END
+
+    main_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    transfer_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 173
+    END
+
+    patset_name_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    patset_dir_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 205
+    END
+
+    patset_flg_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    patset_ign1_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    opt_log_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 222
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 192
+    END
+
+    opt_misc_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 222
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 192
+    END
+
+    reginit_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 84
+    END
+
+    filesize_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 166
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 138
+    END
+
+    del_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 236
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 72
+    END
+
+    inpfile_folder_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 100
+    END
+
+    inpfile_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    inpfolder_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    dragdrop_err_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+
+    quick_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 204
+    END
+
+    folder_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 42
+    END
+
+    del_pat_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    main_comment_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    patset_system_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    countdown_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 61
+    END
+
+    patset_dst_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 205
+    END
+
+    patset_timer_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    patset_frame_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 286
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 238
+    END
+
+    patset_adv_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+
+    path_convert_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 212
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 100
+    END
+
+    path_convert_ign_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 199
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 42
+    END
+
+    overwrite_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 236
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 118
+    END
+
+    show_comment_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 187
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 116
+    END
+
+    shutdown_err_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 50
+    END
+
+    common_msg_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 241
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 51
+    END
+
+    log_err_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 62
+    END
+
+    quit_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 51
+    END
+
+    patset_ign2_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 202
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 204
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+list_bmp                BITMAP                  "bitmap1.bmp"
+box_bmp                 BITMAP                  "bmp00001.bmp"
+current_bmp             BITMAP                  "box_bmp1.bmp"
+done_bmp                BITMAP                  "box_bmp2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,11,0,0
+ PRODUCTVERSION 1,11,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041104b0"
+        BEGIN
+            VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
+            VALUE "CompanyName", " "
+            VALUE "FileDescription", "Backup"
+            VALUE "FileVersion", "1.11.0.0"
+            VALUE "InternalName", "Backup"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2012 Sota"
+            VALUE "OriginalFilename", "Backup.exe"
+            VALUE "ProductName", "Backup アプリケーション"
+            VALUE "ProductVersion", "1.11.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

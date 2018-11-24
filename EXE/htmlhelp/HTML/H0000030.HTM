@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Ver0.22以前のバージョンとの違いについて</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=shift_jis">
+<META content="MSHTML 6.00.6000.16397" name=GENERATOR></HEAD>
+<BODY><FONT face="ＭＳ Ｐゴシック">
+<P>Backup <STRONG>Ver0.3</STRONG> 以降のバージョンは、Backup <STRONG>Ver0.22</STRONG> 
+以前のバージョンとはバックアップパターンの設定方法が異なっています。<BR>以前の設定のままですと<FONT 
+color=#ff0000>転送先が違う場所に</FONT><FONT 
+color=#ff0000>なってしまいます</FONT>ので、再設定を行ってください。</P>
+<P>●バックアップ元がルートディレクトリ（<STRONG>C:\</STRONG>、<STRONG>D:\</STRONG> など）の場合。</P>
+<P>設定を変更する必要はありません。</P>
+<P>●バックアップ元がルートディレクトリ以外（<STRONG>C:\Home</STRONG>、<STRONG>D:\Prog\Source</STRONG> 
+など）の場合</P>
+<P>Backup Ver0.3 以降では、バックアップ元のフォルダと同じ名前のフォルダを作成し、その中にファイルをコピーします。</P>
+<P><FONT color=#0000ff>例１)</FONT> バックアップ元が 
+<STRONG>C:\Prog\Source</STRONG>、バックアップ先が <STRONG>D:\</STRONG> に設定されている場合</P>
+<P>◎Backup Ver0.22 以前<BR><STRONG>D:\</STRONG> の中にファイルをコピーします。</P>
+<P>◎Backup Ver0.3 以降<BR><STRONG>D:\Source</STRONG> の中にファイルをコピーします。（バックアップ元の 
+C:\Prog\Source の最後の部分である Source と同じ名前のフォルダを作成します)</P>
+<P><FONT color=#0000ff>例２)</FONT> バックアップ元が 
+<STRONG>C:\Prog\Source</STRONG>、バックアップ先が <STRONG>D:\Backup</STRONG> 
+に設定されている場合</P>
+<P>◎Backup Ver0.22 以前<BR><STRONG>D:\Backup</STRONG> の中にファイルをコピーします。</P>
+<P>◎Backup Ver0.3 以降<BR><STRONG>D:\Backup\Source</STRONG> 
+の中にファイルをコピーします。</P></FONT></BODY></HTML>

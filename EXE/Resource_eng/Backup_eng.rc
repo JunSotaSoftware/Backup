@@ -1,0 +1,1090 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// ì˙ñ{åÍ (ì˙ñ{) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+notify2_icon            ICON                    "ico00001.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
+#endif    // ì˙ñ{åÍ (ì˙ñ{) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// âpåÍ (ïƒçë) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+backup                  ICON                    "backup.ico"
+backup_tiny_1           ICON                    "backup_1.ico"
+backup_tiny_2           ICON                    "backup_2.ico"
+backup_tiny_3           ICON                    "backup_3.ico"
+backup_tiny_4           ICON                    "backup_4.ico"
+backup_tiny_5           ICON                    "backup_5.ico"
+backup_tiny_6           ICON                    "backup_6.ico"
+backup_tiny_7           ICON                    "backup_7.ico"
+backup_tiny_8           ICON                    "backup_8.ico"
+backup_tiny_9           ICON                    "backup_9.ico"
+backup_tiny_a           ICON                    "backup_a.ico"
+backup_tiny_b           ICON                    "backup_b.ico"
+grip_icon               ICON                    "icon1.ico"
+notify_icon             ICON                    "icon2.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+tr_notify_dlg DIALOGEX 0, 0, 195, 173
+STYLE DS_SETFONT | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION | WS_THICKFRAME
+CAPTION "Confirm Backup"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,41,154,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,104,154,50,14
+    LTEXT           "Backup Sources",-1,30,5,60,8
+    LISTBOX         TRNOT_SRCLIST,29,14,137,51,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "Backup Destination",TRNOT_MSG1,30,67,74,8
+    EDITTEXT        TRNOT_DST,29,77,137,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "<<(&P)",TRNOT_PREV,5,35,22,14
+    PUSHBUTTON      "(&N)>>",TRNOT_NEXT,168,35,22,14
+    LTEXT           "Volume Label",TRNOT_MSG4,32,95,45,8
+    EDITTEXT        TRNOT_VOL,80,92,86,12,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "&On backup is completed",TRNOT_MSG3,5,109,150,8
+    COMBOBOX        TRNOT_SYSTEM,5,119,185,79,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "Confirm?",TRNOT_MSG2,5,137,185,14,SS_CENTERIMAGE | WS_BORDER,WS_EX_CLIENTEDGE
+    ICON            grip_icon,TRNOT_GRIP,177,152,18,21
+END
+
+FILEOPENORD DIALOG 109, 35, 165, 134
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Open"
+FONT 9, "MS Sans Serif"
+BEGIN
+    LISTBOX         lst2,7,32,92,68,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        cmb2,7,114,92,68,CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,105,6,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,105,24,50,14,WS_GROUP
+    PUSHBUTTON      "&Help",psh15,105,46,50,14,WS_GROUP
+    CONTROL         "&Read Only",chx1,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,105,68,50,12
+    LTEXT           "File &Name:",stc3,168,0,76,10
+    EDITTEXT        edt1,168,10,90,12,ES_AUTOHSCROLL | ES_OEMCONVERT | NOT WS_TABSTOP
+    LISTBOX         lst1,168,26,90,68,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL
+    LTEXT           "List Files of &Type:",stc2,168,98,90,9
+    COMBOBOX        cmb1,168,108,90,36,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_BORDER | WS_VSCROLL
+    LTEXT           "Folder(&D):",-1,7,6,92,9
+    LTEXT           "",stc1,7,18,92,9,SS_NOPREFIX
+    LTEXT           "Drive(&V):",stc4,7,104,92,9
+END
+
+about_dlg DIALOGEX 0, 0, 155, 76
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Backup"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
+    ICON            backup,-1,7,2,20,20
+    CTEXT           "Backup  Ver.1.11",-1,29,13,98,8
+    CTEXT           "Copyright(C) 1997-2012 Sota",-1,7,27,141,8
+    CTEXT           "Backup is Freeware.",-1,7,42,141,8
+END
+
+main_dlg DIALOGEX 0, 0, 227, 178
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Backup Patterns",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,127,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Start Selected Patterns",MAIN_START,8,157,84,14
+    PUSHBUTTON      "Start &All Patterns",MAIN_ALLSTART,99,157,71,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "E&xit",MAIN_QUIT,177,157,43,14
+    PUSHBUTTON      "&New Pattern...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "&Modify...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "&Copy",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "&Delete...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "Up",MAIN_UP,174,87,21,14
+    PUSHBUTTON      "Dn",MAIN_DOWN,199,87,21,14
+    PUSHBUTTON      "&File Size...",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,151,226,1
+END
+
+transfer_dlg DIALOGEX 0, 0, 227, 178
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Cancel",TRANS_STOP,7,157,105,14
+    PUSHBUTTON      "&Return",TRANS_RETURN,123,157,43,14
+    ICON            grip_icon,TRANS_GRIP,208,156,18,21
+    PUSHBUTTON      "E&xit",TRANS_QUIT,177,157,43,14
+    LTEXT           "Folder",IDC_STATIC,7,4,90,8
+    CONTROL         "Tree1",TRANS_DIRLIST,"SysTreeView32",TVS_HASLINES | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL,7,14,134,82
+    EDITTEXT        TRANS_EXEC,7,112,213,42,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "Contents",TRANS_TITLE2,143,4,64,8
+    CONTROL         "",TRANS_LINE1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "Progress1",TRANS_PROGRESS,"msctls_progress32",WS_BORDER,7,99,213,9
+    CONTROL         "",TRANS_BOX1,"Static",SS_ETCHEDFRAME,143,14,77,82
+    CONTROL         "",TRANS_PIC_SCAN,"Static",SS_BITMAP | SS_CENTERIMAGE,146,30,13,14
+    CONTROL         "",TRANS_PIC_RMDIR,"Static",SS_BITMAP | SS_CENTERIMAGE,146,42,13,14
+    CONTROL         "",TRANS_PIC_RMFILE,"Static",SS_BITMAP | SS_CENTERIMAGE,146,54,13,14
+    CONTROL         "",TRANS_PIC_MKDIR,"Static",SS_BITMAP | SS_CENTERIMAGE,146,66,13,14
+    CONTROL         "",TRANS_PIC_COPY,"Static",SS_BITMAP | SS_CENTERIMAGE,146,78,13,14
+    LTEXT           "Searching",TRANS_SCAN,160,32,46,8
+    LTEXT           "Deleting Folders",TRANS_RMDIR,160,44,56,8
+    LTEXT           "Deleting Files",TRANS_RMFILE,160,56,55,8
+    LTEXT           "Creating Folders",TRANS_MKDIR,160,68,56,8
+    LTEXT           "Copying",TRANS_COPY,160,81,43,8
+    CONTROL         "",TRANS_PIC_PREPARE,"Static",SS_BITMAP | SS_CENTERIMAGE,147,18,13,14
+    LTEXT           "Prepareing",TRANS_PREPARE,161,20,46,8
+END
+
+patset_name_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Pattern Name",-1,5,5,91,8
+    EDITTEXT        PATSET_NAME,5,15,221,13,ES_AUTOHSCROLL
+    LTEXT           "&Comment",-1,5,35,41,8
+    EDITTEXT        PATSET_COMMENT,5,46,221,65,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "Following macros are acceptable :\n    $L=Volume Label of the backup destination media.",-1,48,113,178,19,SS_SUNKEN
+    CONTROL         "&Show comment in the dialog at backup begins.",PATSET_SHOW_COMMENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,136,151,10
+END
+
+patset_dir_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LISTBOX         PATSET_SRCLIST,12,18,206,141,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",PATSET_ADD,24,163,38,14
+    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,163,38,14
+    PUSHBUTTON      "&Delete",PATSET_DEL,110,163,38,14
+    PUSHBUTTON      "Up",PATSET_UP,160,163,16,14
+    PUSHBUTTON      "Dn",PATSET_DOWN,178,163,16,14
+    PUSHBUTTON      ">",PATSET_TOOLMENU,203,163,14,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,188,142,10,SS_SUNKEN
+    GROUPBOX        "Files/Folders which backup",-1,5,5,221,177
+END
+
+patset_flg_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Delete fol&ders from destination which backup source have not.",PATSET_RMDIR,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,221,10
+    CONTROL         "Delete &files from destination which backup source have not.",PATSET_RMFILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,17,221,10
+    CONTROL         "Do not delete files/folders specified on &Ignore tab.",PATSET_IGNNODEL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,29,221,10
+    CONTROL         "Delete to &Trash Can.",PATSET_USE_TRASHCAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,41,221,10
+    CONTROL         "&Comfirm deletions.",PATSET_NOTIFY_DEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,53,221,10
+    CONTROL         "Force copy &all files.",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,73,221,10
+    CONTROL         "Igno&re file attributes.",PATSET_IGNATTR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,86,197,10
+    CONTROL         "Ignore file ti&me stamp.",PATSET_IGNTIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,98,221,10
+    LTEXT           "I&gnore time stamp difference less than ",-1,5,110,119,8
+    EDITTEXT        PATSET_TOLERANCE,125,108,23,13,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",PATSET_TOLERANCE_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,147,107,9,14
+    LTEXT           "seconds.",-1,151,110,48,8
+    CONTROL         "Do not copy if destination file is &newer.",PATSET_NEWONLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,121,221,10
+    CONTROL         "C&omfirm overwriting.",PATSET_NOTIFY_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,133,221,10
+    CONTROL         "Ignore &errors.",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,152,221,10
+    GROUPBOX        "Copy &Speed",-1,5,169,170,29
+    CONTROL         "Slider1",PATSET_WAIT,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,29,179,121,12
+    LTEXT           "Fast",-1,11,181,14,8
+    LTEXT           "Slow",-1,154,181,15,8
+END
+
+patset_ign1_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LISTBOX         NOBACK_DIR_LIST,11,16,207,53,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",NOBACK_DIR_ADD,25,71,38,14
+    PUSHBUTTON      "&Modify...",NOBACK_DIR_EDIT,68,71,38,14
+    PUSHBUTTON      "D&elete",NOBACK_DIR_DEL,111,71,38,14
+    PUSHBUTTON      "Up",NOBACK_DIR_UP,162,71,16,14
+    PUSHBUTTON      "Dn",NOBACK_DIR_DOWN,180,71,16,14
+    PUSHBUTTON      ">",NOBACK_DIR_TOOLMENU,203,71,13,14
+    LISTBOX         NOBACK_FILE_LIST,11,107,207,53,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Add(&I)...",NOBACK_FILE_ADD,25,162,38,14
+    PUSHBUTTON      "Modify(&X)...",NOBACK_FILE_EDIT,68,162,38,14
+    PUSHBUTTON      "Delete(&Z)",NOBACK_FILE_DEL,111,162,38,14
+    PUSHBUTTON      "Up",NOBACK_FILE_UP,162,162,16,14
+    PUSHBUTTON      "Dn",NOBACK_FILE_DOWN,180,162,16,14
+    PUSHBUTTON      ">",NOBACK_FILE_TOOLMENU,204,162,13,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,84,186,142,11,SS_SUNKEN
+    GROUPBOX        "Folders not Copied",-1,5,5,221,84
+    GROUPBOX        "Files not Copied",-1,5,95,221,84
+END
+
+opt_log_dlg DIALOGEX 0, 0, 223, 193
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Write &log to file",LOG_SWITCH,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,152,10
+    GROUPBOX        "&Write Mode",-1,13,18,181,86,WS_GROUP
+    CONTROL         "&Append to log file",LOG_APPEND,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,19,30,124,10
+    CONTROL         "&Overwrite to log file",LOG_NEW,"Button",BS_AUTORADIOBUTTON,19,89,124,10
+    GROUPBOX        "Maximum file size",-1,33,44,155,41,WS_GROUP
+    CONTROL         "No limit",LOG_NOLIMIT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,39,55,55,10
+    CONTROL         "Limit to",LOG_LIMIT,"Button",BS_AUTORADIOBUTTON,39,68,36,10
+    RTEXT           "muximum",-1,77,68,29,8
+    EDITTEXT        LOG_LIMIT_SIZE,109,66,26,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "kilo-bytes",-1,137,68,47,8
+    CONTROL         "&Use unicode to write log file.",LOG_UNICODE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,109,152,10
+    LTEXT           "&Filename of log file",-1,6,125,106,8
+    EDITTEXT        LOG_FNAME,5,135,159,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",LOG_FNAME_BR,165,134,13,13
+    PUSHBUTTON      "Default",LOG_FNAME_INIT,178,134,40,13
+    LTEXT           "Following macros are acceptable :  $D = Date, $$ = $",-1,39,149,172,13,SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "&Viewer to open log file",-1,6,167,128,8
+    EDITTEXT        LOG_VIEWER,5,177,200,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",LOG_VIEWER_BR,205,176,13,13
+END
+
+opt_misc_dlg DIALOGEX 0, 0, 223, 193
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "&Save window position.",MISC_SAVEPOS,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,213,10
+    CONTROL         "Store &icon to the Icon Tray. (activate on next start)",MISC_TRAYICON,
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,20,213,10
+    CONTROL         "&Exit on ESC key",MISC_ESC_EXIT,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,34,142,10
+    GROUPBOX        "Show Comments (activate on next start)",-1,5,49,189,29
+    CONTROL         "&No Display",MISC_COMMENT_NO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,9,63,57,10
+    CONTROL         "&Tip",MISC_COMMENT_TIP,"Button",BS_AUTORADIOBUTTON,69,63,41,10
+    CONTROL         "&Window",MISC_COMMENT_WIN,"Button",BS_AUTORADIOBUTTON,119,63,68,10
+    CONTROL         "Sa&ve settings to the backup.ini file, instead of the registory.",MISC_REGTYPE,
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,85,213,10
+END
+
+reginit_dlg DIALOG 0, 0, 155, 87
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Erase All Settings"
+FONT 9, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "No",IDCANCEL,41,52,71,28
+    PUSHBUTTON      "Erase",IDOK,116,66,32,14,NOT WS_TABSTOP
+    LTEXT           "Erase ALL settings including Pattern settings.",-1,30,7,118,24
+    CTEXT           "Are you sure",-1,7,34,141,8
+    ICON            notify_icon,-1,7,7,20,21
+END
+
+filesize_dlg DIALOGEX 0, 0, 171, 143
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "File Size"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Close",IDOK,5,125,50,14,WS_DISABLED
+    PUSHBUTTON      "&Stop",IDCANCEL,60,125,50,14
+    PUSHBUTTON      "Help",9,116,125,50,14
+    LTEXT           "Folders to search",-1,5,5,87,8
+    LISTBOX         FSIZE_SRCLIST,5,16,161,41,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",-1,"Static",SS_ETCHEDFRAME,5,77,161,43
+    LTEXT           "Number of Files",-1,14,83,61,8
+    LTEXT           "0",FSIZE_FILES,79,83,48,8
+    LTEXT           "Number of Folders",-1,14,95,61,8
+    LTEXT           "0",FSIZE_FOLDERS,79,95,48,8
+    LTEXT           "Total file size",-1,14,107,61,8
+    LTEXT           "0",FSIZE_SIZE,79,107,48,8
+    CTEXT           "",FSIZE_MESSAGE,11,63,150,8
+    CONTROL         "",-1,"Static",SS_ETCHEDFRAME,5,59,161,16
+END
+
+del_notify_dlg DIALOGEX 0, 0, 206, 73
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Delete"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Yes",IDOK,7,37,55,14
+    PUSHBUTTON      "&No",IDCANCEL,75,37,55,14
+    PUSHBUTTON      "Delete &All",DELNOT_YESALL,7,55,55,14
+    PUSHBUTTON      "&Leave All",DELNOT_NOALL,75,55,55,14
+    PUSHBUTTON      "&Stop Backup",DELNOT_ABORT,143,55,55,14
+    LTEXT           "Delete following file?",-1,7,7,192,8
+    EDITTEXT        DELNOT_FNAME,7,19,192,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+inpfile_folder_dlg DIALOGEX 0, 0, 207, 107
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select File/Folder"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&File/Folder Name",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,142,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Search File...",INPFILE_FILE_BR,150,11,50,14
+    PUSHBUTTON      "&Search Fol&der...",INPFILE_FOLDER_BR,150,28,50,14
+    DEFPUSHBUTTON   "OK",IDOK,16,86,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,78,86,50,14
+    PUSHBUTTON      "Help",IDHELP,140,86,50,14
+    LTEXT           "Examples:\n  C:\\Home\\Data\n  C:\\Home\\Data\\abc.txt\n  C:\\Home\\Data\\*.txt\n  C:\\Home\\Data;*.txt;*.jpg",-1,17,36,123,43,SS_SUNKEN
+END
+
+inpfile_dlg DIALOG 0, 0, 207, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select File"
+FONT 9, "MS Sans Serif"
+BEGIN
+    LTEXT           "&Filename",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,179,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "....",INPFILE_FILE_BR,186,18,13,14
+    DEFPUSHBUTTON   "OK",IDOK,41,41,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,115,41,50,14
+END
+
+inpfolder_dlg DIALOG 0, 0, 207, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Folder"
+FONT 9, "MS Sans Serif"
+BEGIN
+    LTEXT           "&Folder Name",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",INPFILE_FOLDER_BR,186,18,14,14
+    DEFPUSHBUTTON   "OK",IDOK,40,41,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,115,41,50,14
+END
+
+dragdrop_err_dlg DIALOG 0, 0, 187, 63
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Drag & Drop"
+FONT 9, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,66,42,50,14
+    CTEXT           "",DLG_MSG1,7,7,173,24
+END
+
+quick_dlg DIALOG 0, 0, 235, 195
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Quick Backup"
+FONT 9, "MS Sans Serif"
+BEGIN
+    LTEXT           "Files/Folders which backu&p",-1,7,7,82,8
+    EDITTEXT        QUICK_SRC,7,17,208,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",QUICK_SRC_BR,215,17,13,13
+    LTEXT           "&Backup Destination Folder",-1,7,45,79,8
+    EDITTEXT        QUICK_DST,7,55,208,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",QUICK_DST_BR,215,55,13,13
+    CONTROL         "Delete fol&ders from destination which backup source have not.",PATSET_RMDIR,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,221,10
+    CONTROL         "Delete &files from destination which backup source have not.",PATSET_RMFILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,221,10
+    CONTROL         "&Comfirm deletions.",PATSET_NOTIFY_DEL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,110,221,10
+    CONTROL         "Delete to &Trash Can.",PATSET_USE_TRASHCAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,122,221,10
+    CONTROL         "Force copy &all files.",PATSET_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,135,221,10
+    CONTROL         "Do not copy if destination file is &newer.",PATSET_NEWONLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,147,221,10
+    CONTROL         "Ignore &errors.",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,159,221,10
+    DEFPUSHBUTTON   "Start Backup",IDOK,19,174,74,14
+    PUSHBUTTON      "Cancel",IDCANCEL,104,174,50,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,86,71,142,10,SS_SUNKEN
+    PUSHBUTTON      "Help",IDHELP,165,174,50,14
+    PUSHBUTTON      "File Si&ze",QUICK_SIZE,178,32,50,14
+    LTEXT           "*Use semicolons to delineate multiple files.",-1,35,32,142,10,SS_SUNKEN
+END
+
+del_pat_notify_dlg DIALOG 0, 0, 187, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Delete"
+FONT 9, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Yes",IDOK,37,26,50,14
+    PUSHBUTTON      "&No",IDCANCEL,99,26,50,14
+    CTEXT           "",DLG_MSG1,7,7,173,8
+END
+
+main_comment_dlg DIALOGEX 0, 0, 227, 178
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Backup Patterns",-1,8,7,160,8
+    LISTBOX         MAIN_LIST,8,18,155,96,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Start Selected Patterns",MAIN_START,8,157,84,14
+    PUSHBUTTON      "Start &All Patterns",MAIN_ALLSTART,99,157,71,14
+    ICON            grip_icon,MAIN_GRIP,208,156,18,21
+    PUSHBUTTON      "E&xit",MAIN_QUIT,177,157,43,14
+    PUSHBUTTON      "&New Pattern...",MAIN_NEW,167,18,53,14
+    PUSHBUTTON      "&Modify...",MAIN_SET,167,35,53,14
+    PUSHBUTTON      "&Copy",MAIN_COPY,167,52,53,14
+    PUSHBUTTON      "&Delete...",MAIN_DEL,167,69,53,14
+    PUSHBUTTON      "Up",MAIN_UP,174,87,21,14
+    PUSHBUTTON      "Dn",MAIN_DOWN,199,87,21,14
+    PUSHBUTTON      "&File Size...",MAIN_SIZE,167,105,53,14
+    CONTROL         "",MAIN_LINE_1,"Static",SS_ETCHEDHORZ,0,0,226,1
+    CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,151,226,1
+    EDITTEXT        MAIN_COMMENT,8,118,155,29,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
+END
+
+patset_system_dlg DIALOGEX 0, 0, 230, 197
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&On backup is completed",-1,5,5,206,8
+    COMBOBOX        PATSET_SYSTEM,5,16,153,92,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "&Play ""*.wav"" file when backup is complete.",PATSET_SOUND,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,35,181,10
+    EDITTEXT        PATSET_SOUNDFILE,65,47,99,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",PATSET_SOUNDFILE_BR,164,47,13,14
+    PUSHBUTTON      "Test",PATSET_SOUND_TEST,178,47,24,14
+    LTEXT           "&Wave File",-1,5,51,58,8,0,WS_EX_RIGHT
+END
+
+countdown_dlg DIALOGEX 0, 0, 155, 67
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST
+CAPTION "Backup"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Cancel",IDOK,51,47,51,14
+    CTEXT           "Backup is complete.",-1,7,5,141,8
+    CTEXT           "?X?^?e?B?b?N",CDOWN_MSG,7,33,141,8
+    CTEXT           "?X?^?e?B?b?N",CDOWN_MSG2,7,16,141,8
+END
+
+patset_frame_dlg DIALOGEX 0, 0, 321, 245
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "Settings(&1)",-1,7,7,49,8
+    CONTROL         "",PATSET_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_NOSCROLL | WS_BORDER | WS_TABSTOP,7,17,69,194
+    DEFPUSHBUTTON   "OK",IDOK,91,224,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,148,224,50,14
+    PUSHBUTTON      "Help",IDHELP,264,224,50,14
+    LTEXT           "??????",PATSET_DIALOG_POS,82,7,231,203,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "File Size",MENU_FILESIZE,206,224,50,14
+END
+
+patset_dst_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    LISTBOX         PATSET_DSTLIST,12,18,206,54,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add...",PATSET_ADD,24,76,38,14
+    PUSHBUTTON      "&Modify...",PATSET_EDIT,67,76,38,14
+    PUSHBUTTON      "&Delete",PATSET_DEL,110,76,38,14
+    PUSHBUTTON      "Up",PATSET_UP,160,76,16,14
+    PUSHBUTTON      "Dn",PATSET_DOWN,178,76,16,14
+    PUSHBUTTON      ">",PATSET_TOOLMENU,203,76,14,14
+    LTEXT           "*Drag && Drop acceptable from Explorer.",-1,14,128,212,11,SS_SUNKEN
+    CONTROL         "&Confirm volume label on destination drive.",PATSET_CHK_LABEL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,149,220,10
+    RTEXT           "Volume &Label",-1,10,165,68,8
+    EDITTEXT        PATSET_LABEL,81,163,72,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Get label from drive",PATSET_LABEL_GET,154,163,72,14
+    GROUPBOX        "Backup destination folder",-1,5,5,221,89
+    LTEXT           "*When multiple destination folders are specified this button get a volume label from first destination drive.",-1,13,180,213,18,SS_SUNKEN
+    LTEXT           "*When multiple backup destinations are specified, Backup does not copy files to multiple destinations at once. Backup destination is changed at each backup operation.",PATSET_DST_COMMENT,14,98,212,27,SS_SUNKEN
+END
+
+patset_timer_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    CONTROL         "&Repeat backup after the time period.",PATSET_TIMER_INT_SW,
+                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,5,152,10
+    LTEXT           "&Time to wait",-1,5,24,44,8,0,WS_EX_RIGHT
+    EDITTEXT        PATSET_TIMER_INT_TIME,52,21,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Spin1",PATSET_TIMER_INT_TIME_SPN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,81,21,9,14
+    LTEXT           "minutes",-1,86,25,21,8
+END
+
+patset_adv_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Backup to destination folder without create a top folder.",PATSET_NO_DSTDIR,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,211,10
+    LTEXT           "The file which is not assumed may be deleted if the usage is mistaken.\n\nPlease be fully careful.\n\nThis can be used only when one backup source is specified.",-1,27,19,175,60,SS_SUNKEN
+    ICON            notify_icon,-1,5,19,20,20
+    PUSHBUTTON      "Reset settings on this page",PATSET_ADV_RESET,124,184,102,14
+END
+
+path_convert_dlg DIALOGEX 0, 0, 222, 77
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Replace Pathnames"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "Replace part of the pathnames with specified string.",-1,7,4,208,8
+    LTEXT           "&Replace",-1,7,22,28,8
+    EDITTEXT        PATHCNV_FROM,36,19,179,14,ES_AUTOHSCROLL
+    RTEXT           "&with",-1,7,38,25,8
+    EDITTEXT        PATHCNV_TO,36,36,179,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,26,58,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,86,58,50,14
+    PUSHBUTTON      "Help",IDHELP,146,58,50,14
+END
+
+path_convert_ign_dlg DIALOGEX 0, 0, 179, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Replace Pathnames"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Yes",IDOK,34,28,50,14
+    PUSHBUTTON      "No",IDCANCEL,95,28,50,14
+    CTEXT           "Objects of replace target found in Ignore settings.\nReplace pathnames in Ignore settings?",-1,7,5,165,18
+END
+
+overwrite_notify_dlg DIALOGEX 0, 0, 207, 121
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Overwrite"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Yes",IDOK,7,84,55,14
+    PUSHBUTTON      "&No",IDCANCEL,75,84,55,14
+    PUSHBUTTON      "Overwrite &All",DELNOT_YESALL,7,102,55,14
+    PUSHBUTTON      "&Leave All",DELNOT_NOALL,75,102,55,14
+    PUSHBUTTON      "&Stop Backup",DELNOT_ABORT,143,102,55,14
+    EDITTEXT        OVWNOT_FNAME,7,33,193,12,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "",DELNOT_MESSAGE,7,7,193,8
+    LTEXT           "Filename",-1,7,23,61,8
+    RTEXT           "Source:",-1,7,53,38,8
+    RTEXT           "Destination:",-1,7,67,38,8
+    EDITTEXT        DELNOT_SRC_TIME,53,53,68,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_DST_TIME,53,67,68,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_SRC_SIZE,127,53,73,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        DELNOT_DST_SIZE,127,67,73,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+END
+
+show_comment_dlg DIALOGEX 0, 0, 194, 121
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Notification"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Next>",IDOK,35,102,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,107,102,50,14
+    EDITTEXT        SHOWCOM_TEXT,7,5,180,91,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
+END
+
+shutdown_err_dlg DIALOGEX 0, 0, 187, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,36,50,14
+    CTEXT           "Cannot change Windows power state.",-1,7,6,173,8
+    EDITTEXT        DLG_MSG1,7,19,173,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+common_msg_dlg DIALOGEX 0, 0, 248, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,101,37,50,14
+    CTEXT           "",DLG_MSG1,7,7,234,27
+END
+
+log_err_notify_dlg DIALOGEX 0, 0, 187, 69
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Log File Creation Error"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&Yes",IDOK,37,48,50,14
+    PUSHBUTTON      "&No",IDCANCEL,99,48,50,14
+    CTEXT           "Failed to create log file.\nPlease check the log filename on the option dialog.\n\nStart backup immediately without log?",-1,7,7,173,34
+END
+
+quit_notify_dlg DIALOGEX 0, 0, 186, 58
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Yes",IDOK,36,37,50,14
+    PUSHBUTTON      "No",IDCANCEL,97,37,50,14
+    CTEXT           "Backup is now in progress.",IDC_STATIC,7,7,172,8
+    CTEXT           "Do you wish to stop backup?",IDC_STATIC,7,21,172,8
+END
+
+patset_ign2_dlg DIALOGEX 0, 0, 231, 203
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Ignore files and folders which has &System Attribute",NOBACK_SYSTEM_FILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,179,10
+    CONTROL         "Ignore files and folders which has &Hidden Attribute",NOBACK_HIDDEN_FILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,21,191,10
+    CONTROL         "Ignore files which is &bigger than specified size.",NOBACK_BIG_FILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,37,153,10
+    LTEXT           "&Mega bytes.",IDC_STATIC,136,54,36,8
+    EDITTEXT        NOBACK_BIG_SIZE,93,51,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "(Please input a number greater than one. Zero is ignored.)",IDC_STATIC,29,68,177,8
+    LTEXT           "Ignore files bigger than",IDC_STATIC,22,54,68,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+main_menu MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Start Selected &Patterns...", MENU_BACKUP
+        MENUITEM "&Quick Backup...",            MENU_QUICK_BACKUP
+        MENUITEM SEPARATOR
+        POPUP "&Settings"
+        BEGIN
+            MENUITEM "&Save Settings to File...",   MENU_REGSAVE
+            MENUITEM "&Load Settings from File...", MENU_REGLOAD
+            MENUITEM SEPARATOR
+            MENUITEM "&Clear All Settings...",      MENU_REGINIT
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       MENU_FILE_EXIT
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "&Settings",                   MENU_SETENV
+    END
+    POPUP "&Log"
+    BEGIN
+        MENUITEM "&Show Logfile",               MENU_DISPLOG
+        MENUITEM "Show &error log on last backup", MENU_ERROR_LOG
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Contents",                   MENU_HELP_CONTENT
+        MENUITEM SEPARATOR
+        MENUITEM "&About Backup...",            MENU_HELP_ABOUT
+    END
+END
+
+dummy MENU
+BEGIN
+    POPUP "Dummy"
+    BEGIN
+        MENUITEM "&File Size",                  MENU_FILESIZE
+        MENUITEM "&Start...",                   MENU_START_NAME
+        MENUITEM "&Open...",                    MENU_OPEN
+        MENUITEM "Replace Pathnames",           MENU_PATHCONVERT
+        MENUITEM "Q&&A",                        MENU_HELP_QA
+        MENUITEM "Sort",                        MENU_SORT
+        MENUITEM "Sort2",                       MENU_SORT2
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    tr_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 190
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 168
+    END
+
+    about_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 71
+    END
+
+    main_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 171
+    END
+
+    transfer_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 174
+    END
+
+    patset_name_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    patset_dir_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    patset_flg_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    patset_ign1_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    opt_log_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 218
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 188
+    END
+
+    opt_misc_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 218
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 188
+    END
+
+    reginit_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+
+    filesize_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 166
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 138
+    END
+
+    del_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 199
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 68
+    END
+
+    inpfile_folder_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 100
+    END
+
+    inpfile_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    inpfolder_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    dragdrop_err_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+
+    quick_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 188
+    END
+
+    del_pat_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    main_comment_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 220
+        VERTGUIDE, 159
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 171
+    END
+
+    patset_system_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 225
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 192
+    END
+
+    countdown_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 61
+    END
+
+    patset_frame_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 314
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 238
+    END
+
+    patset_dst_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    patset_timer_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    patset_adv_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+
+    path_convert_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 215
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 72
+    END
+
+    path_convert_ign_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 42
+    END
+
+    overwrite_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 116
+    END
+
+    show_comment_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 187
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 116
+    END
+
+    shutdown_err_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 50
+    END
+
+    common_msg_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 241
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 51
+    END
+
+    log_err_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 62
+    END
+
+    quit_notify_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 51
+    END
+
+    patset_ign2_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 226
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 198
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,11,0,0
+ PRODUCTVERSION 1,11,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
+            VALUE "CompanyName", " "
+            VALUE "FileDescription", "Backup"
+            VALUE "FileVersion", "1.11.0.0"
+            VALUE "InternalName", "Backup"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2012 Sota"
+            VALUE "OriginalFilename", "Backup.exe"
+            VALUE "ProductName", "Backup application"
+            VALUE "ProductVersion", "1.11.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+box_bmp                 BITMAP                  "bmp00001.bmp"
+current_bmp             BITMAP                  "box_bmp1.bmp"
+done_bmp                BITMAP                  "box_bmp2.bmp"
+list_bmp                BITMAP                  "bitmap1.bmp"
+#endif    // âpåÍ (ïƒçë) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
