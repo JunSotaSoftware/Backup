@@ -809,8 +809,6 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
 {
     FILE *Strm;
     char *Buf;      /* ANSI */
-    char *Tmp;      /* ANSI */
-    char *Data;     /* ANSI */
     REGDATATBL *New;
     REGDATATBL *Pos;
     int Sts;
@@ -829,6 +827,9 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
             {
                 if(*Buf != '#')     /* ANSI */
                 {
+                    char *Tmp;      /* ANSI */
+                    char *Data;     /* ANSI */
+
                     if((Tmp = strchr(Buf, '\n')) != NULL)
                         *Tmp = NUL;
 
@@ -886,7 +887,6 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
 static int OpenSubKey(void *Parent, LPTSTR Name, void **Handle)
 {
     int Sts;
-    char Key[80];       /* ANSI */
     REGDATATBL *Pos;
 
     Sts = FAIL;
@@ -897,6 +897,7 @@ static int OpenSubKey(void *Parent, LPTSTR Name, void **Handle)
     }
     else
     {
+        char Key[80];       /* ANSI */
         strcpy(Key, ((REGDATATBL *)Parent)->KeyName);   /* ANSI */
         strcat(Key, "\\");                              /* ANSI */
         Unicode2AnsiCat(Key, Name);
@@ -1092,14 +1093,13 @@ static int ReadIntValueFromReg(void *Handle, LPTSTR Name, int *Value)
 
 static int WriteIntValueToReg(void *Handle, LPTSTR Name, int Value)
 {
-    REGDATATBL *Pos;
-    char *Data;
-    char Tmp[20];   /* ANSI */
-
     if(TmpRegType == REGTYPE_REG)
         RegSetValueEx(Handle, Name, 0, REG_DWORD, (CONST BYTE *)&Value, sizeof(int));
     else
     {
+        REGDATATBL *Pos;
+        char *Data;
+        char Tmp[20];   /* ANSI */
         Pos = (REGDATATBL *)Handle;
         Data = Pos->ValTbl + Pos->ValLen;
 

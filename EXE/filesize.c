@@ -203,7 +203,6 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
     HANDLE              fHnd;
     WIN32_FIND_DATA     FindBuf;
     _TCHAR              Src[MY_MAX_PATH2+1];
-    _TCHAR              *Pos;
     _TCHAR              Str[40];
     unsigned __int64    tmp64;
     unsigned __int64    big;
@@ -251,6 +250,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 
     if((Type & FILE_ATTRIBUTE_DIRECTORY) != 0)
     {
+        _TCHAR              *Pos;
 #ifdef DEBUG_LOG
         DoPrintf(_T(" - folder\n"));
 #endif

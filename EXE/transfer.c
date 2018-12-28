@@ -1281,7 +1281,6 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
     int Copy;
     HANDLE fHndSrc;
     WIN32_FIND_DATA SrcFinfo;
-    HANDLE fHndDst;
     WIN32_FIND_DATA DstFinfo;
 //  WORD SrcDate;
 //  WORD SrcTime;
@@ -1290,7 +1289,6 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 //  SYSTEMTIME SrcSysTime;
 //  SYSTEMTIME DstSysTime;
     int Sts;
-    DWORD Err;
     LPTSTR  lpBuffer;
     OVERWRITENOTIFYDATA overWrite;
 
@@ -1312,6 +1310,8 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
             }
             else
             {
+                HANDLE fHndDst;
+
                 _tcscpy(DstFpos, SrcFinfo.cFileName);
 
                 if((options->ForceCopy == NO) &&
@@ -1447,6 +1447,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                     GoDelete1(Dst, NO, NULL);
                     if(CopyFile1(Src, Dst, options->Wait, DrvType) != TRUE)
                     {
+                        DWORD Err;
                         ErrorCount++;
                         if((Err = GetLastError()) == ERROR_DISK_FULL)
                             SetTaskMsg(TASKMSG_ERR, MSGJPN_79);
@@ -1764,8 +1765,6 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     return(Sts);
 #endif
 #if FILECOPY_METHOD==COPYFILEEX
-    HANDLE hRead;
-    HANDLE hWrite;
     SECURITY_ATTRIBUTES SecRead;
     SECURITY_ATTRIBUTES SecWrite;
     FILETIME CreTime;
@@ -1791,12 +1790,16 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
 
     if (sts == TRUE)
     {
+        HANDLE hRead;
+
         SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
         SecRead.lpSecurityDescriptor = NULL;
         SecRead.bInheritHandle = FALSE;
         if((hRead = CreateFile_My(Src, GENERIC_READ,
             FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
         {
+            HANDLE hWrite;
+
             SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
             SecWrite.lpSecurityDescriptor = NULL;
             SecWrite.bInheritHandle = FALSE;
@@ -1888,8 +1891,6 @@ DWORD CALLBACK CopyProgressRoutine(
 static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
 {
     int Sts;
-    DWORD Attr;
-    DWORD Err;
     LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
@@ -1921,7 +1922,9 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
         }
         else
         {
-            Attr = GetFileAttributes_My(Fname, YES);
+            DWORD Attr;
+
+        	Attr = GetFileAttributes_My(Fname, YES);
             if(Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
                 SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES);
 
@@ -1949,6 +1952,7 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
         {
             if(Sts != SUCCESS)
             {
+                DWORD Err;
                 ErrorCount++;
                 Err = GetLastError();
                 FormatMessage(
@@ -2214,10 +2218,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     _TCHAR Dname[MY_MAX_PATH2+1];
     _TCHAR Fname[MY_MAX_PATH2+1];
     _TCHAR Tmp[MY_MAX_PATH2+1];
-    HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
     DWORD Type;
-    LPTSTR Pos;
     _TCHAR Dname2[MY_MAX_PATH2 + 1];
 
     Sts = SUCCESS;
@@ -2233,6 +2235,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
         RemoveYenTail(Dname);
         if((_tcschr(Dname, '*') != NULL) || (_tcschr(Dname, '?') != NULL))
         {
+            LPTSTR Pos;
+
             // ワイルドカード使用のファイル単位でのバックアップ
             // 20150626 バックアップ元のフォルダ（ドライブ）が存在するかチェック
             _tcscpy(Dname2, Dname);
@@ -2266,6 +2270,8 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
         }
         else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
         {
+            HANDLE fHnd;
+
             /* 大文字／小文字を合わせるための処理 */
             if((fHnd = FindFirstFile_My(Dname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
             {
@@ -2353,7 +2359,6 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     HTREEITEM hItem;
     int Sts;
     DWORD Err = 0;
-    BOOL Next;
     LPTSTR  lpBuffer;
 
     Sts = SUCCESS;
@@ -2362,6 +2367,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     _tcscat(Src, _T("*"));
     if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
     {
+        BOOL Next;
         do
         {
             if((Sts = CheckAbort()) == FAIL)
@@ -2628,7 +2634,6 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
     _TCHAR Tmp[MY_MAX_PATH2+1];
     int i;
     int Sts;
-    int First;
 
     Sts = FAIL;
     i = 0;
@@ -2644,6 +2649,7 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
         _tcscpy(Dst, DstPath);
         if(i > 1)
         {
+            int First;
             First = YES;
             for(i -= 2; i >= 0; i--)
             {
@@ -2861,28 +2867,28 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi)
 
 static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 {
-    HANDLE hFile;
     SECURITY_ATTRIBUTES Sec;
-    BOOL Sts;
     FILETIME CreTime;
     FILETIME AccTime;
     FILETIME ModTime;
 //  FILETIME CreTimeUTC;
 //  FILETIME AccTimeUTC;
 //  FILETIME ModTimeUTC;
-    DWORD Attr;
 
     if((_tcslen(Src) > 2) && (_tcscmp(Src+1, _T(":\\")) != 0))
     {
+        HANDLE hFile;
         Sec.nLength = sizeof(SECURITY_ATTRIBUTES);
         Sec.lpSecurityDescriptor = NULL;
         Sec.bInheritHandle = FALSE;
         if((hFile = CreateFile_My(Src, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL, NO)) != INVALID_HANDLE_VALUE)
         {
+            BOOL Sts;
             Sts = GetFileTime(hFile, &CreTime, &AccTime, &ModTime);
             CloseHandle(hFile);
             if(Sts != 0)
             {
+                DWORD Attr;
                 // GENERIC_WRITEを指定するためにReadOnlyを解除
                 if((Attr = GetFileAttributes_My(Dst, YES)) != 0xFFFFFFFF)
                     SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY, YES);
