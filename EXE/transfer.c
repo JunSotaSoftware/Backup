@@ -1020,8 +1020,6 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
     HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
     _TCHAR Tmp[MY_MAX_PATH2+1];
-    DWORD Attr;
-    DWORD Attr2;
     DWORD Err;
     LPTSTR  lpBuffer;
 
@@ -1036,6 +1034,9 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
     }
     else
     {
+        DWORD Attr;
+        DWORD Attr2;
+
         GoMake = 1;
         if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
         {
@@ -1278,7 +1279,6 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
 
 static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options)
 {
-    int Copy;
     HANDLE fHndSrc;
     WIN32_FIND_DATA SrcFinfo;
     WIN32_FIND_DATA DstFinfo;
@@ -1310,6 +1310,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
             }
             else
             {
+                int Copy;
                 HANDLE fHndDst;
 
                 _tcscpy(DstFpos, SrcFinfo.cFileName);
@@ -2575,7 +2576,6 @@ static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
     _TCHAR Tmp[MY_MAX_PATH2+1];
     int i;
     int Sts;
-    int First;
 
     Sts = FAIL;
     i = 0;
@@ -2592,6 +2592,7 @@ static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
         *ScnName = NUL;
         if(i > 1)
         {
+            int First;
             First = YES;
             for(i -= 2; i >= 0; i--)
             {
@@ -2707,14 +2708,15 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
 {
     HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
-    DIRTREE *Pos;
-    DIRTREE *Prev;
+
     int Sts;
 
     Sts = SUCCESS;
     *Base = NULL;
     if((fHnd = FindFirstFile_My(ScnPath, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
     {
+        DIRTREE *Pos;
+        DIRTREE *Prev;
         do
         {
             if(((Type == 0) &&
