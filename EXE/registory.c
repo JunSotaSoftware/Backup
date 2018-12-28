@@ -823,12 +823,12 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
     {
         if((Buf = malloc(REG_SECT_MAX)) != NULL)
         {
+            char *Data;     /* ANSI */
             while(fgets(Buf, REG_SECT_MAX, Strm) != NULL)   /* ANSI */
             {
                 if(*Buf != '#')     /* ANSI */
                 {
                     char *Tmp;      /* ANSI */
-                    char *Data;     /* ANSI */
 
                     if((Tmp = strchr(Buf, '\n')) != NULL)
                         *Tmp = NUL;
