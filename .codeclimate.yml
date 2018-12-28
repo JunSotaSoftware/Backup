@@ -1,0 +1,8 @@
+version: "2"
+plugins:
+  cppcheck:
+    enabled: true
+    config:
+      check: all
+      project: EXE/Backup.sln
+      platform: win32W
