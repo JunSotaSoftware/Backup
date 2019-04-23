@@ -183,7 +183,7 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
 
     Sts = FAIL;
 
-    HtmlHelp(NULL, NULL, HH_INITIALIZE, (DWORD)&dwCookie);
+    HtmlHelp(NULL, NULL, HH_INITIALIZE, (DWORD_PTR)&dwCookie);
 
     SaveUpdateBellInfo();
 
@@ -742,7 +742,7 @@ static void ExitProc(HWND hWnd)
     DeleteAllObject();
     DeleteLogFilename();
     DeleteErrorLogFilename();
-    HtmlHelp(NULL, NULL, HH_UNINITIALIZE, dwCookie);
+    HtmlHelp(NULL, NULL, HH_UNINITIALIZE, (DWORD_PTR)&dwCookie);
     return;
 }
 
