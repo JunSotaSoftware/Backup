@@ -10,7 +10,7 @@ http://www2.biglobe.ne.jp/sota/backup.html
 
 ## 注意
 
-x64 版は、コンパイルが通る状態になったばかりで正しく起動しません。
+x64 版は、コンパイル時の警告対処等が残っている為、未完成です。
 
 ## Codeclimate のビルド
 
