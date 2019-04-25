@@ -200,15 +200,15 @@ void CheckTipsDisplay(LPARAM lParam)
 -----------------------------------------------------------------------------*/
 static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 {
-	HDC		dc;
-	HFONT	pFont;
-	HFONT	pFontDC;
-	RECT	rectDisplay;
-
 	if(Status == PENDING)
 	{
 		if(GetFocus() != NULL)
 		{
+			HDC		dc;
+			HFONT	pFont;
+			HFONT	pFontDC;
+			RECT	rectDisplay;
+
 			/* ListBoxウインドウのフォントTIPSウインドウにコピー */
 			dc = GetDC(hWndLbox);
 			pFont = (HFONT)SendMessage(hWndLbox, WM_GETFONT, 0, 0);
@@ -271,8 +271,6 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 {
 	RECT	Rect;
 	RECT	RectWin;
-	int		row;
-	int		max;
 	int		Ret;
 
 	Ret = -1;
@@ -280,6 +278,9 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 	GetClientRect(hWnd, &RectWin);
 	if(PtInRect(&RectWin, point))
 	{
+		int		row;
+		int		max;
+
 		row = SendMessage(hWnd, LB_GETTOPINDEX, 0, 0);
 		max = SendMessage(hWnd, LB_GETCOUNT, 0, 0);
 		for(; row < max; row++)
@@ -322,7 +323,6 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 -----------------------------------------------------------------------------*/
 static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	_TCHAR	*Text;
 	POINT	Point;
 
 	switch(message)
@@ -335,6 +335,8 @@ static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, 
 				ScreenToClient(hWndLbox, &Point);
 				if(PtInRect(&cur_rect, Point))
 				{
+					_TCHAR	*Text;
+
 					Text = GetPatComment(ItemNum);
 					if((Text != NULL) && (_tcslen(Text) > 0))
 						TipsShow(MousePos, Text, Status);

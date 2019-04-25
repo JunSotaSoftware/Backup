@@ -560,7 +560,6 @@ static void RunTask(HWND hWnd, AUTOCLOSE_ACTION action)
 static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
-    RECT *Rect;
     LPMINMAXINFO lpmmi;
     POINT Point;
 
@@ -655,6 +654,8 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
         case WM_SIZE :
             if(wParam == SIZE_RESTORED)
             {
+                RECT *Rect;
+
                 Rect = malloc(sizeof(RECT));
                 if(Rect != NULL)
                 {
@@ -757,10 +758,10 @@ static void ExitProc(HWND hWnd)
 *----------------------------------------------------------------------------*/
 void LoadTrayIcon(void)
 {
-    int i;
-
     if(TmpTrayIcon == YES)
     {
+        int i;
+
         for(i = 0; i < (sizeof(IconData)/sizeof(int)); i++)
         {
             IconHandle[i] = LoadImage(hInstBup, MAKEINTRESOURCE(IconData[i]), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE);
@@ -1003,8 +1004,6 @@ static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int
 
 static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf)
 {
-    int InQuote;
-
     while(*Str != NUL)
     {
         if((*Str != _T(' ')) && (*Str != _T('\t')))
@@ -1014,6 +1013,8 @@ static LPTSTR GetToken(LPTSTR Str, LPTSTR Buf)
 
     if(*Str != NUL)
     {
+        int InQuote;
+
         InQuote = 0;
         while(*Str != NUL)
         {

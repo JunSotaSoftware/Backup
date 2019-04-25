@@ -100,10 +100,9 @@ void SetCharTail(LPTSTR Str, LPTSTR Ch)
 
 void RemoveYenTail(LPTSTR Str)
 {
-    LPTSTR Pos;
-
     if(_tcslen(Str) > 0)
     {
+        LPTSTR Pos;
         Pos = _tcsninc(Str, _tcslen(Str) - 1);
         if(_tcscmp(Pos, _T("\\")) == 0)
             *Pos = NUL;
@@ -366,11 +365,12 @@ LPTSTR GetFileExt(LPTSTR Path)
 int StrMultiLen(LPTSTR Str)
 {
     int Len;
-    int Tmp;
 
     Len = 0;
     while(*Str != NUL)
     {
+        int Tmp;
+
         Tmp = _tcslen(Str) + 1;
         Str += Tmp;
         Len += Tmp;
@@ -397,11 +397,12 @@ int StrMultiLen(LPTSTR Str)
 int StrMultiCount(LPTSTR Str)
 {
     int Count;
-    int Tmp;
 
     Count = 0;
     while(*Str != NUL)
     {
+        int Tmp;
+
         Tmp = _tcslen(Str) + 1;
         Str += Tmp;
         Count += 1;
@@ -424,11 +425,12 @@ int StrMultiCount(LPTSTR Str)
 *----------------------------------------------------------------------------*/
 LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num)
 {
-    int Tmp;
     LPTSTR Result = Str;
 
     for(; Num > 0; Num--)
     {
+        int Tmp;
+
         Tmp = _tcslen(Result) + 1;
         Result += Tmp;
         if(*Result == NUL)
@@ -755,16 +757,18 @@ void BackgrndMessageProc(void)
 
 void SortListBoxItem(HWND hWnd)
 {
-    LPTSTR Buf;
-    LPTSTR Tmp;
     int Num;
-    int i;
 
     Num = SendMessage(hWnd, LB_GETCOUNT, 0, 0);
     if(Num > 1)
     {
+        LPTSTR Buf;
+
         if((Buf = malloc(Num * (MY_MAX_PATH+1) * sizeof(_TCHAR))) != NULL)
         {
+            LPTSTR Tmp;
+            int i;
+
             Tmp = Buf;
             for(i = 0; i < Num; i++)
             {
@@ -945,18 +949,18 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 {
     int Max;
     int i;
-    LPTSTR Tmp;
-    DWORD Attr;
     int Error;
-    _TCHAR Msg[128];
 
     Error = 0;
     Max = DragQueryFile((HDROP)wParam, 0xFFFFFFFF, NULL, 0);
     for(i = 0; i < Max; i++)
     {
+        LPTSTR Tmp;
         Tmp = malloc((MY_MAX_PATH+1) * sizeof(_TCHAR));
         if(Tmp != NULL)
         {
+            DWORD Attr;
+
             DragQueryFile((HDROP)wParam, i, Tmp, MY_MAX_PATH);
             Attr = GetFileAttributes_My(Tmp, NO);
             if((Attr == 0xFFFFFFFF) ||
@@ -976,6 +980,7 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 
     if(Error != 0)
     {
+        _TCHAR Msg[128];
         if(Type & SEND_FOLDER)
             _stprintf(Msg, MSGJPN_37, Error);
         else

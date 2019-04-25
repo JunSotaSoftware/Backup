@@ -345,7 +345,6 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
     NMHDR *pnmhdr;
     _TCHAR Tmp[MY_MAX_PATH+1];
     int Cur;
-    int Max;
     HWND hWndChild;
     PATHCONVERTINFO PathInfo;
 
@@ -436,6 +435,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                 case PATSET_DOWN :
                     if((Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
+                        int Max;
                         Max = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
@@ -587,9 +587,6 @@ static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD IdSort, DWORD IdConv)
 static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo)
 {
 //  _TCHAR          TmpPath[MY_MAX_PATH+1];
-    int             Cur;
-    int             Items;
-    BOOL            First;
     int             Ret;
 
     Ret = NO;
@@ -601,6 +598,10 @@ static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo)
 
     if(SendMessage(hListBox, LB_GETSELCOUNT, 0,  0) > 0)
     {
+        int             Cur;
+        int             Items;
+        BOOL            First;
+
         Items = SendMessage(hListBox, LB_GETCOUNT, 0,  0);
         First = TRUE;
         for(Cur = 0; Cur < Items; Cur++)
@@ -882,10 +883,8 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
     _TCHAR Tmp2[MY_MAX_PATH+1];
     HWND hWndChild;
     int Cur;
-    int Max;
     PATHCONVERTINFO PathInfo;
     HWND hCtrl;
-    HDC hDC;
 
     switch (message)
     {
@@ -916,6 +915,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             hCtrl = (HWND)lParam;
             if(hCtrl == GetDlgItem(hDlg, PATSET_DST_COMMENT))
             {
+                HDC hDC;
                 hDC = (HDC)wParam;
                 SetTextColor(hDC, RGB(0,0,255));
                 SetBkColor(hDC, GetSysColor(COLOR_3DFACE));
@@ -1000,6 +1000,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                 case PATSET_DOWN :
                     if((Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
+                        int Max;
                         Max = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
@@ -1988,9 +1989,6 @@ static void DisplayFileSizeDlg(HWND hDlg)
 
 static int SetStrToListBox(LPTSTR Str, HWND hDlg, int CtrlList, int BufSize, int Pos)
 {
-    _TCHAR Tmp[MY_MAX_PATH+1];
-    int Num;
-    int i;
     int Len;
     int Sts;
 
@@ -1998,6 +1996,10 @@ static int SetStrToListBox(LPTSTR Str, HWND hDlg, int CtrlList, int BufSize, int
     Len = _tcslen(Str);
     if(Len > 0)
     {
+        _TCHAR Tmp[MY_MAX_PATH+1];
+        int i;
+        int Num;
+
         Len++;
         Num = SendDlgItemMessage(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
         for(i = 0; i < Num; i++)
@@ -2076,13 +2078,13 @@ static void GetMultiTextFromList(HWND hDlg, int CtrlList, LPTSTR Buf, int BufSiz
     _TCHAR Tmp[MY_MAX_PATH+1];
     int Num;
     int i;
-    int len;
 
     memset(Buf, NUL, BufSize * sizeof(_TCHAR));
     BufSize -= 1;
     Num = SendDlgItemMessage(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
     for(i = 0; i < Num; i++)
     {
+        int len;
         SendDlgItemMessage(hDlg, CtrlList, LB_GETTEXT, i, (LPARAM)Tmp);
         len = _tcslen(Tmp);
         if(len > 0)

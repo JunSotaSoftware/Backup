@@ -79,8 +79,6 @@ extern _TCHAR LastErrorLogFname[MY_MAX_PATH+1];
 -----------------------------------------------------------------------------*/
 int OpenLogfile(void)
 {
-    char    *oemStr;    /* not _TCHAR */
-    int     length;
     int     result;
 
     result = SUCCESS;
@@ -104,6 +102,9 @@ int OpenLogfile(void)
         }
         else
         {
+            char    *oemStr;    /* not _TCHAR */
+            int     length;
+
             /* convert filename to OEM character set and open ANSI stream */
             length = WideCharToMultiByte(CP_OEMCP, 0, RealLogFname, -1, NULL, 0, NULL, NULL);
             oemStr = (char*)malloc(length+1);
@@ -135,14 +136,13 @@ int OpenLogfile(void)
 -----------------------------------------------------------------------------*/
 static void MakeLogDir(LPTSTR Path)
 {
-    LPTSTR Pos;
-    _TCHAR Tmp[MY_MAX_PATH+1];
-    HANDLE fHnd;
+
     WIN32_FIND_DATA FindBuf;
 
     if((_tcslen(Path) > 3) &&
             ((_tcsncmp(Path+1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
     {
+        LPTSTR Pos;
         Pos = Path + 2;
         if(_tcsncmp(Path, _T("\\\\"), 2) == 0)
         {
@@ -154,6 +154,9 @@ static void MakeLogDir(LPTSTR Path)
         }
         while((Pos != NULL) && ((Pos = _tcschr(Pos+1, _T('\\'))) != NULL))
         {
+            _TCHAR Tmp[MY_MAX_PATH+1];
+            HANDLE fHnd;
+
             _tcsncpy(Tmp, Path, Pos - Path);
             Tmp[Pos - Path] = NUL;
             if((fHnd = FindFirstFile(Tmp, &FindBuf)) == INVALID_HANDLE_VALUE)
@@ -210,9 +213,6 @@ int DeleteLogFilename(void)
 -----------------------------------------------------------------------------*/
 int WriteMsgToLogfile(LPTSTR Msg)
 {
-    char    *oemStr;    /* not _TCHAR */
-    int     length;
-
     if(LogStrm != NULL)
     {
         CheckLogFileSize();
@@ -223,6 +223,9 @@ int WriteMsgToLogfile(LPTSTR Msg)
         }
         else
         {
+            char    *oemStr;    /* not _TCHAR */
+            int     length;
+
             /* convert to OEM character set and write it */
             length = WideCharToMultiByte(CP_OEMCP, 0, Msg, -1, NULL, 0, NULL, NULL);
             oemStr = (char*)malloc(length+1);
@@ -244,15 +247,16 @@ int WriteMsgToLogfile(LPTSTR Msg)
 -----------------------------------------------------------------------------*/
 static void CheckLogFileSize(void)
 {
-    _TCHAR Tmp[MY_MAX_PATH+1+15];
-    WIN32_FIND_DATA FindBuf;
-    HANDLE fHnd;
-    int Max;
 
     if((LogSwitch == LOG_SW_APPEND) && (LogLimit > 0))
     {
         if((ftell(LogStrm) / 1024) >= LogLimit)
         {
+            _TCHAR Tmp[MY_MAX_PATH+1+15];
+            WIN32_FIND_DATA FindBuf;
+            HANDLE fHnd;
+            int Max;
+
             CloseLogfile();
 
             Max = 0;
@@ -438,9 +442,7 @@ void DispLogWithViewer(void)
 -----------------------------------------------------------------------------*/
 int OpenErrorLogfile(void)
 {
-    int     length;
     int     result;
-    char    *oemStr;    /* not _TCHAR */
 
     result = FAIL;
     if(ErrorLogFname == NULL)
@@ -471,6 +473,9 @@ int OpenErrorLogfile(void)
         }
         else
         {
+            int     length;
+            char    *oemStr;    /* not _TCHAR */
+
             /* convert filename to OEM character set and open ANSI stream */
             length = WideCharToMultiByte(CP_OEMCP, 0, ErrorLogFname, -1, NULL, 0, NULL, NULL);
             oemStr = (char*)malloc(length+1);
@@ -537,8 +542,6 @@ int DeleteErrorLogFilename(void)
 -----------------------------------------------------------------------------*/
 int WriteMsgToErrorLogfile(LPTSTR Msg)
 {
-    int     length;
-    char    *oemStr;    /* not _TCHAR */
 
     if(ErrorStrm != NULL)
     {
@@ -548,6 +551,9 @@ int WriteMsgToErrorLogfile(LPTSTR Msg)
         }
         else
         {
+            int     length;
+            char    *oemStr;    /* not _TCHAR */
+
             /* convert to OEM character set and write it */
             length = WideCharToMultiByte(CP_OEMCP, 0, Msg, -1, NULL, 0, NULL, NULL);
             oemStr = (char*)malloc(length+1);
@@ -584,7 +590,6 @@ void DispErrorLogWithViewer(void)
 -----------------------------------------------------------------------------*/
 void OpenLogDir(void)
 {
-    LPTSTR Pos;
     _TCHAR Path[MY_MAX_PATH + 1];
 
     _tcscpy(Path, LogFname);
@@ -592,6 +597,8 @@ void OpenLogDir(void)
     if ((_tcslen(Path) > 3) &&
         ((_tcsncmp(Path + 1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
     {
+        LPTSTR Pos;
+
         Pos = Path + 3;
         Pos = _tcsrchr(Path, _T('\\'));
         if (Pos != NULL)

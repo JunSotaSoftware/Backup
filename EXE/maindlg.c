@@ -763,12 +763,13 @@ static int UpdatePatToList(int Num, COPYPAT *Set)
 static int DelPatFromList(int Num)
 {
     int Sts;
-    COPYPATLIST *Pos;
-    COPYPATLIST *Prev;
 
     Sts = FAIL;
     if(Num < Patterns)
     {
+        COPYPATLIST *Pos;
+        COPYPATLIST *Prev;
+
         Pos = PatListTop;
         if(Num == 0)
             PatListTop = Pos->Next;
@@ -987,16 +988,17 @@ static BOOL CheckValidPat(int Num)
 LPTSTR GetPatComment(int Num)
 {
     LPTSTR Ret;
-    LPTSTR Get;
-    LPTSTR Put;
-    int i;
-    COPYPATLIST *Pos;
-    unsigned int Max;
-    unsigned int Len;
 
     Ret = NULL;
     if(Num < Patterns)
     {
+        LPTSTR Get;
+        LPTSTR Put;
+        int i;
+        COPYPATLIST *Pos;
+        unsigned int Max;
+        unsigned int Len;
+
         Pos = PatListTop;
         for(i = 0; i < Num; i++)
             Pos = Pos->Next;
@@ -1137,11 +1139,11 @@ static void SendAllPatNames(HWND hWnd, int Cmd)
 {
     int i;
     COPYPATLIST *Pos;
-    _TCHAR *Name;
 
     Pos = PatListTop;
     for(i = 0; i < Patterns; i++)
     {
+        _TCHAR *Name;
         Name = MakeListBoxName(&Pos->Set);
         SendMessage(hWnd, Cmd, 0, (LPARAM)Name);
         free(Name);
@@ -1538,20 +1540,22 @@ void AsdMainDlgMinSize(POINT *Point)
 *----------------------------------------------------------------------------*/
 static void DispCommentToWin(HWND hDlg)
 {
-    LPTSTR Str;
-    int Num;
-    HWND hItem;
-
     if(ShowComment == 2)
     {
+	    HWND hItem;
+
         hItem = GetDlgItem(hDlg, MAIN_COMMENT);
         if(SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETSELCOUNT, 0,  0) == 0)
             SendMessage(hItem, WM_SETTEXT, 0, (LPARAM)_T(""));
         else
         {
+		    int Num;
+
             Num = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCARETINDEX, 0, 0);
             if(hItem != NULL)
             {
+                LPTSTR Str;
+
                 Str = GetPatComment(Num);
                 if(Str != NULL)
                     SendMessage(hItem, WM_SETTEXT, 0, (LPARAM)Str);
