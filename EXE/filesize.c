@@ -103,13 +103,13 @@ void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
         Path = TmpPat->Set.Src;
         while(*Path != NUL)
         {
-            SendDlgItemMessage(hDlg, FSIZE_SRCLIST, LB_ADDSTRING, 0, (LPARAM)Path);
-            Path += _tcslen(Path) + 1;
+            SendDlgItemMessageI(hDlg, FSIZE_SRCLIST, LB_ADDSTRING, 0, (LPARAM)Path);
+            Path += TCSLEN(Path) + 1;
         }
         TmpPat = TmpPat->Next;
     }
 
-    SendDlgItemMessage(hDlg, FSIZE_MESSAGE, WM_SETTEXT, 0, (LPARAM)MSGJPN_107);
+    SendDlgItemMessageI(hDlg, FSIZE_MESSAGE, WM_SETTEXT, 0, (LPARAM)MSGJPN_107);
 
     /* 検索 */
     while((Pat != NULL) && (DlgSts == 0))
@@ -132,12 +132,12 @@ void FilesSizeDialog(HWND hWnd, COPYPATLIST *Pat)
             }
 
             CheckSizeGo(hDlg, Src, &Info);
-            Path += _tcslen(Path) + 1;
+            Path += TCSLEN(Path) + 1;
         }
         Pat = Pat->Next;
     }
 
-    SendDlgItemMessage(hDlg, FSIZE_MESSAGE, WM_SETTEXT, 0, (LPARAM)MSGJPN_108);
+    SendDlgItemMessageI(hDlg, FSIZE_MESSAGE, WM_SETTEXT, 0, (LPARAM)MSGJPN_108);
 
     EnableWindow(GetDlgItem(hDlg, IDOK), TRUE);
     EnableWindow(GetDlgItem(hDlg, IDCANCEL), FALSE);
@@ -288,7 +288,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
                     else
                     {
                         if((CheckFnameWithArray(Src, Info->IgnFiles) == NO) &&
-                           ((_tcslen(Info->ScnName) == 0) || (CheckFnameWithArray(Src, Info->ScnName) == YES)))
+                           ((TCSLEN(Info->ScnName) == 0) || (CheckFnameWithArray(Src, Info->ScnName) == YES)))
                         {
                             tmp64 = (unsigned __int64)FindBuf.nFileSizeLow +
                                 ((unsigned __int64)FindBuf.nFileSizeHigh << 32);
@@ -351,15 +351,15 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
     }
 
     _stprintf(Str, _T("%d"), Info->Folders);
-    SendDlgItemMessage(hDlg, FSIZE_FOLDERS, WM_SETTEXT, 0, (LPARAM)Str);
+    SendDlgItemMessageI(hDlg, FSIZE_FOLDERS, WM_SETTEXT, 0, (LPARAM)Str);
     _stprintf(Str, _T("%d"), Info->Files);
-    SendDlgItemMessage(hDlg, FSIZE_FILES, WM_SETTEXT, 0, (LPARAM)Str);
+    SendDlgItemMessageI(hDlg, FSIZE_FILES, WM_SETTEXT, 0, (LPARAM)Str);
 #ifdef DEBUG_LOG
     _stprintf(Str, _T("%.0f"), Info->Size);
 #else
     MakeSizeString(Info->Size, Str);
 #endif
-    SendDlgItemMessage(hDlg, FSIZE_SIZE, WM_SETTEXT, 0, (LPARAM)Str);
+    SendDlgItemMessageI(hDlg, FSIZE_SIZE, WM_SETTEXT, 0, (LPARAM)Str);
 
     return;
 }

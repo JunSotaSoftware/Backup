@@ -254,14 +254,14 @@ int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat)
         while(*Path != NUL)
         {
             ShowAuthDialog( hWnd, Path );
-            Path += _tcslen(Path) + 1;
+            Path += TCSLEN(Path) + 1;
         }
 
         Path = TmpPat->Set.Dst;
         while(*Path != NUL)
         {
             ShowAuthDialog( hWnd, Path );
-            Path += _tcslen(Path) + 1;
+            Path += TCSLEN(Path) + 1;
         }
 
         TmpPat = TmpPat->Next;
@@ -291,7 +291,7 @@ int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat)
 int MyPathIsUNCServerShare(_TCHAR *str)
 {
     int ret = 0;
-    if ((_tcslen(str) > 2) && ((_tcsncmp(str, _T("\\\\"), 2) == 0) || (_tcsncmp(str, _T("//"), 2) == 0)))
+    if ((TCSLEN(str) > 2) && ((_tcsncmp(str, _T("\\\\"), 2) == 0) || (_tcsncmp(str, _T("//"), 2) == 0)))
     {
         _TCHAR *pos = _tcschr(str+2, _T('\\'));
 		if (pos == NULL)
@@ -359,14 +359,14 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             ProcPicture[1] = LoadImage(GetBupInst(), MAKEINTRESOURCE(current_bmp), IMAGE_BITMAP, 14, 10, LR_LOADMAP3DCOLORS);
             ProcPicture[2] = LoadImage(GetBupInst(), MAKEINTRESOURCE(done_bmp), IMAGE_BITMAP, 14, 10, LR_LOADMAP3DCOLORS);
 
-            SendDlgItemMessage(hDlg, TRANS_DIRLIST, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)hImage);
-//          SendDlgItemMessage(hDlg, TRANS_DIRLIST, TVM_SETBKCOLOR, 0, (LPARAM)RGB(255,255,255));
-//          SendDlgItemMessage(hDlg, TRANS_DIRLIST, TVM_SETTEXTCOLOR, 0, (LPARAM)RGB(0,0,0));
+            SendDlgItemMessageI(hDlg, TRANS_DIRLIST, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)hImage);
+//          SendDlgItemMessageI(hDlg, TRANS_DIRLIST, TVM_SETBKCOLOR, 0, (LPARAM)RGB(255,255,255));
+//          SendDlgItemMessageI(hDlg, TRANS_DIRLIST, TVM_SETTEXTCOLOR, 0, (LPARAM)RGB(0,0,0));
 
-            SendDlgItemMessage(hDlg, TRANS_EXEC, EM_LIMITTEXT, TASK_BUFSIZE, 0);
-            SendDlgItemMessage(hDlg, TRANS_PROGRESS, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
-            SendDlgItemMessage(hDlg, TRANS_PROGRESS, PBM_SETSTEP, 1, 0);
-            SendDlgItemMessage(hDlg, TRANS_PROGRESS, PBM_SETPOS, 0, 0);
+            SendDlgItemMessageI(hDlg, TRANS_EXEC, EM_LIMITTEXT, TASK_BUFSIZE, 0);
+            SendDlgItemMessageI(hDlg, TRANS_PROGRESS, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
+            SendDlgItemMessageI(hDlg, TRANS_PROGRESS, PBM_SETSTEP, 1, 0);
+            SendDlgItemMessageI(hDlg, TRANS_PROGRESS, PBM_SETPOS, 0, 0);
 
             /* ログ表示ウインドウをサブクラス化 */
             hWndChild = GetDlgItem(hDlg, TRANS_EXEC);
@@ -378,7 +378,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             return(TRUE);
 
         case WM_BACKUP_START :
-            SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_123);
+            SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_123);
             EnableWindow(GetDlgItem(hDlg, TRANS_STOP), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_RETURN), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_QUIT), TRUE);
@@ -392,8 +392,8 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
         case WM_BACKUP_ERROR :
             Processing = PROCESSING_STOP;
             KillTimer(hDlg, TIMER_ANIM);
-            SendMessage(GetMainHwnd(), WM_SETTEXT, 0, (LPARAM)_T("Backup"));
-            SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_55);
+            SendMessageI(GetMainHwnd(), WM_SETTEXT, 0, (LPARAM)_T("Backup"));
+            SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_55);
             EnableWindow(GetDlgItem(hDlg, TRANS_STOP), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_RETURN), TRUE);
             EnableWindow(GetDlgItem(hDlg, TRANS_QUIT), TRUE);
@@ -427,7 +427,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                     TickCount = IntervalTime;
                     SetTimer(hDlg, TIMER_INTERVAL, 60*1000, NULL);  /* 1分おき */
                     _stprintf(Tmp, MSGJPN_57, TickCount);
-                    SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)Tmp);
                     SetTrayIcon(TICON_CHANGE, 0, Tmp);
                 }
             }
@@ -448,7 +448,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                 else
                 {
                     _stprintf(Tmp, MSGJPN_57, TickCount);
-                    SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)Tmp);
                     SetTrayIcon(TICON_CHANGE, 0, Tmp);
                 }
             }
@@ -470,7 +470,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                         SetBackupRestart();
                         Processing = PROCESSING_RUN;
                         SetTimer(hDlg, TIMER_ANIM, 600, NULL);  /* 0.6秒おき */
-                        SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_123);
+                        SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_123);
                     }
                     else
                     {
@@ -478,7 +478,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                         SetBackupPause();
                         Processing = PROCESSING_PAUSE;
                         KillTimer(hDlg, TIMER_ANIM);
-                        SendDlgItemMessage(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_56);
+                        SendDlgItemMessageI(hDlg, TRANS_STOP, WM_SETTEXT, 0, (LPARAM)MSGJPN_56);
                     }
                     break;
 
@@ -489,7 +489,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                         if(Processing == PROCESSING_RUN)
                         {
                             SetBackupPause();
-                            sts = DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
+                            sts = DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
                             if(sts == NO)
                             {
                                 SetBackupRestart();
@@ -523,7 +523,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                         if(Processing == PROCESSING_RUN)
                         {
                             SetBackupPause();
-                            sts = DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
+                            sts = DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
                             if(sts == NO)
                             {
                                 SetBackupRestart();
@@ -554,7 +554,7 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
                             if(Processing == PROCESSING_RUN)
                             {
                                 SetBackupPause();
-                                sts = DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
+                                sts = DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(quit_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T(""));
                                 if(sts == NO)
                                 {
                                     SetBackupRestart();
@@ -612,12 +612,12 @@ void SelectPass(int Pass)
         { 2, 2, 2, 2, 2, 2 }
     };
 
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_PREPARE), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][0]]);
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_SCAN), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][1]]);
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_RMDIR), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][2]]);
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_RMFILE), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][3]]);
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_MKDIR), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][4]]);
-    SendMessage(GetDlgItem(hWndTransDlg, TRANS_PIC_COPY), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][5]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_PREPARE), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][0]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_SCAN), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][1]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_RMDIR), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][2]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_RMFILE), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][3]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_MKDIR), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][4]]);
+    SendMessageI(GetDlgItem(hWndTransDlg, TRANS_PIC_COPY), STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)ProcPicture[pictureTable[Pass][5]]);
     return;
 }
 
@@ -636,7 +636,7 @@ void SetPatName(LPTSTR Name)
     _TCHAR Tmp[PATNAME_LEN+20];
 
     _stprintf(Tmp, _T("%s - Backup"), Name);
-    SendMessage(GetMainHwnd(), WM_SETTEXT, 0, (LPARAM)Tmp);
+    SendMessageI(GetMainHwnd(), WM_SETTEXT, 0, (LPARAM)Tmp);
     return;
 }
 
@@ -672,25 +672,25 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
         }
 
         /* ウインドウの横幅に合わせて整形 */
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)szBuf);
+        SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)szBuf);
         _tcscat(szBuf, _T("\r\n"));
 
-        Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
-        Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
+        Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
+        Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
 
         /* テキストサイズのリミット値をチェック */
-        if((Pos + _tcslen(szBuf)) >= TASK_BUFSIZE)
+        if((Pos + TCSLEN(szBuf)) >= TASK_BUFSIZE)
         {
-            Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEFROMCHAR, TASK_BUFSIZE/10, 0) + 1;
-            Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos, 0);
-            SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_SETSEL, 0, Pos);
-            SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)_T(""));
+            Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_LINEFROMCHAR, TASK_BUFSIZE/10, 0) + 1;
+            Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos, 0);
+            SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_SETSEL, 0, Pos);
+            SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)_T(""));
 
-            Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
-            Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
+            Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
+            Pos = SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
         }
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_SETSEL, Pos, Pos);
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)szBuf);
+        SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_SETSEL, Pos, Pos);
+        SendDlgItemMessageI(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)szBuf);
     }
     va_end(vaArgs);
     return;
@@ -718,7 +718,7 @@ void SetFileProgress(LONGLONG Total, LONGLONG Done)
     else
         Per = (int)((Done / 1024) * 100 / (Total / 1024));
 
-    SendDlgItemMessage(hWndTransDlg, TRANS_PROGRESS, PBM_SETPOS, Per, 0);
+    SendDlgItemMessageI(hWndTransDlg, TRANS_PROGRESS, PBM_SETPOS, Per, 0);
     return;
 }
 
@@ -756,7 +756,7 @@ static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             GetClientRect(hWnd, &rectWnd);
             rectWnd.right -= GetSystemMetrics(SM_CXVSCROLL);
             dwFormat = DT_LEFT | DT_NOPREFIX | DT_VCENTER | DT_PATH_ELLIPSIS | DT_MODIFYSTRING;
-            DrawTextEx(hDC, (_TCHAR*)lParam, _tcslen((_TCHAR*)lParam), &rectWnd, dwFormat, NULL);
+            DrawTextEx(hDC, (_TCHAR*)lParam, TCSLEN((_TCHAR*)lParam), &rectWnd, dwFormat, NULL);
             if(hWndParent)
                 SelectObject(hDC, hFontOld);
             DeleteDC(hDC);

@@ -391,7 +391,7 @@ int LoadRegistory(void)
                 {
                     CopyDefaultPat(&Pat);
                     ReadStringFromReg(hKey4, _T("Src"), Pat.Src, SRC_PATH_LEN+1);
-                    *(Pat.Src + _tcslen(Pat.Src) + 1) = NUL;
+                    *(Pat.Src + TCSLEN(Pat.Src) + 1) = NUL;
                     memset(Pat.Name, NUL, (PATNAME_LEN+1) * sizeof(_TCHAR));
                     _tcsncpy(Pat.Name, Pat.Src, PATNAME_LEN);
                     ReadStringFromReg(hKey4, _T("Dst"), Pat.Dst, DST_PATH_LEN+1);
@@ -513,7 +513,7 @@ void SaveSettingsToFile(void)
             _stprintf(Tmp, _T("/e \x22%s\x22 HKEY_CURRENT_USER\\Software\\sota\\Backup"), Fname);
             if(ShellExecute(NULL, _T("open"), _T("regedit"), Tmp, _T("."), SW_SHOW) <= (HINSTANCE)32)
             {
-                DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_44);
+                DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_44);
             }
         }
     }
@@ -548,13 +548,13 @@ int LoadSettingsFromFile(void)
     _tcscpy(Fname, _T(""));
     if(SelectFile(GetMainHwnd(), Fname, MSGJPN_48, MSGJPN_49, _T(""), OFN_FILEMUSTEXIST, 0, NULL) == TRUE)
     {
-        if((_tcslen(Fname) >= 5) && (_tcsicmp(&Fname[_tcslen(Fname)-4], _T(".reg")) == 0))
+        if((TCSLEN(Fname) >= 5) && (_tcsicmp(&Fname[TCSLEN(Fname)-4], _T(".reg")) == 0))
         {
             _stprintf(Tmp, _T("\x22%s\x22"), Fname);
 
             if(ShellExecute(NULL, _T("open"), _T("regedit"), Tmp, _T("."), SW_SHOW) <= (HINSTANCE)32)
             {
-                DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_44);
+                DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_44);
             }
             else
             {
@@ -563,13 +563,13 @@ int LoadSettingsFromFile(void)
 //              WaitForSingleObject(Info.hProcess, INFINITE);
             }
         }
-        else if((_tcslen(Fname) >= 5) && (_tcsicmp(&Fname[_tcslen(Fname)-4], _T(".ini")) == 0))
+        else if((TCSLEN(Fname) >= 5) && (_tcsicmp(&Fname[TCSLEN(Fname)-4], _T(".ini")) == 0))
         {
             CopyFile(Fname, AskIniFilePath(), FALSE);
             Ret = YES;
         }
         else
-            DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_51);
+            DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_51);
     }
     return(Ret);
 }
@@ -777,7 +777,7 @@ static BOOL WriteOutRegToFile(REGDATATBL *Pos)
             while(Disp < (Pos->ValTbl + Pos->ValLen))
             {
                 fprintf(Strm, "%s\n", Disp);
-                Disp = Disp + strlen(Disp) + 1; /* ANSI */
+                Disp = Disp + STRLEN(Disp) + 1; /* ANSI */
             }
             Pos = Pos->Next;
         }
@@ -786,7 +786,7 @@ static BOOL WriteOutRegToFile(REGDATATBL *Pos)
     }
     else
     {
-        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_53);
+        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_53);
     }
     free(fname);
 
@@ -853,11 +853,11 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
                             Pos->Next = New;
                         }
                     }
-                    else if(strlen(Buf) > 0)                /* ANSI */
+                    else if(STRLEN(Buf) > 0)                /* ANSI */
                     {
                         strcpy(Data, Buf);                  /* ANSI */
-                        Data += strlen(Buf) + 1;            /* ANSI */
-                        New->ValLen += strlen(Buf) + 1;     /* ANSI */
+                        Data += STRLEN(Buf) + 1;            /* ANSI */
+                        New->ValLen += (int)(STRLEN(Buf) + 1);     /* ANSI */
                     }
                 }
             }
@@ -1103,12 +1103,12 @@ static int WriteIntValueToReg(void *Handle, LPTSTR Name, int Value)
         Pos = (REGDATATBL *)Handle;
         Data = Pos->ValTbl + Pos->ValLen;
 
-        strcpy(Data, "");                   /* ANSI */
+        strcpy(Data, "");                       /* ANSI */
         Unicode2AnsiCat(Data, Name);
-        strcat(Data, "=");                  /* ANSI */
-        sprintf(Tmp, "%d", Value);          /* ANSI */
-        strcat(Data, Tmp);                  /* ANSI */
-        Pos->ValLen += strlen(Data) + 1;    /* ANSI */
+        strcat(Data, "=");                      /* ANSI */
+        sprintf(Tmp, "%d", Value);              /* ANSI */
+        strcat(Data, Tmp);                      /* ANSI */
+        Pos->ValLen += (int)STRLEN(Data) + 1;   /* ANSI */
     }
     return(SUCCESS);
 }
@@ -1174,7 +1174,7 @@ static int WriteStringToReg(void *Handle, LPTSTR Name, LPTSTR Str)
     char *Data;
 
     if(TmpRegType == REGTYPE_REG)
-        RegSetValueEx(Handle, Name, 0, REG_SZ, (CONST BYTE *)Str, (_tcslen(Str)+1) * sizeof(_TCHAR));
+        RegSetValueEx(Handle, Name, 0, REG_SZ, (CONST BYTE *)Str, (TCSLEN(Str)+1) * sizeof(_TCHAR));
     else
     {
         Pos = (REGDATATBL *)Handle;
@@ -1182,7 +1182,7 @@ static int WriteStringToReg(void *Handle, LPTSTR Name, LPTSTR Str)
         strcpy(Data, "");               /* ANSI */
         Unicode2AnsiCat(Data, Name);
         strcat(Data, "=");              /* ANSI */
-        Pos->ValLen += strlen(Data);    /* ANSI */
+        Pos->ValLen += STRLEN(Data);    /* ANSI */
         Data = Pos->ValTbl + Pos->ValLen;
         Pos->ValLen += Unicode2AnsiCat(Data, Str) + 1;
     }
@@ -1258,7 +1258,7 @@ static int WriteMultiStringToReg(void *Handle, LPTSTR Name, LPTSTR Str)
         strcpy(Data, "");               /* ANSI */
         Unicode2AnsiCat(Data, Name);
         strcat(Data, "=");              /* ANSI */
-        Pos->ValLen += strlen(Data);    /* ANSI */
+        Pos->ValLen += STRLEN(Data);    /* ANSI */
         Data = Pos->ValTbl + Pos->ValLen;
         if(*Str != NUL)
         {
@@ -1339,7 +1339,7 @@ static int WriteBinaryToReg(void *Handle, LPTSTR Name, void *Bin, int Len)
         strcpy(Data, "");               /* ANSI */
         Unicode2AnsiCat(Data, Name);
         strcat(Data, "=");              /* ANSI */
-        Pos->ValLen += strlen(Data);    /* ANSI */
+        Pos->ValLen += STRLEN(Data);    /* ANSI */
         Data = Pos->ValTbl + Pos->ValLen;
         Pos->ValLen += AnsiCat(Bin, Len, Data) + 1;
     }
@@ -1365,7 +1365,7 @@ static int Unicode2AnsiCat(char *buf, LPTSTR str)
     oemStr = (char*)malloc(length+1);
     memset(oemStr, NUL, length+1);
     WideCharToMultiByte(CP_OEMCP, 0, str, -1, oemStr, length, NULL, NULL);
-    length = AnsiCat(oemStr, strlen(oemStr), buf);      /* ANSI */
+    length = AnsiCat(oemStr, STRLEN(oemStr), buf);      /* ANSI */
     free(oemStr);
     return(length);
 }
@@ -1386,7 +1386,7 @@ static int AnsiCat(char *Src, int Len, char *Dst)       /* ANSI */
 {
     int Count;
 
-    Dst += strlen(Dst);         /* ANSI */
+    Dst += STRLEN(Dst);         /* ANSI */
     Count = 0;
     for(; Len > 0; Len--)
     {
@@ -1466,7 +1466,7 @@ static int StrReadIn(char *Src, int Max, LPTSTR Dst, BOOL multi)
                 uniBuf = (LPTSTR)malloc((length + 1) * sizeof(_TCHAR));
                 memset(uniBuf, 0, (length + 1) * sizeof(_TCHAR));
                 MultiByteToWideChar(CP_OEMCP, MB_PRECOMPOSED, tmpBuf, -1, uniBuf, length);
-                length = _tcslen(uniBuf);
+                length = TCSLEN(uniBuf);
                 if(multi)
                 {
                     length++;
@@ -1574,13 +1574,13 @@ static char *ScanValue(void *Handle, LPTSTR Name)
     Pos = Cur->ValTbl;
     while(Pos < (Cur->ValTbl + Cur->ValLen))
     {
-        if((strncmp(oemStr, Pos, strlen(oemStr)) == 0) &&
-           (*(Pos + strlen(oemStr)) == '='))
+        if((strncmp(oemStr, Pos, STRLEN(oemStr)) == 0) &&
+           (*(Pos + STRLEN(oemStr)) == '='))
         {
-            Ret = Pos + strlen(oemStr) + 1;
+            Ret = Pos + STRLEN(oemStr) + 1;
             break;
         }
-        Pos += strlen(Pos) + 1;
+        Pos += STRLEN(Pos) + 1;
     }
     free(oemStr);
     return(Ret);

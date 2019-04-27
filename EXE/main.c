@@ -152,7 +152,7 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
                 DispatchMessage(&Msg);
             }
         }
-        Ret = Msg.wParam;
+        Ret = (int)Msg.wParam;
     }
     UnregisterClass(BupClassStr, hInstBup);
     return(Ret);
@@ -319,7 +319,7 @@ static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryL
     {
         PostMessage(GetMainDlgHwnd(), WM_COMMAND, MAKEWPARAM(MAIN_ALLSTART, 0), 0);
     }
-    else if(_tcslen(Src) != 0)
+    else if(TCSLEN(Src) != 0)
     {
         if(Option & OPT_NAME)
         {
@@ -327,7 +327,7 @@ static int CommandLineProc(LPTSTR Src, LPTSTR Dst, LONGLONG Option, int BatteryL
         }
         else
         {
-            if(_tcslen(Dst) != 0)
+            if(TCSLEN(Dst) != 0)
             {
                 CopyDefaultPat(&cInfo.Set);
                 memset(cInfo.Set.Src, 0, SRC_PATH_LEN+1);
@@ -587,7 +587,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                     break;
 
                 case MENU_HELP_ABOUT :
-                    DialogBoxParam(hInstBup, MAKEINTRESOURCE(about_dlg), hWndBup, ExeEscDialogProc, (LPARAM)_T(""));
+                    DialogBoxParamI(hInstBup, MAKEINTRESOURCE(about_dlg), hWndBup, ExeEscDialogProc, (LPARAM)_T(""));
                     break;
 
                 case MENU_HELP_QA :
@@ -601,7 +601,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                     break;
 
                 case MENU_REGINIT :
-                    if(DialogBoxParam(hInstBup, MAKEINTRESOURCE(reginit_dlg), hWnd, ExeEscDialogProc, (LPARAM)_T("")) == YES)
+                    if(DialogBoxParamI(hInstBup, MAKEINTRESOURCE(reginit_dlg), hWnd, ExeEscDialogProc, (LPARAM)_T("")) == YES)
                     {
                         ClearRegistory();
                         SaveExit = NO;
@@ -619,7 +619,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                 case MENU_REGLOAD :
                     if(LoadSettingsFromFile() == YES)
                     {
-                        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hWnd, ExeEscDialogProc, (LPARAM)MSGJPN_13);
+                        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hWnd, ExeEscDialogProc, (LPARAM)MSGJPN_13);
                         SaveExit = NO;
                         PostMessage(hWnd, WM_CLOSE, 0, 0L);
                     }
@@ -647,7 +647,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
         case WM_CLICK_ICON :
             /* トレイアイコンがクリックされた */
             if((lParam & 0x00000007L) == 2)
-                SendMessage(hWnd, WM_COMMAND, MAKEWPARAM(MENU_OPEN, 0), 0);
+                SendMessageI(hWnd, WM_COMMAND, MAKEWPARAM(MENU_OPEN, 0), 0);
             else if((lParam & 0x00000007L) == 5)
                 TrayIconMenu();
             break;
@@ -659,13 +659,13 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                 if(Rect != NULL)
                 {
                     GetClientRect(hWnd, Rect);
-                    SendMessage(GetMainDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
+                    SendMessageI(GetMainDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
                 }
                 Rect = malloc(sizeof(RECT));
                 if(Rect != NULL)
                 {
                     GetClientRect(hWnd, Rect);
-                    SendMessage(GetTransDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
+                    SendMessageI(GetTransDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
                 }
             }
             if(TmpTrayIcon == YES)
@@ -969,9 +969,9 @@ static int AnalyzeComLine(LPTSTR Str, LPTSTR Src, LPTSTR Dst, LONGLONG *Opt, int
         }
         else if((*Opt & OPT_NAME) == 0 && (*Opt & OPT_INI_FILE) == 0)
         {
-            if(_tcslen(Src) == 0)
+            if(TCSLEN(Src) == 0)
                 _tcscpy(Src, Tmp);
-            else if(_tcslen(Dst) == 0)
+            else if(TCSLEN(Dst) == 0)
                 _tcscpy(Dst, Tmp);
             else
             {
@@ -1144,7 +1144,7 @@ void DoPrintf(LPTSTR szFormat,...)
 
     va_start(vaArgs,szFormat);
     if(_vstprintf(szBuf,szFormat,vaArgs)!=EOF)
-        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), szBuf, _tcslen(szBuf), &Tmp, NULL);
+        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), szBuf, TCSLEN(szBuf), &Tmp, NULL);
     va_end(vaArgs);
 #endif
 }

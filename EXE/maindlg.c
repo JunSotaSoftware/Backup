@@ -60,7 +60,7 @@ static void DispSrcAndDest(HWND hDlg, COPYPATLIST *Pat, int Num);
 static BOOL CheckNullPat(int Num);
 static BOOL CheckValidPat(int Num);
 static void DispCommentToWin(HWND hDlg);
-static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static INT_PTR CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static _TCHAR *MakeListBoxName(COPYPAT *Pat);
 
 /*===== グローバルなワーク =====*/
@@ -312,7 +312,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
 
             SendAllPatNames(GetDlgItem(hDlg, MAIN_LIST), LB_ADDSTRING);
             SetMainDlgButtonHide(hDlg);
-            SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, FALSE, 0);
+            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, FALSE, 0);
             DispCommentToWin(hDlg);
             CopyPatList = NULL;
             /* ダイアログサイズの初期化 */
@@ -331,7 +331,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     if(GetSelectedPat(&CopyPatList, Cur) > 0)
                     {
                         if(((CopyPatList->Set.ShowComment == NO) ||
-                            (DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(show_comment_dlg), hDlg, ShowCommentDlgProc, (LPARAM)CopyPatList->Set.Comment) == YES)) &&
+                            (DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(show_comment_dlg), hDlg, ShowCommentDlgProc, (LPARAM)CopyPatList->Set.Comment) == YES)) &&
                            (NotifyBackup(hDlg, CopyPatList) == YES))
                         {
                             if( AuthDialog == AUTH_DIALOG_SHOW)
@@ -405,29 +405,29 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     {
                         AddPatToList(&TmpPat);
                         Name = MakeListBoxName(&TmpPat);
-                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
+                        SendDlgItemMessageI(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
                         free(Name);
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
-                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+                        SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);
                     break;
 
                 case MAIN_SET :
-                    if((Cur = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         CopyPatFromList(Cur, &TmpPat);
                         if(DispHostSetDlg(GetMainHwnd(), &TmpPat) == YES)
                         {
                             UpdatePatToList(Cur, &TmpPat);
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
                             Name = MakeListBoxName(&TmpPat);
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_INSERTSTRING, Cur, (LPARAM)Name);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_INSERTSTRING, Cur, (LPARAM)Name);
                             free(Name);
                             ResetAllSel(hDlg, MAIN_LIST);
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
                     }
                     DispCommentToWin(hDlg);
@@ -435,33 +435,33 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     break;
 
                 case MAIN_COPY :
-                    if((Cur = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         CopyPatFromList(Cur, &TmpPat);
                         AddPatToList(&TmpPat);
                         Name = MakeListBoxName(&TmpPat);
-                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
+                        SendDlgItemMessageI(hDlg, MAIN_LIST, LB_ADDSTRING, 0, (LPARAM)Name);
                         free(Name);
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
-                        SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+                        SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);
                     break;
 
                 case MAIN_DEL :
-                    if(SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETSELCOUNT, 0,  0) > 0)
+                    if(SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETSELCOUNT, 0,  0) > 0)
                     {
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(del_pat_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_85) == YES)
+                        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(del_pat_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_85) == YES)
                         {
-                            Cur = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCOUNT, 0,  0) - 1;
+                            Cur = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCOUNT, 0,  0) - 1;
                             for(; Cur >= 0; Cur--)
                             {
-                                if(SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETSEL, Cur,  0) != 0)
+                                if(SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETSEL, Cur,  0) != 0)
                                 {
                                     DelPatFromList(Cur);
-                                    SendDlgItemMessage(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
+                                    SendDlgItemMessageI(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
                                 }
                             }
                             DispCommentToWin(hDlg);
@@ -471,14 +471,14 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     break;
 
                 case MAIN_UP :
-                    if((Cur = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(ExchangeListItem(Cur, Cur-1) == SUCCESS)
                         {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_RESETCONTENT, 0, 0);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_RESETCONTENT, 0, 0);
                             SendAllPatNames(GetDlgItem(hDlg, MAIN_LIST), LB_ADDSTRING);
                             Cur--;
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
                     }
                     DispCommentToWin(hDlg);
@@ -486,14 +486,14 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                     break;
 
                 case MAIN_DOWN :
-                    if((Cur = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(ExchangeListItem(Cur, Cur+1) == SUCCESS)
                         {
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_RESETCONTENT, 0, 0);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_RESETCONTENT, 0, 0);
                             SendAllPatNames(GetDlgItem(hDlg, MAIN_LIST), LB_ADDSTRING);
                             Cur++;
-                            SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
                     }
                     DispCommentToWin(hDlg);
@@ -532,11 +532,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
             break;
 
 //      case WM_CLOSE :
-//          SendMessage(GetMainHwnd(), message, wParam, lParam);
+//          SendMessageI(GetMainHwnd(), message, wParam, lParam);
 //          break;
 
         case WM_SIZE :
-            SendMessage(GetMainHwnd(), message, wParam, lParam);
+            SendMessageI(GetMainHwnd(), message, wParam, lParam);
             break;
 
 //      case WM_MOUSEMOVE :
@@ -571,7 +571,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                 {
                     break;
                 }
-                if (pDrawItem->itemID >= (UINT)SendMessage(pDrawItem->hwndItem, LB_GETCOUNT, 0, 0))
+                if (pDrawItem->itemID >= (UINT)SendMessageI(pDrawItem->hwndItem, LB_GETCOUNT, 0, 0))
                 {
                     /* 何故か分からないが、 main_comment_dlg で不正な ID で呼ばれるので無視する */
 #ifdef _DEBUG
@@ -579,7 +579,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
 #endif /* end of _DEBUG */
                     break;
                 }
-                if (SendMessage(pDrawItem->hwndItem, LB_GETTEXT, pDrawItem->itemID, (LPARAM)sItem) != LB_ERR)
+                if (SendMessageI(pDrawItem->hwndItem, LB_GETTEXT, pDrawItem->itemID, (LPARAM)sItem) != LB_ERR)
                 {
                     if (pDrawItem->itemAction == ODA_DRAWENTIRE ||
                         pDrawItem->itemAction == ODA_SELECT ||
@@ -631,9 +631,9 @@ static void ResetAllSel(HWND hDlg, int Ctrl)
 {
     int i;
 
-    i = SendDlgItemMessage(hDlg, Ctrl, LB_GETCOUNT, 0, 0) - 1;
+    i = SendDlgItemMessageI(hDlg, Ctrl, LB_GETCOUNT, 0, 0) - 1;
     for(; i >= 0; i--)
-        SendDlgItemMessage(hDlg, Ctrl, LB_SETSEL, FALSE, i);
+        SendDlgItemMessageI(hDlg, Ctrl, LB_SETSEL, FALSE, i);
     return;
 }
 
@@ -943,7 +943,7 @@ static BOOL CheckNullPat(int Num)
         for(; Num > 0; Num--)
             Pos = Pos->Next;
 
-        if((_tcslen(Pos->Set.Src) == 0) || (_tcslen(Pos->Set.Dst) == 0))
+        if((TCSLEN(Pos->Set.Src) == 0) || (TCSLEN(Pos->Set.Dst) == 0))
             Sts = TRUE;
     }
     return(Sts);
@@ -1037,15 +1037,15 @@ LPTSTR GetPatComment(int Num)
                         }
                         else
                         {
-                            if((Len + _tcslen(Pos->Set.VolLabel) + 1) >= Max)
+                            if((Len + TCSLEN(Pos->Set.VolLabel) + 1) >= Max)
                             {
-                                Max += _tcslen(Pos->Set.VolLabel);
+                                Max += TCSLEN(Pos->Set.VolLabel);
                                 Ret = realloc(Ret, Max * sizeof(_TCHAR));
                                 Put = Ret + Len;
                             }
                             _tcscpy(Put, Pos->Set.VolLabel);
-                            Put += _tcslen(Pos->Set.VolLabel);
-                            Len += _tcslen(Pos->Set.VolLabel);
+                            Put += TCSLEN(Pos->Set.VolLabel);
+                            Len += TCSLEN(Pos->Set.VolLabel);
                         }
                     }
                     else
@@ -1143,7 +1143,7 @@ static void SendAllPatNames(HWND hWnd, int Cmd)
     for(i = 0; i < Patterns; i++)
     {
         Name = MakeListBoxName(&Pos->Set);
-        SendMessage(hWnd, Cmd, 0, (LPARAM)Name);
+        SendMessageI(hWnd, Cmd, 0, (LPARAM)Name);
         free(Name);
         Pos = Pos->Next;
     }
@@ -1198,7 +1198,7 @@ int GetPatterns(void)
 
 int GetSelectedCount(void)
 {
-    return(SendDlgItemMessage(hWndMainDlg, MAIN_LIST, LB_GETSELCOUNT, 0, 0));
+    return(SendDlgItemMessageI(hWndMainDlg, MAIN_LIST, LB_GETSELCOUNT, 0, 0));
 }
 
 
@@ -1223,7 +1223,7 @@ static int GetSelectedPat(COPYPATLIST **Top, int All)
     for(Cur = 0; Cur < Patterns; Cur++)
     {
         if((All == YES) ||
-           (SendDlgItemMessage(hWndMainDlg, MAIN_LIST, LB_GETSEL, Cur, 0) > 0))
+           (SendDlgItemMessageI(hWndMainDlg, MAIN_LIST, LB_GETSEL, Cur, 0) > 0))
         {
             if(CheckNullPat(Cur) == FALSE)
             {
@@ -1329,9 +1329,9 @@ static void DeletePatList(COPYPATLIST **Top)
 *       確認を行なわない指定がされている時は常にYES
 *----------------------------------------------------------------------------*/
 
-int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
+INT_PTR NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
 {
-    int Sts;
+    INT_PTR Sts;
 
     Sts = YES;
 
@@ -1380,32 +1380,32 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
     {
         case WM_INITDIALOG :
             CurNum = 0;
-            SendDlgItemMessage(hDlg, TRNOT_SRCLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
+            SendDlgItemMessageI(hDlg, TRNOT_SRCLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
             DispSrcAndDest(hDlg, TmpPatList, CurNum);
 
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_93);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_94);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_95);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_96);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
-            SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_SETCURSEL, AutoClose.Success, 0);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_93);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_94);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_95);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_96);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
+            SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_SETCURSEL, AutoClose.Success, 0);
 
             DuplicateComboBox(hDlg, TRNOT_SYSTEM, TRNOT_SYSTEM_ERROR);
 #if USE_SAME_AS_SUCCESS
-            IndexSameAsOnSuccess = SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
+            IndexSameAsOnSuccess = SendDlgItemMessageI(hDlg, TRNOT_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
 #endif /* USE_SAME_AS_SUCCESS */
             if (AutoClose.Error >= 0)
             {
-                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, AutoClose.Error, 0);
+                SendDlgItemMessageI(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, AutoClose.Error, 0);
             }
             else
             {
 #if USE_SAME_AS_SUCCESS
-                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
+                SendDlgItemMessageI(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
 #else
-                SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
+                SendDlgItemMessageI(hDlg, TRNOT_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
 #endif /* USE_SAME_AS_SUCCESS */
             }
 
@@ -1417,8 +1417,8 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case IDOK :
-                    AutoClose.Success = SendDlgItemMessage(hDlg, TRNOT_SYSTEM, CB_GETCURSEL, 0, 0);
-                    AutoClose.Error = SendDlgItemMessage(hDlg, TRNOT_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
+                    AutoClose.Success = SendDlgItemMessageI(hDlg, TRNOT_SYSTEM, CB_GETCURSEL, 0, 0);
+                    AutoClose.Error = SendDlgItemMessageI(hDlg, TRNOT_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
 #if USE_SAME_AS_SUCCESS
                     if (AutoClose.Error == IndexSameAsOnSuccess)
                     {
@@ -1482,18 +1482,18 @@ static void DispSrcAndDest(HWND hDlg, COPYPATLIST *Pat, int Num)
     else
         EnableWindow(GetDlgItem(hDlg, TRNOT_NEXT), TRUE);
 
-    SendDlgItemMessage(hDlg, TRNOT_DST, WM_SETTEXT, 0, (LPARAM)GetSpecifiedStringFromMultiString(Pat->Set.Dst, Pat->Set.NextDstNum));
-    SendDlgItemMessage(hDlg, TRNOT_SRCLIST, LB_RESETCONTENT, 0, 0);
+    SendDlgItemMessageI(hDlg, TRNOT_DST, WM_SETTEXT, 0, (LPARAM)GetSpecifiedStringFromMultiString(Pat->Set.Dst, Pat->Set.NextDstNum));
+    SendDlgItemMessageI(hDlg, TRNOT_SRCLIST, LB_RESETCONTENT, 0, 0);
     Pos = Pat->Set.Src;
     while(*Pos != NUL)
     {
-        SendDlgItemMessage(hDlg, TRNOT_SRCLIST, LB_ADDSTRING, 0, (LPARAM)Pos);
+        SendDlgItemMessageI(hDlg, TRNOT_SRCLIST, LB_ADDSTRING, 0, (LPARAM)Pos);
         Pos = _tcschr(Pos, NUL) + 1;
     }
     if(Pat->Set.ChkVolLabel == 0)
-        SendDlgItemMessage(hDlg, TRNOT_VOL, WM_SETTEXT, 0, (LPARAM)MSGJPN_112);
+        SendDlgItemMessageI(hDlg, TRNOT_VOL, WM_SETTEXT, 0, (LPARAM)MSGJPN_112);
     else
-        SendDlgItemMessage(hDlg, TRNOT_VOL, WM_SETTEXT, 0, (LPARAM)Pat->Set.VolLabel);
+        SendDlgItemMessageI(hDlg, TRNOT_VOL, WM_SETTEXT, 0, (LPARAM)Pat->Set.VolLabel);
     return;
 }
 
@@ -1545,18 +1545,18 @@ static void DispCommentToWin(HWND hDlg)
     if(ShowComment == 2)
     {
         hItem = GetDlgItem(hDlg, MAIN_COMMENT);
-        if(SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETSELCOUNT, 0,  0) == 0)
-            SendMessage(hItem, WM_SETTEXT, 0, (LPARAM)_T(""));
+        if(SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETSELCOUNT, 0,  0) == 0)
+            SendMessageI(hItem, WM_SETTEXT, 0, (LPARAM)_T(""));
         else
         {
-            Num = SendDlgItemMessage(hDlg, MAIN_LIST, LB_GETCARETINDEX, 0, 0);
+            Num = SendDlgItemMessageI(hDlg, MAIN_LIST, LB_GETCARETINDEX, 0, 0);
             if(hItem != NULL)
             {
                 Str = GetPatComment(Num);
                 if(Str != NULL)
-                    SendMessage(hItem, WM_SETTEXT, 0, (LPARAM)Str);
+                    SendMessageI(hItem, WM_SETTEXT, 0, (LPARAM)Str);
                 else
-                    SendMessage(hItem, WM_SETTEXT, 0, (LPARAM)_T(""));
+                    SendMessageI(hItem, WM_SETTEXT, 0, (LPARAM)_T(""));
                 free(Str);
             }
         }
@@ -1578,7 +1578,7 @@ static void DispCommentToWin(HWND hDlg)
 *       BOOL TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     int Num;
     LPTSTR Str;
@@ -1587,11 +1587,11 @@ static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, 
     {
         case WM_INITDIALOG :
             PlaySound(_T("SystemQuestion"), NULL, SND_ALIAS|SND_ASYNC);
-            Num = SendDlgItemMessage(hWndMainDlg, MAIN_LIST, LB_GETCARETINDEX, 0, 0);
+            Num = SendDlgItemMessageI(hWndMainDlg, MAIN_LIST, LB_GETCARETINDEX, 0, 0);
             Str = GetPatComment(Num);
             if(Str != NULL)
             {
-                SendDlgItemMessage(hDlg, SHOWCOM_TEXT, WM_SETTEXT, 0, (LPARAM)Str);
+                SendDlgItemMessageI(hDlg, SHOWCOM_TEXT, WM_SETTEXT, 0, (LPARAM)Str);
                 free(Str);
             }
             return(TRUE);
@@ -1659,23 +1659,23 @@ static _TCHAR *MakeListBoxName(COPYPAT *Pat)
 {
     _TCHAR *RetName = NULL;
 
-    if (_tcslen(Pat->Name) > 0)
+    if (TCSLEN(Pat->Name) > 0)
     {
         if ((ListWindowType == 1) && (Pat->Enabled == 0))
         {
-            RetName = malloc((_tcslen(MSGJPN_140) + _tcslen(Pat->Name) + 1) * sizeof(_TCHAR));
+            RetName = malloc((TCSLEN(MSGJPN_140) + TCSLEN(Pat->Name) + 1) * sizeof(_TCHAR));
             _tcscpy(RetName, MSGJPN_140);
             _tcscat(RetName, Pat->Name);
         }
         else
         {
-            RetName = malloc((_tcslen(Pat->Name) + 1) * sizeof(_TCHAR));
+            RetName = malloc((TCSLEN(Pat->Name) + 1) * sizeof(_TCHAR));
             _tcscpy(RetName, Pat->Name);
         }
     }
     else
     {
-        RetName = malloc((_tcslen(MSGJPN_128) + 1) * sizeof(_TCHAR));
+        RetName = malloc((TCSLEN(MSGJPN_128) + 1) * sizeof(_TCHAR));
         _tcscpy(RetName, MSGJPN_128);
     }
     return RetName;

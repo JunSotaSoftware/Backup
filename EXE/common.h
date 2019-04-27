@@ -296,6 +296,18 @@ typedef struct {
     DWORD           DstSizeLow;
 } OVERWRITENOTIFYDATA;
 
+/*===== マクロ =====*/
+#ifdef UNICODE
+#define SendDlgItemMessageI(hDlg, nIDDlgItem, Msg, wParam, lParam)  ((int)SendDlgItemMessageW(hDlg, nIDDlgItem, Msg, wParam, lParam))
+#define SendMessageI(hWnd, Msg, wParam, lParam)  ((int)SendMessageW(hWnd, Msg, wParam, lParam))
+#define DialogBoxParamI(hInstance, lpTemplateName, hWndParent, lpDialogFunc, dwInitParam) ((int)DialogBoxParamW(hInstance, lpTemplateName, hWndParent, lpDialogFunc, dwInitParam))
+#else
+/* UNICODEのみ対応 */
+#endif // !UNICODE
+
+/* 最大文字数は32bitまでとする */
+#define TCSLEN(x) ((int)_tcslen(x))
+#define STRLEN(x) ((int)strlen(x))
 
 /*===== プロトタイプ =====*/
 
@@ -325,7 +337,7 @@ int CopyPatFromList(int Num, COPYPAT *Set);
 void CopyDefaultPat(COPYPAT *Set);
 int GetPatterns(void);
 int GetSelectedCount(void);
-int NotifyBackup(HWND hWnd, COPYPATLIST *Pat);
+INT_PTR NotifyBackup(HWND hWnd, COPYPATLIST *Pat);
 void SaveMainDlgSize(void);
 void AsdMainDlgMinSize(POINT *Point);
 LPTSTR GetPatComment(int Num);
@@ -398,7 +410,7 @@ int SetOption(HWND hWnd);
 
 /* patman.c */
 
-int DispHostSetDlg(HWND hWnd, COPYPAT *Pat);
+INT_PTR DispHostSetDlg(HWND hWnd, COPYPAT *Pat);
 
 /* misc.c */
 
@@ -415,7 +427,7 @@ LPTSTR GetFileExt(LPTSTR Path);
 int StrMultiLen(LPTSTR Str);
 int StrMultiCount(LPTSTR Str);
 LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num);
-BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 int SelectDir(HWND hWnd, LPTSTR Buf, int MaxLen, LPTSTR Title);
 int SelectFile(HWND hWnd, LPTSTR Fname, LPTSTR Title, LPTSTR Filters, LPTSTR Ext, int Flags, int Save, LPTSTR Dir);
 void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int Num);

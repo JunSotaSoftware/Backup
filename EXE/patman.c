@@ -147,9 +147,9 @@ extern _TCHAR MediaPath[MY_MAX_PATH+1];
 *           YES/NO=取り消し
 *----------------------------------------------------------------------------*/
 
-int DispHostSetDlg(HWND hWnd, COPYPAT *Pat)
+INT_PTR DispHostSetDlg(HWND hWnd, COPYPAT *Pat)
 {
-    int Sts;
+    INT_PTR Sts;
 
     memcpy(&TmpPat, Pat, sizeof(COPYPAT));
     Sts = DialogBox(GetBupInst(), MAKEINTRESOURCE(patset_frame_dlg), hWnd, PropSheetFrameWndProc);
@@ -180,7 +180,7 @@ static LRESULT CALLBACK PropSheetFrameWndProc(HWND hDlg, UINT message, WPARAM wP
     int i;
     static NMHDR pnmhdr;
     static HWND g_hTabCtrl;
-    static int CurPage;
+    static LPARAM CurPage;
     HTREEITEM hLevelItem[3];    /* SheetInfoで指定されている最大レベル+2個以上に設定すること */
 
     #define PROP_PAGES  (sizeof(SheetInfo) / sizeof(TREEPROPSHEET))
@@ -189,7 +189,7 @@ static LRESULT CALLBACK PropSheetFrameWndProc(HWND hDlg, UINT message, WPARAM wP
     {
         case WM_INITDIALOG :
             CurPage = 0;
-            SendMessage(hDlg, WM_SETTEXT, 0, (LPARAM)MSGJPN_31);
+            SendMessageI(hDlg, WM_SETTEXT, 0, (LPARAM)MSGJPN_31);
 
             hLevelItem[0] = TVI_ROOT;
             for(i = 0; i < PROP_PAGES; i++)
@@ -204,9 +204,9 @@ static LRESULT CALLBACK PropSheetFrameWndProc(HWND hDlg, UINT message, WPARAM wP
             }
 //          for(i = 0; i < PROP_PAGES; i++)
 //          {
-//              SendDlgItemMessage(hDlg, PATSET_TREE, TVM_EXPAND, TVE_EXPAND, (LPARAM)SheetInfo[i].hItem);
+//              SendDlgItemMessageI(hDlg, PATSET_TREE, TVM_EXPAND, TVE_EXPAND, (LPARAM)SheetInfo[i].hItem);
 //          }
-            SendDlgItemMessage(hDlg, PATSET_TREE, TVM_SELECTITEM, TVGN_CARET, (LPARAM)SheetInfo[0].hItem);
+            SendDlgItemMessageI(hDlg, PATSET_TREE, TVM_SELECTITEM, TVGN_CARET, (LPARAM)SheetInfo[0].hItem);
 
             g_hTabCtrl = GetDlgItem(hDlg, PATSET_DIALOG_POS);
             GetClientRect(g_hTabCtrl, &rt);
@@ -249,7 +249,7 @@ static LRESULT CALLBACK PropSheetFrameWndProc(HWND hDlg, UINT message, WPARAM wP
                     for(i = 0; i < PROP_PAGES; i++)
                     {
                         pnmhdr.code = PSN_APPLY;
-                        SendMessage(SheetInfo[i].hWndSheet, WM_NOTIFY, 0, (LPARAM)&pnmhdr);
+                        SendMessageI(SheetInfo[i].hWndSheet, WM_NOTIFY, 0, (LPARAM)&pnmhdr);
                         EndDialog(SheetInfo[i].hWndSheet, YES);
                     }
                     EndDialog(hDlg, YES);
@@ -296,12 +296,12 @@ static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, PATSET_ENABLE, BM_SETCHECK, TmpPat.Enabled ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hDlg, PATSET_NAME, EM_LIMITTEXT, (WPARAM)PATNAME_LEN, 0);
-            SendDlgItemMessage(hDlg, PATSET_NAME, WM_SETTEXT, 0, (LPARAM)TmpPat.Name);
-            SendDlgItemMessage(hDlg, PATSET_COMMENT, EM_LIMITTEXT, (WPARAM)COMMENT_LEN, 0);
-            SendDlgItemMessage(hDlg, PATSET_COMMENT, WM_SETTEXT, 0, (LPARAM)TmpPat.Comment);
-            SendDlgItemMessage(hDlg, PATSET_SHOW_COMMENT, BM_SETCHECK, TmpPat.ShowComment, 0);
+            SendDlgItemMessageI(hDlg, PATSET_ENABLE, BM_SETCHECK, TmpPat.Enabled ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NAME, EM_LIMITTEXT, (WPARAM)PATNAME_LEN, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NAME, WM_SETTEXT, 0, (LPARAM)TmpPat.Name);
+            SendDlgItemMessageI(hDlg, PATSET_COMMENT, EM_LIMITTEXT, (WPARAM)COMMENT_LEN, 0);
+            SendDlgItemMessageI(hDlg, PATSET_COMMENT, WM_SETTEXT, 0, (LPARAM)TmpPat.Comment);
+            SendDlgItemMessageI(hDlg, PATSET_SHOW_COMMENT, BM_SETCHECK, TmpPat.ShowComment, 0);
             return(TRUE);
 
         case WM_NOTIFY:
@@ -309,7 +309,7 @@ static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    if (SendDlgItemMessage(hDlg, PATSET_ENABLE, BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    if (SendDlgItemMessageI(hDlg, PATSET_ENABLE, BM_GETCHECK, 0, 0) == BST_CHECKED)
                     {
                         TmpPat.Enabled = 1;
                     }
@@ -317,9 +317,9 @@ static LRESULT CALLBACK NameSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     {
                         TmpPat.Enabled = 0;
                     }
-                    SendDlgItemMessage(hDlg, PATSET_NAME, WM_GETTEXT, PATNAME_LEN+1, (LPARAM)TmpPat.Name);
-                    SendDlgItemMessage(hDlg, PATSET_COMMENT, WM_GETTEXT, COMMENT_LEN+1, (LPARAM)TmpPat.Comment);
-                    TmpPat.ShowComment = SendDlgItemMessage(hDlg, PATSET_SHOW_COMMENT, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, PATSET_NAME, WM_GETTEXT, PATNAME_LEN+1, (LPARAM)TmpPat.Name);
+                    SendDlgItemMessageI(hDlg, PATSET_COMMENT, WM_GETTEXT, COMMENT_LEN+1, (LPARAM)TmpPat.Comment);
+                    TmpPat.ShowComment = SendDlgItemMessageI(hDlg, PATSET_SHOW_COMMENT, BM_GETCHECK, 0, 0);
                     break;
             }
             break;
@@ -353,7 +353,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
     {
         case WM_INITDIALOG :
             SetMultiTextToList(hDlg, PATSET_SRCLIST, TmpPat.Src);
-            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
+            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
 
             hWndSrcPage = hDlg;
 
@@ -378,7 +378,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
             {
                 case PATSET_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_SRCLIST, SRC_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_SRCLIST, TmpPat.Src, SRC_PATH_LEN+1);
@@ -388,10 +388,10 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                     break;
 
                 case PATSET_EDIT :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
-                        SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_SRCLIST, SRC_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_SRCLIST, TmpPat.Src, SRC_PATH_LEN+1);
@@ -402,14 +402,14 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                     break;
 
                 case PATSET_DEL :
-                    if(SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETSELCOUNT, 0,  0) > 0)
+                    if(SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETSELCOUNT, 0,  0) > 0)
                     {
-                        Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCOUNT, 0,  0) - 1;
+                        Cur = SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETCOUNT, 0,  0) - 1;
                         for(; Cur >= 0; Cur--)
                         {
-                            if(SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETSEL, Cur,  0) != 0)
+                            if(SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETSEL, Cur,  0) != 0)
                             {
-                                SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
+                                SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
                             }
                         }
                         GetMultiTextFromList(hDlg, PATSET_SRCLIST, TmpPat.Src, SRC_PATH_LEN+1);
@@ -419,31 +419,31 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                     break;
 
                 case PATSET_UP :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(Cur > 0)
                         {
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
                             Cur--;
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, PATSET_SRCLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                         }
                     }
                     break;
 
                 case PATSET_DOWN :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
-                        Max = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCOUNT, 0, 0);
+                        Max = SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_DELETESTRING, Cur, 0);
                             Cur++;
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_SRCLIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, PATSET_SRCLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                         }
                     }
@@ -467,7 +467,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                         if((CheckPathConvert(GetDlgItem(hWndIgnorePage, NOBACK_DIR_LIST), &PathInfo, NO) == YES) ||
                            (CheckPathConvert(GetDlgItem(hWndIgnorePage, NOBACK_FILE_LIST), &PathInfo, NO) == YES))
                         {
-                            if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(path_convert_ign_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T("")) == YES)
+                            if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(path_convert_ign_dlg), hDlg, ExeEscDialogProc, (LPARAM)_T("")) == YES)
                             {
                                 DoPathConvert(GetDlgItem(hWndIgnorePage, NOBACK_DIR_LIST), &PathInfo, NO);
                                 DoPathConvert(GetDlgItem(hWndIgnorePage, NOBACK_FILE_LIST), &PathInfo, NO);
@@ -521,9 +521,9 @@ static void SetDirButtonHide(HWND hDlg, DWORD ListId, DWORD EditId, DWORD UpId, 
     int Sel;
     int Max;
 
-    Max = SendDlgItemMessage(hDlg, ListId, LB_GETCOUNT, 0, 0);
-    Sel = SendDlgItemMessage(hDlg, ListId, LB_GETSELCOUNT, 0, 0);
-    Cur = SendDlgItemMessage(hDlg, ListId, LB_GETCURSEL, 0, 0);
+    Max = SendDlgItemMessageI(hDlg, ListId, LB_GETCOUNT, 0, 0);
+    Sel = SendDlgItemMessageI(hDlg, ListId, LB_GETSELCOUNT, 0, 0);
+    Cur = SendDlgItemMessageI(hDlg, ListId, LB_GETCURSEL, 0, 0);
     if(Sel == 0)
         EnableWindow(GetDlgItem(hDlg, DelId), FALSE);
     else
@@ -594,20 +594,20 @@ static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo)
 
     Ret = NO;
     _tcscpy(PathInfo->PathFrom, _T(""));
-    if(SendMessage(hListBox, LB_GETSELCOUNT, 0,  0) == 0)
+    if(SendMessageI(hListBox, LB_GETSELCOUNT, 0,  0) == 0)
     {
-        SendMessage(hListBox, LB_SETSEL, TRUE, -1);
+        SendMessageI(hListBox, LB_SETSEL, TRUE, -1);
     }
 
-    if(SendMessage(hListBox, LB_GETSELCOUNT, 0,  0) > 0)
+    if(SendMessageI(hListBox, LB_GETSELCOUNT, 0,  0) > 0)
     {
-        Items = SendMessage(hListBox, LB_GETCOUNT, 0,  0);
+        Items = SendMessageI(hListBox, LB_GETCOUNT, 0,  0);
         First = TRUE;
         for(Cur = 0; Cur < Items; Cur++)
         {
-            if(SendMessage(hListBox, LB_GETSEL, Cur,  0) != 0)
+            if(SendMessageI(hListBox, LB_GETSEL, Cur,  0) != 0)
             {
-                SendMessage(hListBox, LB_GETTEXT, Cur, (LPARAM)PathInfo->PathTo);
+                SendMessageI(hListBox, LB_GETTEXT, Cur, (LPARAM)PathInfo->PathTo);
                 if(First)
                 {
                     _tcscpy(PathInfo->PathFrom, PathInfo->PathTo);
@@ -620,9 +620,9 @@ static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo)
             }
         }
         RemoveYenTail(PathInfo->PathFrom);
-        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(path_convert_dlg), hListBox, PathConvertDlgProc, (LPARAM)PathInfo) == YES)
+        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(path_convert_dlg), hListBox, PathConvertDlgProc, (LPARAM)PathInfo) == YES)
         {
-            if((_tcslen(PathInfo->PathFrom) > 0) && (_tcscmp(PathInfo->PathFrom, PathInfo->PathTo) != 0))
+            if((TCSLEN(PathInfo->PathFrom) > 0) && (_tcscmp(PathInfo->PathFrom, PathInfo->PathTo) != 0))
             {
                 Ret = YES;
             }
@@ -649,18 +649,18 @@ BOOL CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
     {
         case WM_INITDIALOG :
             PathInfo = (PATHCONVERTINFO*)lParam;
-            SendDlgItemMessage(hDlg, PATHCNV_FROM, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, PATHCNV_TO, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, PATHCNV_FROM, WM_SETTEXT, 0, (LPARAM)PathInfo->PathFrom);
-            SendDlgItemMessage(hDlg, PATHCNV_TO, WM_SETTEXT, 0, (LPARAM)PathInfo->PathFrom);
+            SendDlgItemMessageI(hDlg, PATHCNV_FROM, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, PATHCNV_TO, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, PATHCNV_FROM, WM_SETTEXT, 0, (LPARAM)PathInfo->PathFrom);
+            SendDlgItemMessageI(hDlg, PATHCNV_TO, WM_SETTEXT, 0, (LPARAM)PathInfo->PathFrom);
             return(TRUE);
 
         case WM_COMMAND :
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case IDOK :
-                    SendDlgItemMessage(hDlg, PATHCNV_FROM, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)PathInfo->PathFrom);
-                    SendDlgItemMessage(hDlg, PATHCNV_TO, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)PathInfo->PathTo);
+                    SendDlgItemMessageI(hDlg, PATHCNV_FROM, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)PathInfo->PathFrom);
+                    SendDlgItemMessageI(hDlg, PATHCNV_TO, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)PathInfo->PathTo);
                     EndDialog(hDlg, YES);
                     break;
 
@@ -693,17 +693,17 @@ static void DoPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel)
     int             Items;
 //  BOOL            First;
 
-    Items = SendMessage(hListBox, LB_GETCOUNT, 0,  0);
+    Items = SendMessageI(hListBox, LB_GETCOUNT, 0,  0);
     for(Cur = 0; Cur < Items; Cur++)
     {
-        if((Sel == NO) || (SendMessage(hListBox, LB_GETSEL, Cur,  0) != 0))
+        if((Sel == NO) || (SendMessageI(hListBox, LB_GETSEL, Cur,  0) != 0))
         {
-            SendMessage(hListBox, LB_GETTEXT, Cur, (LPARAM)TmpPath);
+            SendMessageI(hListBox, LB_GETTEXT, Cur, (LPARAM)TmpPath);
             ReplaceAllStr(TmpPath, PathInfo->PathFrom, PathInfo->PathTo, NO);
-            SendMessage(hListBox, LB_DELETESTRING, Cur, 0);
-            SendMessage(hListBox, LB_INSERTSTRING, Cur, (LPARAM)TmpPath);
+            SendMessageI(hListBox, LB_DELETESTRING, Cur, 0);
+            SendMessageI(hListBox, LB_INSERTSTRING, Cur, (LPARAM)TmpPath);
             if(Sel == YES)
-                SendMessage(hListBox, LB_SETSEL, TRUE, Cur);
+                SendMessageI(hListBox, LB_SETSEL, TRUE, Cur);
         }
     }
     return;
@@ -726,12 +726,12 @@ static int CheckPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel)
     int             Ret;
 
     Ret = NO;
-    Items = SendMessage(hListBox, LB_GETCOUNT, 0,  0);
+    Items = SendMessageI(hListBox, LB_GETCOUNT, 0,  0);
     for(Cur = 0; Cur < Items; Cur++)
     {
-        if((Sel == NO) || (SendMessage(hListBox, LB_GETSEL, Cur,  0) != 0))
+        if((Sel == NO) || (SendMessageI(hListBox, LB_GETSEL, Cur,  0) != 0))
         {
-            SendMessage(hListBox, LB_GETTEXT, Cur, (LPARAM)TmpPath);
+            SendMessageI(hListBox, LB_GETTEXT, Cur, (LPARAM)TmpPath);
             Ret = ReplaceAllStr(TmpPath, PathInfo->PathFrom, PathInfo->PathTo, YES);
             if(Ret == YES)
                 break;
@@ -797,8 +797,8 @@ static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, INPFILE_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, lParam);
+            SendDlgItemMessageI(hDlg, INPFILE_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, lParam);
             Buf = lParam;
             return(TRUE);
 
@@ -806,7 +806,7 @@ static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case IDOK :
-                    SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Buf);
+                    SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Buf);
                     EndDialog(hDlg, YES);
                     break;
 
@@ -816,16 +816,16 @@ static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
                 case INPFILE_FILE_BR :
                     _tcscpy(Tmp, _T(""));
-                    SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
+                    SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
                     *GetFileName(Tmp2) = NUL;
                     if(SelectFile(hDlg, Tmp, MSGJPN_34, MSGJPN_26, NULL, OFN_NODEREFERENCELINKS, 0, Tmp2) == TRUE)
-                        SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
                 case INPFILE_FOLDER_BR :
-                    SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
                     if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_36) == TRUE)
-                        SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
                 case IDHELP :
@@ -850,9 +850,9 @@ static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 static void SetAdvancedPage(HWND hDlgSrc, HWND hDlgAdv)
 {
-    if(SendDlgItemMessage(hDlgSrc, PATSET_SRCLIST, LB_GETCOUNT, 0, 0) > 1)
+    if(SendDlgItemMessageI(hDlgSrc, PATSET_SRCLIST, LB_GETCOUNT, 0, 0) > 1)
     {
-        SendDlgItemMessage(hDlgAdv, PATSET_NO_DSTDIR, BM_SETCHECK, 0, 0);
+        SendDlgItemMessageI(hDlgAdv, PATSET_NO_DSTDIR, BM_SETCHECK, 0, 0);
         EnableWindow(GetDlgItem(hDlgAdv, PATSET_NO_DSTDIR), FALSE);
     }
     else
@@ -891,13 +891,13 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
     {
         case WM_INITDIALOG :
             SetMultiTextToList(hDlg, PATSET_DSTLIST, TmpPat.Dst);
-            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
+            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_SETHORIZONTALEXTENT, 2048, 0);
 
-            SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_SETCHECK, TmpPat.ChkVolLabel, 0);
-            SendDlgItemMessage(hDlg, PATSET_LABEL, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)TmpPat.VolLabel);
+            SendDlgItemMessageI(hDlg, PATSET_CHK_LABEL, BM_SETCHECK, TmpPat.ChkVolLabel, 0);
+            SendDlgItemMessageI(hDlg, PATSET_LABEL, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)TmpPat.VolLabel);
 
-            SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_SETCHECK, TmpPat.DstDropbox, 0);
+            SendDlgItemMessageI(hDlg, PATSET_DST_DROPBOX, BM_SETCHECK, TmpPat.DstDropbox, 0);
 
             if(TmpPat.ChkVolLabel == NO)
             {
@@ -929,9 +929,9 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             {
                 case PSN_APPLY :
                     GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
-                    TmpPat.ChkVolLabel = SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0);
-                    SendDlgItemMessage(hDlg, PATSET_LABEL, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.VolLabel);
-                    TmpPat.DstDropbox = SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_GETCHECK, 0, 0);
+                    TmpPat.ChkVolLabel = SendDlgItemMessageI(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, PATSET_LABEL, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.VolLabel);
+                    TmpPat.DstDropbox = SendDlgItemMessageI(hDlg, PATSET_DST_DROPBOX, BM_GETCHECK, 0, 0);
                     break;
             }
             break;
@@ -941,7 +941,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             {
                 case PATSET_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -951,10 +951,10 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_EDIT :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
-                        SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -965,14 +965,14 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_DEL :
-                    if(SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETSELCOUNT, 0,  0) > 0)
+                    if(SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETSELCOUNT, 0,  0) > 0)
                     {
-                        Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCOUNT, 0,  0) - 1;
+                        Cur = SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETCOUNT, 0,  0) - 1;
                         for(; Cur >= 0; Cur--)
                         {
-                            if(SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETSEL, Cur,  0) != 0)
+                            if(SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETSEL, Cur,  0) != 0)
                             {
-                                SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
+                                SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
                             }
                         }
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -982,15 +982,15 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_UP :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(Cur > 0)
                         {
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
                             Cur--;
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                             TmpPat.NextDstNum = 0;
                         }
@@ -998,16 +998,16 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_DOWN :
-                    if((Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
-                        Max = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCOUNT, 0, 0);
+                        Max = SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_DELETESTRING, Cur, 0);
                             Cur++;
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, PATSET_DSTLIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
                             TmpPat.NextDstNum = 0;
                         }
@@ -1045,7 +1045,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     break;
 
                 case PATSET_CHK_LABEL :
-                    if(SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, PATSET_LABEL), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_LABEL_GET), TRUE);
@@ -1059,17 +1059,17 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
 
                 case PATSET_LABEL_GET :
                     GetMultiTextFromList(hDlg, PATSET_DSTLIST, Tmp, MY_MAX_PATH+1);
-                    if(_tcslen(Tmp) > 0)
+                    if(TCSLEN(Tmp) > 0)
                     {
                         if(GetVolumeLabel(Tmp, Tmp2, MY_MAX_PATH+1) == TRUE)
                         {
-                            SendDlgItemMessage(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)Tmp2);
+                            SendDlgItemMessageI(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)Tmp2);
                         }
                         else
-                            DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_111);
+                            DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_111);
                     }
                     else
-                        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_12);
+                        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_12);
                     break;
             }
             return(TRUE);
@@ -1149,8 +1149,8 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
             SetMultiTextToList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir);
             SetMultiTextToList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile);
 
-            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_SETHORIZONTALEXTENT, 2048, 0);
-            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_SETHORIZONTALEXTENT, 2048, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_SETHORIZONTALEXTENT, 2048, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_SETHORIZONTALEXTENT, 2048, 0);
 
             hWndIgnorePage = hDlg;
 
@@ -1183,7 +1183,7 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
             {
                 case NOBACK_DIR_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, NOBACK_DIR_LIST, IGN_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN+1);
@@ -1192,10 +1192,10 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_DIR_EDIT :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
-                        SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, NOBACK_DIR_LIST, IGN_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN+1);
@@ -1205,14 +1205,14 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_DIR_DEL :
-                    if(SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETSELCOUNT, 0,  0) > 0)
+                    if(SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETSELCOUNT, 0,  0) > 0)
                     {
-                        Cur = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCOUNT, 0,  0) - 1;
+                        Cur = SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETCOUNT, 0,  0) - 1;
                         for(; Cur >= 0; Cur--)
                         {
-                            if(SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETSEL, Cur,  0) != 0)
+                            if(SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETSEL, Cur,  0) != 0)
                             {
-                                SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
+                                SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
                             }
                         }
                         GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN+1);
@@ -1221,31 +1221,31 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_DIR_UP :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(Cur > 0)
                         {
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
                             Cur--;
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, NOBACK_DIR_LIST, NOBACK_DIR_EDIT, NOBACK_DIR_UP, NOBACK_DIR_DOWN, NOBACK_DIR_DEL);
                         }
                     }
                     break;
 
                 case NOBACK_DIR_DOWN :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
-                        Max = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCOUNT, 0, 0);
+                        Max = SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_DELETESTRING, Cur, 0);
                             Cur++;
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_DIR_LIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, NOBACK_DIR_LIST, NOBACK_DIR_EDIT, NOBACK_DIR_UP, NOBACK_DIR_DOWN, NOBACK_DIR_DEL);
                         }
                     }
@@ -1281,7 +1281,7 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
 
                 case NOBACK_FILE_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, NOBACK_FILE_LIST, IGN_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN+1);
@@ -1290,10 +1290,10 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_FILE_EDIT :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
-                        SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                        if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, NOBACK_FILE_LIST, IGN_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN+1);
@@ -1303,14 +1303,14 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_FILE_DEL :
-                    if(SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETSELCOUNT, 0,  0) > 0)
+                    if(SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETSELCOUNT, 0,  0) > 0)
                     {
-                        Cur = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCOUNT, 0,  0) - 1;
+                        Cur = SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETCOUNT, 0,  0) - 1;
                         for(; Cur >= 0; Cur--)
                         {
-                            if(SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETSEL, Cur,  0) != 0)
+                            if(SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETSEL, Cur,  0) != 0)
                             {
-                                SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
+                                SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
                             }
                         }
                         GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN+1);
@@ -1319,31 +1319,31 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     break;
 
                 case NOBACK_FILE_UP :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
                         if(Cur > 0)
                         {
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
                             Cur--;
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, NOBACK_FILE_LIST, NOBACK_FILE_EDIT, NOBACK_FILE_UP, NOBACK_FILE_DOWN, NOBACK_FILE_DEL);
                         }
                     }
                     break;
 
                 case NOBACK_FILE_DOWN :
-                    if((Cur = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
+                    if((Cur = SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0, 0)) != LB_ERR)
                     {
-                        Max = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCOUNT, 0, 0);
+                        Max = SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETCOUNT, 0, 0);
                         if(Cur < Max - 1)
                         {
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_DELETESTRING, Cur, 0);
                             Cur++;
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
-                            SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_SETSEL, TRUE, Cur);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_INSERTSTRING, Cur, (LPARAM)Tmp);
+                            SendDlgItemMessageI(hDlg, NOBACK_FILE_LIST, LB_SETSEL, TRUE, Cur);
                             SetDirButtonHide(hDlg, NOBACK_FILE_LIST, NOBACK_FILE_EDIT, NOBACK_FILE_UP, NOBACK_FILE_DOWN, NOBACK_FILE_DEL);
                         }
                     }
@@ -1487,16 +1487,16 @@ static LRESULT CALLBACK IgnoreSetting2Proc(HWND hDlg, UINT message, WPARAM wPara
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, NOBACK_SYSTEM_FILE, BM_SETCHECK, TmpPat.IgnSystemFile, 0);
-            SendDlgItemMessage(hDlg, NOBACK_HIDDEN_FILE, BM_SETCHECK, TmpPat.IgnHiddenFile, 0);
-            SendDlgItemMessage(hDlg, NOBACK_BIG_FILE, BM_SETCHECK, TmpPat.IgnBigFile, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_SYSTEM_FILE, BM_SETCHECK, TmpPat.IgnSystemFile, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_HIDDEN_FILE, BM_SETCHECK, TmpPat.IgnHiddenFile, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_BIG_FILE, BM_SETCHECK, TmpPat.IgnBigFile, 0);
             if(TmpPat.IgnBigFile == NO)
             {
                 EnableWindow(GetDlgItem(hDlg, NOBACK_BIG_SIZE), FALSE);
             }
             _stprintf(Tmp, _T("%d"), TmpPat.IgnBigSize);
-            SendDlgItemMessage(hDlg, NOBACK_BIG_SIZE, EM_LIMITTEXT, (WPARAM)7, 0);
-            SendDlgItemMessage(hDlg, NOBACK_BIG_SIZE, WM_SETTEXT, 0, (LPARAM)Tmp);
+            SendDlgItemMessageI(hDlg, NOBACK_BIG_SIZE, EM_LIMITTEXT, (WPARAM)7, 0);
+            SendDlgItemMessageI(hDlg, NOBACK_BIG_SIZE, WM_SETTEXT, 0, (LPARAM)Tmp);
             return(TRUE);
 
         case WM_NOTIFY:
@@ -1504,10 +1504,10 @@ static LRESULT CALLBACK IgnoreSetting2Proc(HWND hDlg, UINT message, WPARAM wPara
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    TmpPat.IgnSystemFile = SendDlgItemMessage(hDlg, NOBACK_SYSTEM_FILE, BM_GETCHECK, 0, 0);
-                    TmpPat.IgnHiddenFile = SendDlgItemMessage(hDlg, NOBACK_HIDDEN_FILE, BM_GETCHECK, 0, 0);
-                    TmpPat.IgnBigFile = SendDlgItemMessage(hDlg, NOBACK_BIG_FILE, BM_GETCHECK, 0, 0);
-                    SendDlgItemMessage(hDlg, NOBACK_BIG_SIZE, WM_GETTEXT, 7+1, (LPARAM)Tmp);
+                    TmpPat.IgnSystemFile = SendDlgItemMessageI(hDlg, NOBACK_SYSTEM_FILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnHiddenFile = SendDlgItemMessageI(hDlg, NOBACK_HIDDEN_FILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnBigFile = SendDlgItemMessageI(hDlg, NOBACK_BIG_FILE, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, NOBACK_BIG_SIZE, WM_GETTEXT, 7+1, (LPARAM)Tmp);
                     TmpPat.IgnBigSize = _tstoi(Tmp);
                     if(TmpPat.IgnBigFile && (TmpPat.IgnBigSize == 0))
                     {
@@ -1522,17 +1522,17 @@ static LRESULT CALLBACK IgnoreSetting2Proc(HWND hDlg, UINT message, WPARAM wPara
             {
                 case NOBACK_SYSTEM_FILE :
                     /* 容量計算ボタンが押されたときのために、変更があったらすぐに保存しておく */
-                    TmpPat.IgnSystemFile = SendDlgItemMessage(hDlg, NOBACK_SYSTEM_FILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnSystemFile = SendDlgItemMessageI(hDlg, NOBACK_SYSTEM_FILE, BM_GETCHECK, 0, 0);
                     break;
 
                 case NOBACK_HIDDEN_FILE :
                     /* 容量計算ボタンが押されたときのために、変更があったらすぐに保存しておく */
-                    TmpPat.IgnHiddenFile = SendDlgItemMessage(hDlg, NOBACK_HIDDEN_FILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnHiddenFile = SendDlgItemMessageI(hDlg, NOBACK_HIDDEN_FILE, BM_GETCHECK, 0, 0);
                     break;
 
                 case NOBACK_BIG_FILE :
                     /* 容量計算ボタンが押されたときのために、変更があったらすぐに保存しておく */
-                    TmpPat.IgnBigFile = SendDlgItemMessage(hDlg, NOBACK_BIG_FILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnBigFile = SendDlgItemMessageI(hDlg, NOBACK_BIG_FILE, BM_GETCHECK, 0, 0);
                     if(TmpPat.IgnBigFile == NO)
                     {
                         EnableWindow(GetDlgItem(hDlg, NOBACK_BIG_SIZE), FALSE);
@@ -1545,7 +1545,7 @@ static LRESULT CALLBACK IgnoreSetting2Proc(HWND hDlg, UINT message, WPARAM wPara
 
                 case NOBACK_BIG_SIZE :
                     /* 容量計算ボタンが押されたときのために、変更があったらすぐに保存しておく */
-                    SendDlgItemMessage(hDlg, NOBACK_BIG_SIZE, WM_GETTEXT, 7+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, NOBACK_BIG_SIZE, WM_GETTEXT, 7+1, (LPARAM)Tmp);
                     TmpPat.IgnBigSize = _tstoi(Tmp);
                     break;
             }
@@ -1575,12 +1575,12 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_SETCHECK, TmpPat.DelDir, 0);
-            SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_SETCHECK, TmpPat.DelFile, 0);
-            SendDlgItemMessage(hDlg, PATSET_IGNNODEL, BM_SETCHECK, TmpPat.IgnNoDel, 0);
-            SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL, BM_SETCHECK, TmpPat.NotifyDel, 0);
-            SendDlgItemMessage(hDlg, PATSET_NOTIFY_OVERWRITE, BM_SETCHECK, TmpPat.NotifyOvw, 0);
-            SendDlgItemMessage(hDlg, PATSET_FORCE, BM_SETCHECK, TmpPat.ForceCopy, 0);
+            SendDlgItemMessageI(hDlg, PATSET_RMDIR, BM_SETCHECK, TmpPat.DelDir, 0);
+            SendDlgItemMessageI(hDlg, PATSET_RMFILE, BM_SETCHECK, TmpPat.DelFile, 0);
+            SendDlgItemMessageI(hDlg, PATSET_IGNNODEL, BM_SETCHECK, TmpPat.IgnNoDel, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NOTIFY_DEL, BM_SETCHECK, TmpPat.NotifyDel, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NOTIFY_OVERWRITE, BM_SETCHECK, TmpPat.NotifyOvw, 0);
+            SendDlgItemMessageI(hDlg, PATSET_FORCE, BM_SETCHECK, TmpPat.ForceCopy, 0);
             if(TmpPat.ForceCopy == YES)
             {
                 EnableWindow(GetDlgItem(hDlg, PATSET_NEWONLY), FALSE);
@@ -1590,35 +1590,35 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                 EnableWindow(GetDlgItem(hDlg, PATSET_IGNTIME), FALSE);
                 EnableWindow(GetDlgItem(hDlg, PATSET_NOTIFY_OVERWRITE), FALSE);
             }
-            SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_SETCHECK, TmpPat.NewOnly, 0);
-            SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_SETCHECK, TmpPat.IgnoreErr, 0);
-            SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, TmpPat.UseTrashCan, 0);
-            SendDlgItemMessage(hDlg, PATSET_WAIT, TBM_SETRANGE, TRUE, MAKELPARAM(0, 20));
-            SendDlgItemMessage(hDlg, PATSET_WAIT, TBM_SETPOS, TRUE, TmpPat.Wait);
+            SendDlgItemMessageI(hDlg, PATSET_NEWONLY, BM_SETCHECK, TmpPat.NewOnly, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NOERROR, BM_SETCHECK, TmpPat.IgnoreErr, 0);
+            SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, TmpPat.UseTrashCan, 0);
+            SendDlgItemMessageI(hDlg, PATSET_WAIT, TBM_SETRANGE, TRUE, MAKELPARAM(0, 20));
+            SendDlgItemMessageI(hDlg, PATSET_WAIT, TBM_SETPOS, TRUE, TmpPat.Wait);
             _stprintf(Tmp, _T("%d"), TmpPat.Tolerance);
-            SendDlgItemMessage(hDlg, PATSET_TOLERANCE_SPN, UDM_SETRANGE, 0, MAKELONG(999, 0));
-            SendDlgItemMessage(hDlg, PATSET_TOLERANCE, EM_LIMITTEXT, (WPARAM)3, 0);
-            SendDlgItemMessage(hDlg, PATSET_TOLERANCE, WM_SETTEXT, 0, (LPARAM)Tmp);
-            SendDlgItemMessage(hDlg, PATSET_IGNATTR, BM_SETCHECK, TmpPat.IgnAttr, 0);
-            SendDlgItemMessage(hDlg, PATSET_IGNTIME, BM_SETCHECK, TmpPat.IgnTime, 0);
+            SendDlgItemMessageI(hDlg, PATSET_TOLERANCE_SPN, UDM_SETRANGE, 0, MAKELONG(999, 0));
+            SendDlgItemMessageI(hDlg, PATSET_TOLERANCE, EM_LIMITTEXT, (WPARAM)3, 0);
+            SendDlgItemMessageI(hDlg, PATSET_TOLERANCE, WM_SETTEXT, 0, (LPARAM)Tmp);
+            SendDlgItemMessageI(hDlg, PATSET_IGNATTR, BM_SETCHECK, TmpPat.IgnAttr, 0);
+            SendDlgItemMessageI(hDlg, PATSET_IGNTIME, BM_SETCHECK, TmpPat.IgnTime, 0);
             if(TmpPat.IgnTime == YES)
             {
                 EnableWindow(GetDlgItem(hDlg, PATSET_NEWONLY), FALSE);
                 EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE), FALSE);
                 EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE_SPN), FALSE);
             }
-			SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, TmpPat.MoveInsteadDelete, 0);
-            SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-			SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)TmpPat.MoveToFolder);
+			SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, TmpPat.MoveInsteadDelete, 0);
+            SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_FOLDER, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+			SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)TmpPat.MoveToFolder);
 			if(TmpPat.UseTrashCan)
 			{
-				SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
+				SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
 				EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
 				EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
 			}
 			else if(TmpPat.MoveInsteadDelete)
 			{
-				SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+				SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
 			}
             return(TRUE);
 
@@ -1627,22 +1627,22 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    TmpPat.DelDir = SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
-                    TmpPat.DelFile = SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
-                    TmpPat.IgnNoDel = SendDlgItemMessage(hDlg, PATSET_IGNNODEL, BM_GETCHECK, 0, 0);
-                    TmpPat.NotifyDel = SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL, BM_GETCHECK, 0, 0);
-                    TmpPat.NotifyOvw = SendDlgItemMessage(hDlg, PATSET_NOTIFY_OVERWRITE, BM_GETCHECK, 0, 0);
-                    TmpPat.ForceCopy = SendDlgItemMessage(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
-                    TmpPat.NewOnly = SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
-                    TmpPat.IgnoreErr = SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
-                    TmpPat.UseTrashCan = SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
-                    TmpPat.Wait = SendDlgItemMessage(hDlg, PATSET_WAIT, TBM_GETPOS, 0, 0);
-                    TmpPat.IgnAttr = SendDlgItemMessage(hDlg, PATSET_IGNATTR, BM_GETCHECK, 0, 0);
-                    TmpPat.IgnTime = SendDlgItemMessage(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0);
-                    SendDlgItemMessage(hDlg, PATSET_TOLERANCE, WM_GETTEXT, 4, (LPARAM)Tmp);
+                    TmpPat.DelDir = SendDlgItemMessageI(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
+                    TmpPat.DelFile = SendDlgItemMessageI(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnNoDel = SendDlgItemMessageI(hDlg, PATSET_IGNNODEL, BM_GETCHECK, 0, 0);
+                    TmpPat.NotifyDel = SendDlgItemMessageI(hDlg, PATSET_NOTIFY_DEL, BM_GETCHECK, 0, 0);
+                    TmpPat.NotifyOvw = SendDlgItemMessageI(hDlg, PATSET_NOTIFY_OVERWRITE, BM_GETCHECK, 0, 0);
+                    TmpPat.ForceCopy = SendDlgItemMessageI(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
+                    TmpPat.NewOnly = SendDlgItemMessageI(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnoreErr = SendDlgItemMessageI(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
+                    TmpPat.UseTrashCan = SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
+                    TmpPat.Wait = SendDlgItemMessageI(hDlg, PATSET_WAIT, TBM_GETPOS, 0, 0);
+                    TmpPat.IgnAttr = SendDlgItemMessageI(hDlg, PATSET_IGNATTR, BM_GETCHECK, 0, 0);
+                    TmpPat.IgnTime = SendDlgItemMessageI(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, PATSET_TOLERANCE, WM_GETTEXT, 4, (LPARAM)Tmp);
                     TmpPat.Tolerance = _tstoi(Tmp);
-					TmpPat.MoveInsteadDelete = SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0);
-					SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.MoveToFolder);
+					TmpPat.MoveInsteadDelete = SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0);
+					SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.MoveToFolder);
                     break;
             }
             break;
@@ -1651,7 +1651,7 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case PATSET_FORCE :
-                    if(SendDlgItemMessage(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, PATSET_IGNATTR), FALSE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_IGNTIME), FALSE);
@@ -1665,7 +1665,7 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                         EnableWindow(GetDlgItem(hDlg, PATSET_IGNATTR), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_IGNTIME), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_NOTIFY_OVERWRITE), TRUE);
-                        if(SendDlgItemMessage(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0) == 0)
+                        if(SendDlgItemMessageI(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0) == 0)
                         {
                             EnableWindow(GetDlgItem(hDlg, PATSET_NEWONLY), TRUE);
                             EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE), TRUE);
@@ -1675,7 +1675,7 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     break;
 
                 case PATSET_IGNTIME :
-                    if(SendDlgItemMessage(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, PATSET_NEWONLY), FALSE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE), FALSE);
@@ -1690,27 +1690,27 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     break;
 
 				case PATSET_USE_TRASHCAN:
-                    if(SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0) == 1)
 					{
-						SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
+						SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
 						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
 						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
 					}
 					break;
 
 				case PATSET_DEL_MOVE_TO:
-                    if(SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0) == 1)
 					{
-						SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+						SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
 						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), TRUE);
 						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), TRUE);
 					}
 					break;
 
 				case PATSET_DEL_MOVE_FOLDER_BR :
-                    SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
                     if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_130) == TRUE)
-                        SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
             }
             return(TRUE);
@@ -1738,7 +1738,7 @@ static LRESULT CALLBACK AdvancedSettingProc(HWND hDlg, UINT message, WPARAM wPar
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, PATSET_NO_DSTDIR, BM_SETCHECK, TmpPat.NoMakeTopDir, 0);
+            SendDlgItemMessageI(hDlg, PATSET_NO_DSTDIR, BM_SETCHECK, TmpPat.NoMakeTopDir, 0);
             SetAdvancedPage(SheetInfo[PAGE_DIR].hWndSheet, hDlg);
             return(TRUE);
 
@@ -1747,7 +1747,7 @@ static LRESULT CALLBACK AdvancedSettingProc(HWND hDlg, UINT message, WPARAM wPar
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    TmpPat.NoMakeTopDir = SendDlgItemMessage(hDlg, PATSET_NO_DSTDIR, BM_GETCHECK, 0, 0);
+                    TmpPat.NoMakeTopDir = SendDlgItemMessageI(hDlg, PATSET_NO_DSTDIR, BM_GETCHECK, 0, 0);
                     break;
             }
             break;
@@ -1756,7 +1756,7 @@ static LRESULT CALLBACK AdvancedSettingProc(HWND hDlg, UINT message, WPARAM wPar
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case PATSET_ADV_RESET :
-                    SendDlgItemMessage(hDlg, PATSET_NO_DSTDIR, BM_SETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, PATSET_NO_DSTDIR, BM_SETCHECK, 0, 0);
                     break;
             }
     }
@@ -1784,11 +1784,11 @@ static LRESULT CALLBACK TimerSettingProc(HWND hDlg, UINT message, WPARAM wParam,
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, PATSET_TIMER_INT_SW, BM_SETCHECK, (TmpPat.IntervalTime > 0 ? 1 : 0), 0);
-            SendDlgItemMessage(hDlg, PATSET_TIMER_INT_TIME, EM_LIMITTEXT, (WPARAM)5, 0);
+            SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_SW, BM_SETCHECK, (TmpPat.IntervalTime > 0 ? 1 : 0), 0);
+            SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_TIME, EM_LIMITTEXT, (WPARAM)5, 0);
             _stprintf(Tmp, _T("%d"), abs(TmpPat.IntervalTime));
-            SendDlgItemMessage(hDlg, PATSET_TIMER_INT_TIME, WM_SETTEXT, 0, (LPARAM)Tmp);
-            SendDlgItemMessage(hDlg, PATSET_TIMER_INT_TIME_SPN, UDM_SETRANGE, 0, MAKELONG(2000, 1));
+            SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_TIME, WM_SETTEXT, 0, (LPARAM)Tmp);
+            SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_TIME_SPN, UDM_SETRANGE, 0, MAKELONG(2000, 1));
             PostMessage(hDlg, WM_COMMAND, MAKEWPARAM(PATSET_TIMER_INT_SW, 0), 0);
             return(TRUE);
 
@@ -1797,10 +1797,10 @@ static LRESULT CALLBACK TimerSettingProc(HWND hDlg, UINT message, WPARAM wParam,
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    SendDlgItemMessage(hDlg, PATSET_TIMER_INT_TIME, WM_GETTEXT, 5+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_TIME, WM_GETTEXT, 5+1, (LPARAM)Tmp);
                     TmpPat.IntervalTime = _tstoi(Tmp);
                     CheckRange2(&TmpPat.IntervalTime, 2000, 1);
-                    if(SendDlgItemMessage(hDlg, PATSET_TIMER_INT_SW, BM_GETCHECK, 0, 0) == 0)
+                    if(SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_SW, BM_GETCHECK, 0, 0) == 0)
                         TmpPat.IntervalTime *= -1;
                     break;
             }
@@ -1810,7 +1810,7 @@ static LRESULT CALLBACK TimerSettingProc(HWND hDlg, UINT message, WPARAM wParam,
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case PATSET_TIMER_INT_SW :
-                    if(SendDlgItemMessage(hDlg, PATSET_TIMER_INT_SW, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_TIMER_INT_SW, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, PATSET_TIMER_INT_TIME), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_TIMER_INT_TIME_SPN), TRUE);
@@ -1851,45 +1851,45 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_93);
-            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_94);
-            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_95);
+            SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_93);
+            SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_94);
+            SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_95);
             if(IsWindowsVistaOrGreater())
             {
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_120);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_121);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_120);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_121);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
             }
             else
             {
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_96);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_96);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_97);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_101);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_ADDSTRING, 0, (LPARAM)MSGJPN_102);
             }
-            SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_SETCURSEL, TmpPat.AutoClose.Success, 0);
+            SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_SETCURSEL, TmpPat.AutoClose.Success, 0);
 
             DuplicateComboBox(hDlg, PATSET_SYSTEM, PATSET_SYSTEM_ERROR);
 #if USE_SAME_AS_SUCCESS
-            IndexSameAsOnSuccess = SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
+            IndexSameAsOnSuccess = SendDlgItemMessageI(hDlg, PATSET_SYSTEM_ERROR, CB_ADDSTRING, 0, (LPARAM)MSGJPN_137);
 #endif /* USE_SAME_AS_SUCCESS */
             if (TmpPat.AutoClose.Error >= 0)
             {
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, TmpPat.AutoClose.Error, 0);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, TmpPat.AutoClose.Error, 0);
             }
             else
             {
 #if USE_SAME_AS_SUCCESS
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, IndexSameAsOnSuccess, 0);
 #else
-                SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
+                SendDlgItemMessageI(hDlg, PATSET_SYSTEM_ERROR, CB_SETCURSEL, 0, 0);
 #endif /* USE_SAME_AS_SUCCESS */
             }
 
-            SendDlgItemMessage(hDlg, PATSET_SOUND, BM_SETCHECK, TmpPat.Sound, 0);
-            SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, WM_SETTEXT, 0, (LPARAM)TmpPat.SoundFile);
+            SendDlgItemMessageI(hDlg, PATSET_SOUND, BM_SETCHECK, TmpPat.Sound, 0);
+            SendDlgItemMessageI(hDlg, PATSET_SOUNDFILE, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, PATSET_SOUNDFILE, WM_SETTEXT, 0, (LPARAM)TmpPat.SoundFile);
             if(TmpPat.Sound == NO)
             {
                 EnableWindow(GetDlgItem(hDlg, PATSET_SOUNDFILE), FALSE);
@@ -1903,16 +1903,16 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    TmpPat.AutoClose.Success = SendDlgItemMessage(hDlg, PATSET_SYSTEM, CB_GETCURSEL, 0, 0);
-                    TmpPat.AutoClose.Error = SendDlgItemMessage(hDlg, PATSET_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
+                    TmpPat.AutoClose.Success = SendDlgItemMessageI(hDlg, PATSET_SYSTEM, CB_GETCURSEL, 0, 0);
+                    TmpPat.AutoClose.Error = SendDlgItemMessageI(hDlg, PATSET_SYSTEM_ERROR, CB_GETCURSEL, 0, 0);
 #if USE_SAME_AS_SUCCESS
                     if (TmpPat.AutoClose.Error == IndexSameAsOnSuccess)
                     {
                         TmpPat.AutoClose.Error = AUTOCLOSE_ACTION_SAME_AS_SUCCESS;
                     }
 #endif /* USE_SAME_AS_SUCCESS */
-                    TmpPat.Sound = SendDlgItemMessage(hDlg, PATSET_SOUND, BM_GETCHECK, 0, 0);
-                    SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.SoundFile);
+                    TmpPat.Sound = SendDlgItemMessageI(hDlg, PATSET_SOUND, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessageI(hDlg, PATSET_SOUNDFILE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.SoundFile);
                     break;
             }
             break;
@@ -1921,7 +1921,7 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case PATSET_SOUND :
-                    if(SendDlgItemMessage(hDlg, PATSET_SOUND, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, PATSET_SOUND, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, PATSET_SOUNDFILE), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_SOUNDFILE_BR), TRUE);
@@ -1938,11 +1938,11 @@ static LRESULT CALLBACK SystemSettingProc(HWND hDlg, UINT message, WPARAM wParam
                 case PATSET_SOUNDFILE_BR :
                     _tcscpy(Tmp, _T(""));
                     if(SelectFile(hDlg, Tmp, MSGJPN_104, MSGJPN_105, _T(""), OFN_FILEMUSTEXIST, 0, MediaPath) == TRUE)
-                        SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, PATSET_SOUNDFILE, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
                 case PATSET_SOUND_TEST :
-                    SendDlgItemMessage(hDlg, PATSET_SOUNDFILE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, PATSET_SOUNDFILE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
                     PlaySound(Tmp, NULL, SND_ASYNC);
                     break;
             }
@@ -1995,17 +1995,17 @@ static int SetStrToListBox(LPTSTR Str, HWND hDlg, int CtrlList, int BufSize, int
     int Sts;
 
     Sts = SUCCESS;
-    Len = _tcslen(Str);
+    Len = TCSLEN(Str);
     if(Len > 0)
     {
         Len++;
-        Num = SendDlgItemMessage(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
+        Num = SendDlgItemMessageI(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
         for(i = 0; i < Num; i++)
         {
             if(i != Pos)
             {
-                SendDlgItemMessage(hDlg, CtrlList, LB_GETTEXT, i, (LPARAM)Tmp);
-                Len += _tcslen(Tmp) + 1;
+                SendDlgItemMessageI(hDlg, CtrlList, LB_GETTEXT, i, (LPARAM)Tmp);
+                Len += TCSLEN(Tmp) + 1;
             }
         }
 
@@ -2019,15 +2019,15 @@ static int SetStrToListBox(LPTSTR Str, HWND hDlg, int CtrlList, int BufSize, int
         {
             if(Pos == -1)
             {
-                SendDlgItemMessage(hDlg, CtrlList, LB_ADDSTRING, 0, (LPARAM)Str);
-                Pos = SendDlgItemMessage(hDlg, CtrlList, LB_GETCOUNT, 0, 0) - 1;
+                SendDlgItemMessageI(hDlg, CtrlList, LB_ADDSTRING, 0, (LPARAM)Str);
+                Pos = SendDlgItemMessageI(hDlg, CtrlList, LB_GETCOUNT, 0, 0) - 1;
             }
             else
             {
-                SendDlgItemMessage(hDlg, CtrlList, LB_DELETESTRING, Pos, 0);
-                SendDlgItemMessage(hDlg, CtrlList, LB_INSERTSTRING, Pos, (LPARAM)Str);
+                SendDlgItemMessageI(hDlg, CtrlList, LB_DELETESTRING, Pos, 0);
+                SendDlgItemMessageI(hDlg, CtrlList, LB_INSERTSTRING, Pos, (LPARAM)Str);
             }
-            SendDlgItemMessage(hDlg, CtrlList, LB_SETCURSEL, Pos, 0);
+            SendDlgItemMessageI(hDlg, CtrlList, LB_SETCURSEL, Pos, 0);
         }
     }
     return(Sts);
@@ -2052,8 +2052,8 @@ static void SetMultiTextToList(HWND hDlg, int CtrlList, LPTSTR Text)
     Pos = Text;
     while(*Pos != NUL)
     {
-        SendDlgItemMessage(hDlg, CtrlList, LB_ADDSTRING, 0, (LPARAM)Pos);
-        Pos += _tcslen(Pos) + 1;
+        SendDlgItemMessageI(hDlg, CtrlList, LB_ADDSTRING, 0, (LPARAM)Pos);
+        Pos += TCSLEN(Pos) + 1;
     }
     return;
 }
@@ -2080,11 +2080,11 @@ static void GetMultiTextFromList(HWND hDlg, int CtrlList, LPTSTR Buf, int BufSiz
 
     memset(Buf, NUL, BufSize * sizeof(_TCHAR));
     BufSize -= 1;
-    Num = SendDlgItemMessage(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
+    Num = SendDlgItemMessageI(hDlg, CtrlList, LB_GETCOUNT, 0, 0);
     for(i = 0; i < Num; i++)
     {
-        SendDlgItemMessage(hDlg, CtrlList, LB_GETTEXT, i, (LPARAM)Tmp);
-        len = _tcslen(Tmp);
+        SendDlgItemMessageI(hDlg, CtrlList, LB_GETTEXT, i, (LPARAM)Tmp);
+        len = TCSLEN(Tmp);
         if(len > 0)
         {
             if(BufSize >= (len + 1))

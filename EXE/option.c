@@ -158,22 +158,22 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, LOG_SWITCH, BM_SETCHECK, LogSwitch == 0 ? 0 : 1, 0);
+            SendDlgItemMessageI(hDlg, LOG_SWITCH, BM_SETCHECK, LogSwitch == 0 ? 0 : 1, 0);
             SetRadioButtonByValue(hDlg, LogSwitch, LogButton, LOGBUTTONS);
 
-            SendDlgItemMessage(hDlg, LOG_UNICODE, BM_SETCHECK, LogUnicode == 0 ? 0 : 1, 0);
-            SendDlgItemMessage(hDlg, LOG_VERBOSE, BM_SETCHECK, LogVerbose == 0 ? 0 : 1, 0);
+            SendDlgItemMessageI(hDlg, LOG_UNICODE, BM_SETCHECK, LogUnicode == 0 ? 0 : 1, 0);
+            SendDlgItemMessageI(hDlg, LOG_VERBOSE, BM_SETCHECK, LogVerbose == 0 ? 0 : 1, 0);
 
             SetRadioButtonByValue(hDlg, (LogLimit > 0 ? 1 : -1), LimitButton, LIMITBUTTONS);
-            SendDlgItemMessage(hDlg, LOG_LIMIT_SIZE, EM_LIMITTEXT, (WPARAM)5, 0);
+            SendDlgItemMessageI(hDlg, LOG_LIMIT_SIZE, EM_LIMITTEXT, (WPARAM)5, 0);
             _stprintf(Tmp, _T("%d"), abs(LogLimit));
-            SendDlgItemMessage(hDlg, LOG_LIMIT_SIZE, WM_SETTEXT, 0, (LPARAM)Tmp);
+            SendDlgItemMessageI(hDlg, LOG_LIMIT_SIZE, WM_SETTEXT, 0, (LPARAM)Tmp);
 
-            SendDlgItemMessage(hDlg, LOG_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)LogFname);
+            SendDlgItemMessageI(hDlg, LOG_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)LogFname);
 
-            SendDlgItemMessage(hDlg, LOG_VIEWER, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, LOG_VIEWER, WM_SETTEXT, 0, (LPARAM)ViewerName);
+            SendDlgItemMessageI(hDlg, LOG_VIEWER, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+            SendDlgItemMessageI(hDlg, LOG_VIEWER, WM_SETTEXT, 0, (LPARAM)ViewerName);
 
             PostMessage(hDlg, WM_COMMAND, MAKEWPARAM(LOG_SWITCH, 0), 0);
             return(TRUE);
@@ -183,18 +183,18 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    LogSwitch = SendDlgItemMessage(hDlg, LOG_SWITCH, BM_GETCHECK, 0, 0);
+                    LogSwitch = SendDlgItemMessageI(hDlg, LOG_SWITCH, BM_GETCHECK, 0, 0);
                     LogSwitch *= AskRadioButtonValue(hDlg, LogButton, LOGBUTTONS);
-                    LogUnicode = SendDlgItemMessage(hDlg, LOG_UNICODE, BM_GETCHECK, 0, 0);
-                    LogVerbose = SendDlgItemMessage(hDlg, LOG_VERBOSE, BM_GETCHECK, 0, 0);
+                    LogUnicode = SendDlgItemMessageI(hDlg, LOG_UNICODE, BM_GETCHECK, 0, 0);
+                    LogVerbose = SendDlgItemMessageI(hDlg, LOG_VERBOSE, BM_GETCHECK, 0, 0);
 
-                    SendDlgItemMessage(hDlg, LOG_LIMIT_SIZE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, LOG_LIMIT_SIZE, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
                     LogLimit = _tstoi(Tmp);
                     CheckRange2(&LogLimit, 99999, 1);
                     LogLimit *= AskRadioButtonValue(hDlg, LimitButton, LIMITBUTTONS);
 
-                    SendDlgItemMessage(hDlg, LOG_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)LogFname);
-                    SendDlgItemMessage(hDlg, LOG_VIEWER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)ViewerName);
+                    SendDlgItemMessageI(hDlg, LOG_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)LogFname);
+                    SendDlgItemMessageI(hDlg, LOG_VIEWER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)ViewerName);
                     Apply = YES;
                     break;
 
@@ -211,7 +211,7 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case LOG_SWITCH :
-                    if(SendDlgItemMessage(hDlg, LOG_SWITCH, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, LOG_SWITCH, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, LOG_FNAME), TRUE);
                         EnableWindow(GetDlgItem(hDlg, LOG_FNAME_BR), TRUE);
@@ -235,7 +235,7 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
 
                 case LOG_APPEND :
                 case LOG_NEW :
-                    if(SendDlgItemMessage(hDlg, LOG_APPEND, BM_GETCHECK, 0, 0) == 1)
+                    if(SendDlgItemMessageI(hDlg, LOG_APPEND, BM_GETCHECK, 0, 0) == 1)
                     {
                         EnableWindow(GetDlgItem(hDlg, LOG_NOLIMIT), TRUE);
                         EnableWindow(GetDlgItem(hDlg, LOG_LIMIT), TRUE);
@@ -251,7 +251,7 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
 
                 case LOG_NOLIMIT :
                 case LOG_LIMIT :
-                    if(SendDlgItemMessage(hDlg, LOG_NOLIMIT, BM_GETCHECK, 0, 0) == 0)
+                    if(SendDlgItemMessageI(hDlg, LOG_NOLIMIT, BM_GETCHECK, 0, 0) == 0)
                         EnableWindow(GetDlgItem(hDlg, LOG_LIMIT_SIZE), TRUE);
                     else
                         EnableWindow(GetDlgItem(hDlg, LOG_LIMIT_SIZE), FALSE);
@@ -259,23 +259,23 @@ static LRESULT CALLBACK LogSettingProc(HWND hDlg, UINT message, WPARAM wParam, L
 
                 case LOG_FNAME_BR :
                     _tcscpy(Tmp, _T(""));
-                    SendDlgItemMessage(hDlg, LOG_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
+                    SendDlgItemMessageI(hDlg, LOG_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
                     *GetFileName(Tmp2) = NUL;
                     if(SelectFile(hDlg, Tmp, MSGJPN_25, MSGJPN_26, NULL, 0, 1, Tmp2) == TRUE)
-                        SendDlgItemMessage(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
                 case LOG_FNAME_INIT:
                     MakeInitialLogFilename(Tmp);
-                    SendDlgItemMessage(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+                    SendDlgItemMessageI(hDlg, LOG_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
                 case LOG_VIEWER_BR :
                     _tcscpy(Tmp, _T(""));
-                    SendDlgItemMessage(hDlg, LOG_VIEWER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
+                    SendDlgItemMessageI(hDlg, LOG_VIEWER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp2);
                     *GetFileName(Tmp2) = NUL;
                     if(SelectFile(hDlg, Tmp, MSGJPN_88, MSGJPN_89, NULL, 0, 1, Tmp2) == TRUE)
-                        SendDlgItemMessage(hDlg, LOG_VIEWER, WM_SETTEXT, 0, (LPARAM)Tmp);
+                        SendDlgItemMessageI(hDlg, LOG_VIEWER, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
             }
             return(TRUE);
@@ -318,14 +318,14 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, MISC_SAVEPOS, BM_SETCHECK, SaveWinPos, 0);
-            SendDlgItemMessage(hDlg, MISC_TRAYICON, BM_SETCHECK, TrayIcon, 0);
-            SendDlgItemMessage(hDlg, MISC_REGTYPE, BM_SETCHECK, RegType, 0);
-            SendDlgItemMessage(hDlg, MISC_ESC_EXIT, BM_SETCHECK, ExitOnEsc, 0);
+            SendDlgItemMessageI(hDlg, MISC_SAVEPOS, BM_SETCHECK, SaveWinPos, 0);
+            SendDlgItemMessageI(hDlg, MISC_TRAYICON, BM_SETCHECK, TrayIcon, 0);
+            SendDlgItemMessageI(hDlg, MISC_REGTYPE, BM_SETCHECK, RegType, 0);
+            SendDlgItemMessageI(hDlg, MISC_ESC_EXIT, BM_SETCHECK, ExitOnEsc, 0);
             SetRadioButtonByValue(hDlg, ShowComment, ShowCommentButton, SHOWCOMMENTBUTTONS);
-            SendDlgItemMessage(hDlg, MISC_AUTHDIAG, BM_SETCHECK, AuthDialog, 0);
-            SendDlgItemMessage(hDlg, MISC_SUPPRESS_AC, BM_SETCHECK, SleepSuppressAC, 0);
-            SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_SETCHECK, SleepSuppressBattery, 0);
+            SendDlgItemMessageI(hDlg, MISC_AUTHDIAG, BM_SETCHECK, AuthDialog, 0);
+            SendDlgItemMessageI(hDlg, MISC_SUPPRESS_AC, BM_SETCHECK, SleepSuppressAC, 0);
+            SendDlgItemMessageI(hDlg, MISC_SUPPRESS_BATTERY, BM_SETCHECK, SleepSuppressBattery, 0);
             SetDlgItemInt(hDlg, MISC_BATTERY_PERCENT, SleepSuppressBatteryPercent, FALSE);
             if (SleepSuppressBattery)
             {
@@ -343,14 +343,14 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch(pnmhdr->code)
             {
                 case PSN_APPLY :
-                    SaveWinPos = SendDlgItemMessage(hDlg, MISC_SAVEPOS, BM_GETCHECK, 0, 0);
-                    TrayIcon = SendDlgItemMessage(hDlg, MISC_TRAYICON, BM_GETCHECK, 0, 0);
-                    RegType = SendDlgItemMessage(hDlg, MISC_REGTYPE, BM_GETCHECK, 0, 0);
-                    ExitOnEsc = SendDlgItemMessage(hDlg, MISC_ESC_EXIT, BM_GETCHECK, 0, 0);
+                    SaveWinPos = SendDlgItemMessageI(hDlg, MISC_SAVEPOS, BM_GETCHECK, 0, 0);
+                    TrayIcon = SendDlgItemMessageI(hDlg, MISC_TRAYICON, BM_GETCHECK, 0, 0);
+                    RegType = SendDlgItemMessageI(hDlg, MISC_REGTYPE, BM_GETCHECK, 0, 0);
+                    ExitOnEsc = SendDlgItemMessageI(hDlg, MISC_ESC_EXIT, BM_GETCHECK, 0, 0);
                     ShowComment = AskRadioButtonValue(hDlg, ShowCommentButton, SHOWCOMMENTBUTTONS);
-                    AuthDialog = SendDlgItemMessage(hDlg, MISC_AUTHDIAG, BM_GETCHECK, 0, 0);
-                    SleepSuppressAC = SendDlgItemMessage(hDlg, MISC_SUPPRESS_AC, BM_GETCHECK, 0, 0);
-                    SleepSuppressBattery = SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0);
+                    AuthDialog = SendDlgItemMessageI(hDlg, MISC_AUTHDIAG, BM_GETCHECK, 0, 0);
+                    SleepSuppressAC = SendDlgItemMessageI(hDlg, MISC_SUPPRESS_AC, BM_GETCHECK, 0, 0);
+                    SleepSuppressBattery = SendDlgItemMessageI(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0);
                     SleepSuppressBatteryPercent = GetDlgItemInt(hDlg, MISC_BATTERY_PERCENT, &isSuccess, FALSE);
                     ListWindowType = AskRadioButtonValue(hDlg, ListTypeButton, LISTTYPEBUTTONS);
                     Apply = YES;
@@ -368,7 +368,7 @@ static LRESULT CALLBACK MiscSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             switch (GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case MISC_SUPPRESS_BATTERY:
-                    if(SendDlgItemMessage(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0))
+                    if(SendDlgItemMessageI(hDlg, MISC_SUPPRESS_BATTERY, BM_GETCHECK, 0, 0))
                     {
                         EnableWindow(GetDlgItem(hDlg, MISC_BATTERY_PERCENT), TRUE);
                     }

@@ -80,14 +80,14 @@ static COPYPAT OrgPat = {
     {
         AUTOCLOSE_ACTION_DEFAULT_SUCCESS,   /* 成功終了時の処理 */
         AUTOCLOSE_ACTION_DEFAULT_ERROR,     /* エラー終了時の処理 */
-    }, /* バックアップ後の処理 */
+    },      /* バックアップ後の処理 */
 	0,		/* システムファイルは除外 */
 	0,		/* 隠しファイルは除外 */
 	0,		/* 大きなファイルは除外 */
 	100,	/* 大きなファイルの閾値 */
 	0,		/* 属性の違いは無視 */
 	0,		/* バックアップ終了後にサウンドを鳴らすかどうか */
-	-60,		/* 再バックアップ待ち時間：マイナス値なら再バックアップなし */
+	-60,	/* 再バックアップ待ち時間：マイナス値なら再バックアップなし */
 	0,		/* バックアップ先のフォルダを作らない */
 	0,		/* タイムスタンプの違いは無視 */
 	0,		/* バックアップ開始時にコメントをウインドウで表示する */
@@ -122,7 +122,7 @@ int GetQuickBackupParam(COPYPATLIST **Top, HWND hWnd)
 	{
 		memcpy(&Pat->Set, &OrgPat, sizeof(COPYPAT));
 		Pat->Next = NULL;
-		if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quick_dlg), hWnd, QuickBaclupDialogProc, (LPARAM)Pat) == YES)
+		if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(quick_dlg), hWnd, QuickBaclupDialogProc, (LPARAM)Pat) == YES)
 		{
 			memcpy(&OrgPat, &Pat->Set, sizeof(COPYPAT));
 			*Top = Pat;
@@ -157,18 +157,18 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 	{
 		case WM_INITDIALOG :
 			Pat = (COPYPATLIST*)lParam;
-			SendDlgItemMessage(hDlg, QUICK_SRC, EM_LIMITTEXT, SRC_PATH_LEN-1, 0);
-			SendDlgItemMessage(hDlg, QUICK_DST, EM_LIMITTEXT, DST_PATH_LEN, 0);
+			SendDlgItemMessageI(hDlg, QUICK_SRC, EM_LIMITTEXT, SRC_PATH_LEN-1, 0);
+			SendDlgItemMessageI(hDlg, QUICK_DST, EM_LIMITTEXT, DST_PATH_LEN, 0);
 			ReplaceAll(Pat->Set.Src, StrMultiLen(Pat->Set.Src), '\0', ';');
-			SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Pat->Set.Src);
-			SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Pat->Set.Dst);
-			SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_SETCHECK, Pat->Set.DelDir, 0);
-			SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_SETCHECK, Pat->Set.DelFile, 0);
-			SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_SETCHECK, Pat->Set.NotifyDel, 0);
-			SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, Pat->Set.UseTrashCan, 0);
-			SendDlgItemMessage(hDlg, PATSET_FORCE, BM_SETCHECK, Pat->Set.ForceCopy, 0);
-			SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_SETCHECK, Pat->Set.NewOnly, 0);
-			SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_SETCHECK, Pat->Set.IgnoreErr, 0);
+			SendDlgItemMessageI(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Pat->Set.Src);
+			SendDlgItemMessageI(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Pat->Set.Dst);
+			SendDlgItemMessageI(hDlg, PATSET_RMDIR, BM_SETCHECK, Pat->Set.DelDir, 0);
+			SendDlgItemMessageI(hDlg, PATSET_RMFILE, BM_SETCHECK, Pat->Set.DelFile, 0);
+			SendDlgItemMessageI(hDlg, PATSET_NOTIFY_DEL2, BM_SETCHECK, Pat->Set.NotifyDel, 0);
+			SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, Pat->Set.UseTrashCan, 0);
+			SendDlgItemMessageI(hDlg, PATSET_FORCE, BM_SETCHECK, Pat->Set.ForceCopy, 0);
+			SendDlgItemMessageI(hDlg, PATSET_NEWONLY, BM_SETCHECK, Pat->Set.NewOnly, 0);
+			SendDlgItemMessageI(hDlg, PATSET_NOERROR, BM_SETCHECK, Pat->Set.IgnoreErr, 0);
 
 			hWndQuickPat = hDlg;
 			hWndChild = GetDlgItem(hDlg, QUICK_SRC);
@@ -185,10 +185,10 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 			{
 				case IDOK :
 					MakeCopyPatFromDialog(hDlg, Pat);
-					if((_tcslen(Pat->Set.Dst) > 0) && (_tcslen(Pat->Set.Src) > 0))
+					if((TCSLEN(Pat->Set.Dst) > 0) && (TCSLEN(Pat->Set.Src) > 0))
 						EndDialog(hDlg, YES);
 					else
-						DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_84);
+						DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_84);
 					break;
 
 				case IDCANCEL :
@@ -197,10 +197,10 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 
 				case QUICK_SIZE :
 					MakeCopyPatFromDialog(hDlg, Pat);
-					if(_tcslen(Pat->Set.Src) > 0)
+					if(TCSLEN(Pat->Set.Src) > 0)
 						FilesSizeDialog(hDlg, Pat);
 					else
-						DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_86);
+						DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_86);
 					break;
 
 				case IDHELP :
@@ -209,12 +209,12 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 
 				case QUICK_SRC_BR :
 					if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_36) == TRUE)
-						SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp);
+						SendDlgItemMessageI(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp);
 					break;
 
 				case QUICK_DST_BR :
 					if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_33) == TRUE)
-						SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Tmp);
+						SendDlgItemMessageI(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Tmp);
 					break;
 			}
 			return(TRUE);
@@ -223,13 +223,13 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 			Tmp2 = malloc((SRC_PATH_LEN+1) * sizeof(_TCHAR));
 			if(Tmp2 != NULL)
 			{
-				SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Tmp2);
-				if((_tcslen(Tmp2) + _tcslen((_TCHAR*)lParam) + 1) <= SRC_PATH_LEN)
+				SendDlgItemMessageI(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Tmp2);
+				if((TCSLEN(Tmp2) + TCSLEN((_TCHAR*)lParam) + 1) <= SRC_PATH_LEN)
 				{
 					SetCharTail(Tmp2, _T(";"));
 					_tcscat(Tmp2, (_TCHAR*)lParam);
-					SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp2);
-					SendDlgItemMessage(hDlg, QUICK_SRC, EM_SETSEL, 0, (LPARAM)-1);
+					SendDlgItemMessageI(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp2);
+					SendDlgItemMessageI(hDlg, QUICK_SRC, EM_SETSEL, 0, (LPARAM)-1);
 				}
 				else
 					MessageBeep((UINT)-1);
@@ -239,7 +239,7 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 			break;
 
 		case WM_ADD_DSTLIST :
-			SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)lParam);
+			SendDlgItemMessageI(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)lParam);
 			free((_TCHAR*)lParam);
 			break;
 	}
@@ -258,19 +258,19 @@ static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wPara
 *----------------------------------------------------------------------------*/
 static void MakeCopyPatFromDialog(HWND hDlg, COPYPATLIST *Pat)
 {
-	SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Pat->Set.Src);
+	SendDlgItemMessageI(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Pat->Set.Src);
 	CheckSemicolon(Pat->Set.Src);
-	Pat->Set.Src[_tcslen(Pat->Set.Src) + 1] = '\0';
-	ReplaceAll(Pat->Set.Src, _tcslen(Pat->Set.Src), ';', '\0');
-	SendDlgItemMessage(hDlg, QUICK_DST, WM_GETTEXT, DST_PATH_LEN, (LPARAM)Pat->Set.Dst);
-	Pat->Set.Dst[_tcslen(Pat->Set.Dst) + 1] = '\0';
-	Pat->Set.DelDir = SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
-	Pat->Set.DelFile = SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
-	Pat->Set.NotifyDel = SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_GETCHECK, 0, 0);
-	Pat->Set.UseTrashCan = SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
-	Pat->Set.ForceCopy = SendDlgItemMessage(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
-	Pat->Set.NewOnly = SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
-	Pat->Set.IgnoreErr = SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
+	Pat->Set.Src[TCSLEN(Pat->Set.Src) + 1] = '\0';
+	ReplaceAll(Pat->Set.Src, TCSLEN(Pat->Set.Src), ';', '\0');
+	SendDlgItemMessageI(hDlg, QUICK_DST, WM_GETTEXT, DST_PATH_LEN, (LPARAM)Pat->Set.Dst);
+	Pat->Set.Dst[TCSLEN(Pat->Set.Dst) + 1] = '\0';
+	Pat->Set.DelDir = SendDlgItemMessageI(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
+	Pat->Set.DelFile = SendDlgItemMessageI(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
+	Pat->Set.NotifyDel = SendDlgItemMessageI(hDlg, PATSET_NOTIFY_DEL2, BM_GETCHECK, 0, 0);
+	Pat->Set.UseTrashCan = SendDlgItemMessageI(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
+	Pat->Set.ForceCopy = SendDlgItemMessageI(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
+	Pat->Set.NewOnly = SendDlgItemMessageI(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
+	Pat->Set.IgnoreErr = SendDlgItemMessageI(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
 	return;
 }
 

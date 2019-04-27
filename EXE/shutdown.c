@@ -129,7 +129,7 @@ BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 			0,
 			NULL );
 		RemoveReturnCode(lpBuffer);
-		DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(shutdown_err_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)lpBuffer);
+		DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(shutdown_err_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)lpBuffer);
 		LocalFree(lpBuffer);
 	}
 	return(Sts);
@@ -144,7 +144,7 @@ BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State)
 -----------------------------------------------------------------------------*/
 int DoCountDown(AUTOCLOSE_ACTION State)
 {
-	return(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(countdown_dlg), GetDesktopWindow(), CountDownDialogProc, State));
+	return(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(countdown_dlg), GetDesktopWindow(), CountDownDialogProc, State));
 }
 
 
@@ -160,7 +160,7 @@ int DoCountDown(AUTOCLOSE_ACTION State)
 BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int		Count;
-	static UINT		TimerID;
+	static UINT_PTR	TimerID;
 	_TCHAR			Tmp[20];
     AUTOCLOSE_ACTION action;
 
@@ -172,22 +172,22 @@ BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
             switch (action)
             {
             case AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS:
-                SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_98);
+                SendDlgItemMessageI(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_98);
                 break;
             case AUTOCLOSE_ACTION_STANBY:
             case AUTOCLOSE_ACTION_EXIT_AND_STANBY:
                 if (IsWindowsVistaOrGreater())
-                    SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_122);
+                    SendDlgItemMessageI(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_122);
                 else
-                    SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_99);
+                    SendDlgItemMessageI(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_99);
                 break;
             case AUTOCLOSE_ACTION_HIBERNATE:
             case AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE:
-                SendDlgItemMessage(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_100);
+                SendDlgItemMessageI(hDlg, CDOWN_MSG2, WM_SETTEXT, 0, (LPARAM)MSGJPN_100);
                 break;
             }
 			_stprintf(Tmp, MSGJPN_92, Count);
-			SendDlgItemMessage(hDlg, CDOWN_MSG, WM_SETTEXT, 0, (LPARAM)Tmp);
+			SendDlgItemMessageI(hDlg, CDOWN_MSG, WM_SETTEXT, 0, (LPARAM)Tmp);
 			TimerID = SetTimer(hDlg, TIMER_COUNTDOWN, 1000, NULL);
 			return(TRUE);
 
@@ -204,7 +204,7 @@ BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case WM_TIMER :
 			Count--;
 			_stprintf(Tmp, MSGJPN_92, Count);
-			SendDlgItemMessage(hDlg, CDOWN_MSG, WM_SETTEXT, 0, (LPARAM)Tmp);
+			SendDlgItemMessageI(hDlg, CDOWN_MSG, WM_SETTEXT, 0, (LPARAM)Tmp);
 			if(Count == 0)
 			{
 				KillTimer(hDlg, TimerID);
