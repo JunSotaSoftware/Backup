@@ -94,8 +94,8 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 static void CheckTimeTolerance(FILETIME *Src, FILETIME *Dst, int Tole);
 static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType);
 static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult);
-static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void EraseSourceTree(HWND hWnd);
 static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd);
 static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, HWND hWnd);
@@ -1978,10 +1978,10 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
 *       LPARAM lParam : メッセージの LPARAM 引数
 *
 *   Return Value
-*       BOOL TRUE/FALSE
+*       LRESULT TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
@@ -2031,10 +2031,10 @@ static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam,
 *       LPARAM lParam : メッセージの LPARAM 引数
 *
 *   Return Value
-*       BOOL TRUE/FALSE
+*       LRESULT TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     OVERWRITENOTIFYDATA *overWrite;
     unsigned __int64    tmp64;

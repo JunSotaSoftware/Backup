@@ -44,7 +44,7 @@
 
 /*===== プロトタイプ =====*/
 
-static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void MakeCopyPatFromDialog(HWND hDlg, COPYPATLIST *Pat);
 static void CheckSemicolon(LPTSTR Str);
 static LRESULT CALLBACK QuickSrcWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -144,9 +144,9 @@ int GetQuickBackupParam(COPYPATLIST **Top, HWND hWnd)
 *		LPARAM lParam : メッセージの LPARAM 引数
 *
 *	Return Value
-*		BOOL TRUE/FALSE
+*		LRESULT TRUE/FALSE
 *----------------------------------------------------------------------------*/
-static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static COPYPATLIST *Pat;
 	_TCHAR Tmp[MY_MAX_PATH+1];

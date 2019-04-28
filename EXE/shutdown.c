@@ -43,7 +43,7 @@
 
 
 /*===== プロトタイプ =====*/
-BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 /*-----------------------------------------------------------------------------
@@ -155,9 +155,9 @@ int DoCountDown(AUTOCLOSE_ACTION State)
 			message	メッセージ番号
 			wParam	メッセージの WPARAM 引数
 			lParam	メッセージの LPARAM 引数
- 戻り値 :	BOOL	TRUE/FALSE
+ 戻り値 :	LRESULT	TRUE/FALSE
 -----------------------------------------------------------------------------*/
-BOOL CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CountDownDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int		Count;
 	static UINT_PTR	TimerID;

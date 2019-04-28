@@ -70,7 +70,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
 static void SetDirButtonHide(HWND hDlg, DWORD ListId, DWORD EditId, DWORD UpId, DWORD DownId, DWORD DelId);
 static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD IdSort, DWORD IdConv);
 static int PathConvertDialog(HWND hListBox, PATHCONVERTINFO *PathInfo);
-BOOL CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void DoPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel);
 static int CheckPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel);
 static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -641,7 +641,7 @@ Param   :   hDlg    [in] Window handle of the dialog
             lParam  [in] LONG param
 Return  :   status
 -------------------------------------------------------------------------------*/
-BOOL CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK PathConvertDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static PATHCONVERTINFO  *PathInfo;
 
@@ -919,7 +919,11 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                 hDC = (HDC)wParam;
                 SetTextColor(hDC, RGB(0,0,255));
                 SetBkColor(hDC, GetSysColor(COLOR_3DFACE));
+#if false   // k.saeki
                 return (BOOL)GetStockObject(NULL_BRUSH);
+#else       // k.saeki
+                return GetStockObject(NULL_BRUSH) != NULL ? TRUE : FALSE;
+#endif      // k.saeki
             }
             break;
 
