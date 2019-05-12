@@ -919,11 +919,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                 hDC = (HDC)wParam;
                 SetTextColor(hDC, RGB(0,0,255));
                 SetBkColor(hDC, GetSysColor(COLOR_3DFACE));
-#if false   // k.saeki
-                return (BOOL)GetStockObject(NULL_BRUSH);
-#else       // k.saeki
                 return GetStockObject(NULL_BRUSH) != NULL ? TRUE : FALSE;
-#endif      // k.saeki
             }
             break;
 
