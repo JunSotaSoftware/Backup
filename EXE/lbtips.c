@@ -66,7 +66,7 @@ static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, 
 
 static HWND hWndTips;				/* tipsのウインドウハンドル */
 static HWND hWndLbox;				/* LISTBOXのウインドウハンドル */
-static UINT TimerID;				/* タイマID */
+static UINT_PTR TimerID;			/* タイマID */
 static TIPSTATUS Status = ERASED;	/* 現在の状態 */
 static POINT MousePos;				/* マウスの位置保存用 */
 static int ItemNum;					/* マウス位置のLISTBOX項目番号 */
@@ -246,7 +246,7 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 			rectDisplay.bottom -= rectDisplay.top;
 			rectDisplay.left = 0;
 			rectDisplay.top = 0;
-			DrawText(dc, lpszTitleText, _tcslen(lpszTitleText), &rectDisplay, DT_LEFT);
+			DrawText(dc, lpszTitleText, TCSLEN(lpszTitleText), &rectDisplay, DT_LEFT);
 
 			/* 項目の外へ出たことを確実に検出できるようにキャプチャ */
 			SetCapture(hWndLbox);
@@ -280,11 +280,11 @@ static int CellRectFromPoint(HWND hWnd, POINT point, RECT *cellrect)
 	GetClientRect(hWnd, &RectWin);
 	if(PtInRect(&RectWin, point))
 	{
-		row = SendMessage(hWnd, LB_GETTOPINDEX, 0, 0);
-		max = SendMessage(hWnd, LB_GETCOUNT, 0, 0);
+		row = SendMessageI(hWnd, LB_GETTOPINDEX, 0, 0);
+		max = SendMessageI(hWnd, LB_GETCOUNT, 0, 0);
 		for(; row < max; row++)
 		{
-			if(SendMessage(hWnd, LB_GETITEMRECT, row, (LPARAM)&Rect) != LB_ERR)
+			if(SendMessageI(hWnd, LB_GETITEMRECT, row, (LPARAM)&Rect) != LB_ERR)
 			{
 				if(PtInRect(&Rect, point))
 				{
@@ -336,7 +336,7 @@ static LRESULT CALLBACK TitleTipWndProc(HWND hWnd, UINT message, WPARAM wParam, 
 				if(PtInRect(&cur_rect, Point))
 				{
 					Text = GetPatComment(ItemNum);
-					if((Text != NULL) && (_tcslen(Text) > 0))
+					if((Text != NULL) && (TCSLEN(Text) > 0))
 						TipsShow(MousePos, Text, Status);
 					free(Text);
 					Status = DISPLAYED;

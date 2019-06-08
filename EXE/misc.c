@@ -77,9 +77,9 @@ void SetYenTail(LPTSTR Str)
 
 void SetCharTail(LPTSTR Str, LPTSTR Ch)
 {
-    if((_tcslen(Str) > 0) && (_tcslen(Ch) > 0))
+    if((TCSLEN(Str) > 0) && (TCSLEN(Ch) > 0))
     {
-        if(_tcscmp(_tcsninc(Str, _tcslen(Str) - _tcslen(Ch)), Ch) != 0)
+        if(_tcscmp(_tcsninc(Str, TCSLEN(Str) - TCSLEN(Ch)), Ch) != 0)
             _tcscat(Str, Ch);
     }
     return;;
@@ -102,9 +102,9 @@ void RemoveYenTail(LPTSTR Str)
 {
     LPTSTR Pos;
 
-    if(_tcslen(Str) > 0)
+    if(TCSLEN(Str) > 0)
     {
-        Pos = _tcsninc(Str, _tcslen(Str) - 1);
+        Pos = _tcsninc(Str, TCSLEN(Str) - 1);
         if(_tcscmp(Pos, _T("\\")) == 0)
             *Pos = NUL;
     }
@@ -200,7 +200,7 @@ void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst)
 
 void GetSamePartOfString(LPTSTR Str1, LPTSTR Str2)
 {
-    if((_tcslen(Str1) != 0) && (_tcslen(Str2) != 0))
+    if((TCSLEN(Str1) != 0) && (TCSLEN(Str2) != 0))
     {
         while((*Str1 != _T('\0')) && (*Str2 != _T('\0')))
         {
@@ -237,7 +237,7 @@ int ReplaceAllStr(LPTSTR Str, LPTSTR Find, LPTSTR Repl, int Scan)
     int Ret;
 
     Ret = NO;
-    if((_tcslen(Str) != 0) && (_tcslen(Find) != 0) && (_tcscmp(Find, Repl) != 0))
+    if((TCSLEN(Str) != 0) && (TCSLEN(Find) != 0) && (_tcscmp(Find, Repl) != 0))
     {
         Pos = _tcsstr(Str, Find);
         if(Pos != NULL)
@@ -245,8 +245,8 @@ int ReplaceAllStr(LPTSTR Str, LPTSTR Find, LPTSTR Repl, int Scan)
             Ret = YES;
             if(Scan == NO)
             {
-                _tcscpy(Tmp, Pos + _tcslen(Find));
-                if((Pos - Str) + _tcslen(Tmp) + _tcslen(Repl) <= MY_MAX_PATH)
+                _tcscpy(Tmp, Pos + TCSLEN(Find));
+                if((Pos - Str) + TCSLEN(Tmp) + TCSLEN(Repl) <= MY_MAX_PATH)
                 {
                     _tcscpy(Pos, Repl);
                     _tcscat(Str, Tmp);
@@ -286,13 +286,13 @@ LPTSTR GetFileName(LPTSTR Path)
     if((Pos = _tcsrchr(Path, _T('/'))) != NULL)
         Path = Pos + 1;
 #else
-	if ((_tcslen(Path) == 3) &&
+	if ((TCSLEN(Path) == 3) &&
 		((_tcscmp(Path + 1, _T(":\\")) == 0) ||
 		 (_tcscmp(Path + 1, _T(":/")) == 0)))							/* D:\ のような指定の時 */
 	{
 		Path = Path + 3;
 	}
-	else if ((_tcslen(Path) == 2) && (_tcscmp(Path + 1, _T(":")) == 0))	/* D: のような指定の時 */
+	else if ((TCSLEN(Path) == 2) && (_tcscmp(Path + 1, _T(":")) == 0))	/* D: のような指定の時 */
 	{
 		Path = Path + 2;
 	}
@@ -371,7 +371,7 @@ int StrMultiLen(LPTSTR Str)
     Len = 0;
     while(*Str != NUL)
     {
-        Tmp = _tcslen(Str) + 1;
+        Tmp = TCSLEN(Str) + 1;
         Str += Tmp;
         Len += Tmp;
     }
@@ -402,7 +402,7 @@ int StrMultiCount(LPTSTR Str)
     Count = 0;
     while(*Str != NUL)
     {
-        Tmp = _tcslen(Str) + 1;
+        Tmp = TCSLEN(Str) + 1;
         Str += Tmp;
         Count += 1;
     }
@@ -429,7 +429,7 @@ LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num)
 
     for(; Num > 0; Num--)
     {
-        Tmp = _tcslen(Result) + 1;
+        Tmp = TCSLEN(Result) + 1;
         Result += Tmp;
         if(*Result == NUL)
         {
@@ -453,12 +453,12 @@ LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num)
 *       BOOL TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
         case WM_INITDIALOG :
-            SendDlgItemMessage(hDlg, DLG_MSG1, WM_SETTEXT, 0, lParam);
+            SendDlgItemMessageI(hDlg, DLG_MSG1, WM_SETTEXT, 0, lParam);
             return(TRUE);
 
         case WM_COMMAND :
@@ -600,7 +600,7 @@ int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg,LPARAM lParam,LPARAM lpData)
 {
     if(uMsg==BFFM_INITIALIZED)
     {
-        SendMessage(hwnd,BFFM_SETSELECTION, (WPARAM)TRUE, (LPARAM)CurFolder);
+        SendMessageI(hwnd,BFFM_SETSELECTION, (WPARAM)TRUE, (LPARAM)CurFolder);
     }
     return(0);
 }
@@ -632,18 +632,18 @@ void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int
     {
         if(Value == Buttons->Value)
         {
-            SendDlgItemMessage(hDlg, Buttons->ButID, BM_SETCHECK, 1, 0);
+            SendDlgItemMessageI(hDlg, Buttons->ButID, BM_SETCHECK, 1, 0);
             /* ラジオボタンを変更した時に他の項目のハイドなどを行なう事が   */
             /* あるので、そのために WM_COMMAND を送る                       */
-            SendMessage(hDlg, WM_COMMAND, MAKEWPARAM(Buttons->ButID, 0), 0);
+            SendMessageI(hDlg, WM_COMMAND, MAKEWPARAM(Buttons->ButID, 0), 0);
             break;
         }
         Buttons++;
     }
     if(i == Num)
     {
-        SendDlgItemMessage(hDlg, Def, BM_SETCHECK, 1, 0);
-        SendMessage(hDlg, WM_COMMAND, MAKEWPARAM(Def, 0), 0);
+        SendDlgItemMessageI(hDlg, Def, BM_SETCHECK, 1, 0);
+        SendMessageI(hDlg, WM_COMMAND, MAKEWPARAM(Def, 0), 0);
     }
     return;
 }
@@ -672,7 +672,7 @@ int AskRadioButtonValue(HWND hDlg, const RADIOBUTTON *Buttons, int Num)
     Ret = Buttons->Value;
     for(i = 0; i < Num; i++)
     {
-        if(SendDlgItemMessage(hDlg, Buttons->ButID, BM_GETCHECK, 0, 0) == 1)
+        if(SendDlgItemMessageI(hDlg, Buttons->ButID, BM_GETCHECK, 0, 0) == 1)
         {
             Ret = Buttons->Value;
             break;
@@ -760,7 +760,7 @@ void SortListBoxItem(HWND hWnd)
     int Num;
     int i;
 
-    Num = SendMessage(hWnd, LB_GETCOUNT, 0, 0);
+    Num = SendMessageI(hWnd, LB_GETCOUNT, 0, 0);
     if(Num > 1)
     {
         if((Buf = malloc(Num * (MY_MAX_PATH+1) * sizeof(_TCHAR))) != NULL)
@@ -768,17 +768,17 @@ void SortListBoxItem(HWND hWnd)
             Tmp = Buf;
             for(i = 0; i < Num; i++)
             {
-                SendMessage(hWnd, LB_GETTEXT, i, (LPARAM)Tmp);
+                SendMessageI(hWnd, LB_GETTEXT, i, (LPARAM)Tmp);
                 Tmp += MY_MAX_PATH+1;
             }
 
             qsort(Buf, Num, (MY_MAX_PATH+1) * sizeof(_TCHAR), _tcscmp);
 
-            SendMessage(hWnd, LB_RESETCONTENT, 0, 0);
+            SendMessageI(hWnd, LB_RESETCONTENT, 0, 0);
             Tmp = Buf;
             for(i = 0; i < Num; i++)
             {
-                SendMessage(hWnd, LB_ADDSTRING, 0, (LPARAM)Tmp);
+                SendMessageI(hWnd, LB_ADDSTRING, 0, (LPARAM)Tmp);
                 Tmp += MY_MAX_PATH+1;
             }
 
@@ -980,7 +980,7 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
             _stprintf(Msg, MSGJPN_37, Error);
         else
             _stprintf(Msg, MSGJPN_38, Error);
-        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(dragdrop_err_dlg), hDlg, ExeEscDialogProc, (LPARAM)Msg);
+        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(dragdrop_err_dlg), hDlg, ExeEscDialogProc, (LPARAM)Msg);
     }
     return;
 }
@@ -1007,7 +1007,7 @@ void ExecViewer(LPTSTR Fname, LPTSTR App)
     /* 含まれている時、間違ったパス名を返す事がある。                   */
     /* そこで、関連付けられたプログラムの起動はShellExecute()を使う。   */
 
-    if((_tcslen(App) == 0) && (FindExecutable(Fname, NULL, AssocProg) > (HINSTANCE)32))
+    if((TCSLEN(App) == 0) && (FindExecutable(Fname, NULL, AssocProg) > (HINSTANCE)32))
     {
         ShellExecute(NULL, _T("open"), Fname, NULL, _T(""), SW_SHOW);
     }
@@ -1023,7 +1023,7 @@ void ExecViewer(LPTSTR Fname, LPTSTR App)
         Startup.wShowWindow = SW_SHOW;
         if(CreateProcess(NULL, ComLine, NULL, NULL, FALSE, 0, NULL, NULL, &Startup, &Info) == FALSE)
         {
-            DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_87);
+            DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_87);
         }
     }
     return;
@@ -1091,10 +1091,10 @@ static void ClearComboBox(HWND hDlg, int idComboBox)
 {
     /* CB_RESETCONTENT は Vista 以降しか使えないので一個ずつ消す */
     int i;
-    int count = SendDlgItemMessage(hDlg, idComboBox, CB_GETCOUNT, 0, 0);
+    int count = SendDlgItemMessageI(hDlg, idComboBox, CB_GETCOUNT, 0, 0);
     for (i = 0; i < count; i++)
     {
-        SendDlgItemMessage(hDlg, idComboBox, CB_DELETESTRING, 0, 0);
+        SendDlgItemMessageI(hDlg, idComboBox, CB_DELETESTRING, 0, 0);
     }
 }
 
@@ -1118,10 +1118,10 @@ void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
     /* コピー先のコンボボックスをクリアする */
     ClearComboBox(hDlg, idCopyTo);
 
-    ItemCount = SendDlgItemMessage(hDlg, idCopyFrom, CB_GETCOUNT, 0, 0);
+    ItemCount = SendDlgItemMessageI(hDlg, idCopyFrom, CB_GETCOUNT, 0, 0);
     for (i = 0; i < ItemCount; i++)
     {
-        int ItemLength = SendDlgItemMessage(hDlg, idCopyFrom, CB_GETLBTEXTLEN, i, 0);
+        int ItemLength = SendDlgItemMessageI(hDlg, idCopyFrom, CB_GETLBTEXTLEN, i, 0);
         if (MaxLength < ItemLength)
         {
             MaxLength = ItemLength;
@@ -1136,9 +1136,9 @@ void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
 
     for (i = 0; i < ItemCount; i++)
     {
-        if (SendDlgItemMessage(hDlg, idCopyFrom, CB_GETLBTEXT, i, (LPARAM)buffer) != CB_ERR)
+        if (SendDlgItemMessageI(hDlg, idCopyFrom, CB_GETLBTEXT, i, (LPARAM)buffer) != CB_ERR)
         {
-            SendDlgItemMessage(hDlg, idCopyTo, CB_ADDSTRING, 0, (LPARAM)buffer);
+            SendDlgItemMessageI(hDlg, idCopyTo, CB_ADDSTRING, 0, (LPARAM)buffer);
         }
     }
     free(buffer);

@@ -94,8 +94,8 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 static void CheckTimeTolerance(FILETIME *Src, FILETIME *Dst, int Tole);
 static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType);
 static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult);
-static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void EraseSourceTree(HWND hWnd);
 static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd);
 static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, HWND hWnd);
@@ -871,7 +871,7 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
                     if((CheckFnameWithArray(Src, options->IgnoreFiles) == NO) &&
                        (CheckIgnSysHid(Src, options->IgnSys, options->IgnHid, options->IgnBigSize) == NO))
                     {
-                        if((_tcslen(ScnName) == 0) || (CheckFnameWithArray(Src, ScnName) == YES))
+                        if((TCSLEN(ScnName) == 0) || (CheckFnameWithArray(Src, ScnName) == YES))
                         {
                             if((fHnd = FindFirstFile_My(Src, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
                             {
@@ -1060,7 +1060,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
                 GoAttr = 0;
                 if(IgnAttr == 0)
                 {
-                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
+                    if((TCSLEN(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
                     {
                         Attr = GetFileAttributes_My(Tmp, YES);
                         Attr2 = GetFileAttributes_My(Org, NO);
@@ -1084,7 +1084,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_71, Tmp);
                 if(GoMakeDir(Tmp) == 0)
                 {
-                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
+                    if((TCSLEN(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
                     {
                         Attr = GetFileAttributes_My(Org, NO);
                         SetFileAttributes_My(Tmp, Attr, YES);
@@ -1215,7 +1215,7 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
             GetSrcPath(Src, ScnName);
             SetYenTail(Src);
             SrcFpos = _tcschr(Src, NUL);
-            if(_tcslen(ScnName) == 0)
+            if(TCSLEN(ScnName) == 0)
                 memcpy(ScnName, _T("*\0\0"), 3 * sizeof(_TCHAR));
 
             ScnPos = ScnName;
@@ -1386,7 +1386,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                         overWrite.SrcSizeLow    = SrcFinfo.nFileSizeLow;
                         overWrite.DstSizeHigh   = DstFinfo.nFileSizeHigh;
                         overWrite.DstSizeLow    = DstFinfo.nFileSizeLow;
-                        OverwriteMode = DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(overwrite_notify_dlg), GetMainHwnd(), OverWriteNotifyDlgProc, (LPARAM)&overWrite);
+                        OverwriteMode = DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(overwrite_notify_dlg), GetMainHwnd(), OverWriteNotifyDlgProc, (LPARAM)&overWrite);
                     }
 
                     if(OverwriteMode == GO_ABORT)
@@ -1897,7 +1897,7 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
     if(ErrRep == YES)
     {
         if((DeleteMode != YES_ALL) && (DeleteMode != NO_ALL) && (DeleteMode != GO_ABORT))
-            DeleteMode = DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(del_notify_dlg), GetMainHwnd(), DeleteNotifyDlgProc, (LPARAM)Fname);
+            DeleteMode = DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(del_notify_dlg), GetMainHwnd(), DeleteNotifyDlgProc, (LPARAM)Fname);
 
         if(DialogResult != NULL)
             *DialogResult = DeleteMode;
@@ -1978,19 +1978,19 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
 *       LPARAM lParam : メッセージの LPARAM 引数
 *
 *   Return Value
-*       BOOL TRUE/FALSE
+*       LRESULT TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
         case WM_INITDIALOG :
             PlaySound(_T("SystemQuestion"), NULL, SND_ALIAS|SND_ASYNC);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_LIMITTEXT, 1024, 0);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, WM_SETTEXT, 0, lParam);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_SETSEL, 0, -1);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_SETSEL, (WPARAM)-1, -1);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_LIMITTEXT, 1024, 0);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, WM_SETTEXT, 0, lParam);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_SETSEL, 0, -1);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_SETSEL, (WPARAM)-1, -1);
             return(TRUE);
 
         case WM_COMMAND :
@@ -2031,10 +2031,10 @@ static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam,
 *       LPARAM lParam : メッセージの LPARAM 引数
 *
 *   Return Value
-*       BOOL TRUE/FALSE
+*       LRESULT TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     OVERWRITENOTIFYDATA *overWrite;
     unsigned __int64    tmp64;
@@ -2047,7 +2047,7 @@ static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wPar
     {
         case WM_INITDIALOG :
             PlaySound(_T("SystemQuestion"), NULL, SND_ALIAS|SND_ASYNC);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_LIMITTEXT, 1024, 0);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_LIMITTEXT, 1024, 0);
 
             overWrite = (OVERWRITENOTIFYDATA*)lParam;
 
@@ -2055,20 +2055,20 @@ static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wPar
                         ((unsigned __int64)overWrite->SrcSizeHigh << 32);
             size = (double)tmp64;
             MakeSizeString(size, str);
-            SendDlgItemMessage(hDlg, DELNOT_SRC_SIZE, WM_SETTEXT, 0, (LPARAM)str);
+            SendDlgItemMessageI(hDlg, DELNOT_SRC_SIZE, WM_SETTEXT, 0, (LPARAM)str);
 
             tmp64 = (unsigned __int64)overWrite->DstSizeLow +
                         ((unsigned __int64)overWrite->DstSizeHigh << 32);
             size = (double)tmp64;
             MakeSizeString(size, str);
-            SendDlgItemMessage(hDlg, DELNOT_DST_SIZE, WM_SETTEXT, 0, (LPARAM)str);
+            SendDlgItemMessageI(hDlg, DELNOT_DST_SIZE, WM_SETTEXT, 0, (LPARAM)str);
 
 
             FileTime2TimeString(&overWrite->SrcTime, str);
-            SendDlgItemMessage(hDlg, DELNOT_SRC_TIME, WM_SETTEXT, 0, (LPARAM)str);
+            SendDlgItemMessageI(hDlg, DELNOT_SRC_TIME, WM_SETTEXT, 0, (LPARAM)str);
 
             FileTime2TimeString(&overWrite->DstTime, str);
-            SendDlgItemMessage(hDlg, DELNOT_DST_TIME, WM_SETTEXT, 0, (LPARAM)str);
+            SendDlgItemMessageI(hDlg, DELNOT_DST_TIME, WM_SETTEXT, 0, (LPARAM)str);
 
             newOld = _T("");
             sts = CompareFileTime(&overWrite->SrcTime, &overWrite->DstTime);
@@ -2085,11 +2085,11 @@ static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wPar
                 }
             }
             _stprintf(str, MSGJPN_114, newOld);
-            SendDlgItemMessage(hDlg, DELNOT_MESSAGE, WM_SETTEXT, 0, (LPARAM)str);
+            SendDlgItemMessageI(hDlg, DELNOT_MESSAGE, WM_SETTEXT, 0, (LPARAM)str);
 
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, WM_SETTEXT, 0, (LPARAM)overWrite->Fname);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_SETSEL, 0, -1);
-            SendDlgItemMessage(hDlg, DELNOT_FNAME, EM_SETSEL, (WPARAM)-1, -1);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, WM_SETTEXT, 0, (LPARAM)overWrite->Fname);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_SETSEL, 0, -1);
+            SendDlgItemMessageI(hDlg, DELNOT_FNAME, EM_SETSEL, (WPARAM)-1, -1);
             return(TRUE);
 
         case WM_COMMAND :
@@ -2131,7 +2131,7 @@ static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wPar
 *----------------------------------------------------------------------------*/
 static void EraseSourceTree(HWND hWnd)
 {
-    SendMessage(hWnd, TVM_DELETEITEM, 0, (LPARAM)TVI_ROOT);
+    SendMessageI(hWnd, TVM_DELETEITEM, 0, (LPARAM)TVI_ROOT);
 }
 
 /*----- ディレクトリ構造をTreeViewに作成 --------------------------------------
@@ -2154,7 +2154,7 @@ static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd)
     int Sts;
 
     Sts = FAIL;
-    SendMessage(hWnd, TVM_DELETEITEM, 0, (LPARAM)TVI_ROOT);
+    SendMessageI(hWnd, TVM_DELETEITEM, 0, (LPARAM)TVI_ROOT);
 
     TvIns.hParent = TVI_ROOT;
     TvIns.hInsertAfter = TVI_LAST;
@@ -2165,7 +2165,7 @@ static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd)
     TvIns.item.iSelectedImage = TREE_ROOT;
     if((hItem = (HTREEITEM)SendMessage(hWnd, TVM_INSERTITEM, 0, (LPARAM)&TvIns)) != NULL)
     {
-        SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
+        SendMessageI(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
 
         Sts = SUCCESS;
         while(*SrcPath != NUL)
@@ -2178,11 +2178,11 @@ static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd)
                     break;
 //              }
             }
-            SrcPath += _tcslen(SrcPath) + 1;
+            SrcPath += TCSLEN(SrcPath) + 1;
         }
 
-        SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
-        SendMessage(hWnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
+        SendMessageI(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
+        SendMessageI(hWnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
         CurItem = hItem;
         MoveFirstItem();
     }
@@ -2295,7 +2295,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     if((Sts == SUCCESS) && (Type != 0xFFFFFFFF))
     {
         _tcscpy(Tmp, Dname);
-        if(_tcslen(Fname) > 0)
+        if(TCSLEN(Fname) > 0)
         {
             _tcscat(Tmp, _T(";"));
             _tcscat(Tmp, Fname);
@@ -2323,7 +2323,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
             if((Type & FILE_ATTRIBUTE_DIRECTORY) != 0)
             {
                 Sts = MakeSubTree(Dname, options, Parent, hWnd);
-                SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)Parent);
+                SendMessageI(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)Parent);
             }
         }
     }
@@ -2399,11 +2399,11 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                     if((Sts = MakeSubTree(Src, options, hItem, hWnd)) != SUCCESS)
                         break;
 
-                    SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
+                    SendMessageI(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
                     /* 適当なタイミングでTreeViewを再表示する */
                     if(++TviewDispCounter == 200)
                     {
-                        SendMessage(hWnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
+                        SendMessageI(hWnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
                         TviewDispCounter=0;
                     }
                 }
@@ -2472,7 +2472,7 @@ static int MoveFirstItem(void)
     if((hItem = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_ROOT, 0)) != NULL)
     {
         CurItem = hItem;
-        SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
+        SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
         Sts = SUCCESS;
     }
     return(Sts);
@@ -2496,7 +2496,7 @@ static int MoveNextItem(void)
     int Sts;
 
     Sts = SUCCESS;
-    SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
+    SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
     hNow = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_CARET, 0);
     if((hItem = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hNow)) == NULL)
     {
@@ -2513,7 +2513,7 @@ static int MoveNextItem(void)
     if(Sts == SUCCESS)
     {
         CurItem = hItem;
-        SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
+        SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
     }
     return(Sts);
 }
@@ -2534,12 +2534,12 @@ static int GetSrcType(void)
     TV_ITEM TvItem;
 
     TvItem.iImage = TREE_ERROR;
-    SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
+    SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
     if((hItem = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_CARET, 0)) != NULL)
     {
         TvItem.mask = TVIF_IMAGE;
         TvItem.hItem = hItem;
-        SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
+        SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
     }
     return(TvItem.iImage);
 }
@@ -2573,7 +2573,7 @@ static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
 
     Sts = FAIL;
     i = 0;
-    SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
+    SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
     if((hItem[i] = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_CARET, 0)) != NULL)
     {
         while(hItem[i] != NULL)
@@ -2594,7 +2594,7 @@ static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
                 TvItem.hItem = hItem[i];
                 TvItem.pszText = Tmp;
                 TvItem.cchTextMax = MY_MAX_PATH;
-                SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
+                SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
                 _tcscat(Src, Tmp);
 
                 if(First == YES)
@@ -2632,7 +2632,7 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
 
     Sts = FAIL;
     i = 0;
-    SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
+    SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_SELECTITEM, TVGN_CARET, (LPARAM)CurItem);
     if((hItem[i] = (HTREEITEM)SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETNEXTITEM, TVGN_CARET, 0)) != NULL)
     {
         while(hItem[i] != NULL)
@@ -2651,7 +2651,7 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
                 TvItem.hItem = hItem[i];
                 TvItem.pszText = Tmp;
                 TvItem.cchTextMax = MY_MAX_PATH;
-                SendDlgItemMessage(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
+                SendDlgItemMessageI(GetTransDlgHwnd(), TRANS_DIRLIST, TVM_GETITEM, 0, (LPARAM)&TvItem);
                 if(First == YES)
                 {
                     if(0 == NoMakeTopDir)
@@ -2660,7 +2660,7 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
 
                         //ここ
 
-                        if(_tcslen(GetFileName(Tmp)) > 0)
+                        if(TCSLEN(GetFileName(Tmp)) > 0)
                         {
                             SetYenTail(Dst);
                             _tcscat(Dst, GetFileName(Tmp));
@@ -2872,7 +2872,7 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 //  FILETIME ModTimeUTC;
     DWORD Attr;
 
-    if((_tcslen(Src) > 2) && (_tcscmp(Src+1, _T(":\\")) != 0))
+    if((TCSLEN(Src) > 2) && (_tcscmp(Src+1, _T(":\\")) != 0))
     {
         Sec.nLength = sizeof(SECURITY_ATTRIBUTES);
         Sec.lpSecurityDescriptor = NULL;
@@ -2993,7 +2993,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
     LPTSTR newPath;
 
     BOOL toNFC = FALSE;
-    int length = _tcslen(path) + 1;
+    int length = TCSLEN(path) + 1;
     if (normalization == YES)
     {
         if (NormalizationType == NORMALIZATION_TYPE_NFC)
@@ -3005,7 +3005,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
             }
             else
             {
-                length = _tcslen(path) + 1;
+                length = TCSLEN(path) + 1;
             }
         }
     }
@@ -3072,7 +3072,7 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
     else
     {
         /* ここには来ないはず */
-        newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+        newPath = malloc(sizeof(_TCHAR) * (TCSLEN(path) + 1));
         _tcscpy(newPath, path);
     }
     return newPath;

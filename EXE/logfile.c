@@ -117,7 +117,7 @@ int OpenLogfile(void)
         {
             free(RealLogFname);
             RealLogFname = NULL;
-            if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(log_err_notify_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)_T("")) == NO)
+            if(DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(log_err_notify_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)_T("")) == NO)
             {
                 result = FAIL;
             }
@@ -140,7 +140,7 @@ static void MakeLogDir(LPTSTR Path)
     HANDLE fHnd;
     WIN32_FIND_DATA FindBuf;
 
-    if((_tcslen(Path) > 3) &&
+    if((TCSLEN(Path) > 3) &&
             ((_tcsncmp(Path+1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
     {
         Pos = Path + 2;
@@ -422,10 +422,10 @@ static LPTSTR GetTimeStringForFname(void)
 -----------------------------------------------------------------------------*/
 void DispLogWithViewer(void)
 {
-    if(_tcslen(LastWroteLogFname) > 0)
+    if(TCSLEN(LastWroteLogFname) > 0)
         ExecViewer(LastWroteLogFname, ViewerName);
     else
-        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
+        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
     return;
 }
 
@@ -455,7 +455,7 @@ int OpenErrorLogfile(void)
         }
         else
         {
-            if (_tcslen(LastErrorLogFname) > 0)
+            if (TCSLEN(LastErrorLogFname) > 0)
             {
                 DeleteFile_My(LastErrorLogFname, NO);
             }
@@ -569,10 +569,10 @@ int WriteMsgToErrorLogfile(LPTSTR Msg)
 -----------------------------------------------------------------------------*/
 void DispErrorLogWithViewer(void)
 {
-    if (_tcslen(LastErrorLogFname) > 0)
+    if (TCSLEN(LastErrorLogFname) > 0)
         ExecViewer(LastErrorLogFname, ViewerName);
     else
-        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
+        DialogBoxParamI(GetBupInst(), MAKEINTRESOURCE(common_msg_dlg), GetMainHwnd(), ExeEscDialogProc, (LPARAM)MSGJPN_119);
     return;
 }
 
@@ -589,7 +589,7 @@ void OpenLogDir(void)
 
     _tcscpy(Path, LogFname);
 
-    if ((_tcslen(Path) > 3) &&
+    if ((TCSLEN(Path) > 3) &&
         ((_tcsncmp(Path + 1, _T(":\\"), 2) == 0) || (_tcsncmp(Path, _T("\\\\"), 2) == 0)))
     {
         Pos = Path + 3;

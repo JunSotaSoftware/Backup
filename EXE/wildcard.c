@@ -75,7 +75,7 @@ int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array)
 		if((Sts = CheckFname(Fname, Tmp)) == YES)
 			break;
 
-		Array += _tcslen(Array) + 1;
+		Array += TCSLEN(Array) + 1;
 	}
 	return(Sts);
 }
