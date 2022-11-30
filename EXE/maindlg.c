@@ -1,7 +1,7 @@
-ï»¿/*===========================================================================
+/*===========================================================================
 /
 /                                   Backup
-/                               ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
+/                               ƒƒCƒ“ƒ_ƒCƒAƒƒO
 /
 /============================================================================
 / Copyright (C) 1997-2022 Sota. All rights reserved.
@@ -41,7 +41,7 @@
 #include "resource.h"
 
 
-/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
+/*===== ƒvƒƒgƒ^ƒCƒv =====*/
 
 static LRESULT CALLBACK PatListWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -63,12 +63,12 @@ static void DispCommentToWin(HWND hDlg);
 static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static _TCHAR *MakeListBoxName(COPYPAT *Pat);
 
-/*===== ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªãƒ¯ãƒ¼ã‚¯ =====*/
+/*===== ƒOƒ[ƒoƒ‹‚Èƒ[ƒN =====*/
 
 extern SIZE MainDlgSize;
 extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
-extern int ShowComment;     /* 0=è¡¨ç¤ºã—ãªã„,1=ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã§è¡¨ç¤ºã€2=ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§è¡¨ç¤º */
+extern int ShowComment;     /* 0=•\¦‚µ‚È‚¢,1=ƒc[ƒ‹ƒ`ƒbƒv‚Å•\¦A2=ƒEƒCƒ“ƒhƒE‚Å•\¦ */
 extern AUTOCLOSE AutoClose;
 extern int ExecOption;
 extern int Sound;
@@ -77,7 +77,7 @@ extern int IntervalTime;
 extern int AuthDialog;
 extern int ListWindowType;
 
-/*===== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
+/*===== ƒ[ƒJƒ‹‚Èƒ[ƒN ======*/
 
 static HWND hWndMainDlg = NULL;
 
@@ -111,13 +111,13 @@ static DIALOGSIZE NotifyDlgSizeInfo = {
 };
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ä½œæˆã™ã‚‹ --------------------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ğì¬‚·‚é --------------------------------------------
 *
 *   Parameter
-*       ãªã—
+*       ‚È‚µ
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -167,16 +167,16 @@ int MakeMainDialog(void)
 }
 
 
-/*----- ãƒªã‚¹ãƒˆã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ---------------------------------------
+/*----- ƒŠƒXƒgƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ---------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
-*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
-*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       UINT message  : ƒƒbƒZ[ƒW”Ô†
+*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
+*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
 *
 *   Return Value
-*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
+*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK PatListWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -186,7 +186,7 @@ static LRESULT CALLBACK PatListWndProc(HWND hWnd, UINT message, WPARAM wParam, L
         case WM_MOUSEMOVE :
             if(ShowComment == 1)
                 CheckTipsDisplay(lParam);
-            /* ã“ã“ã«breakã¯ãªã„ */
+            /* ‚±‚±‚Ébreak‚Í‚È‚¢ */
 
         default :
             return(CallWindowProc(PatListProcPtr, hWnd, message, wParam, lParam));
@@ -194,13 +194,13 @@ static LRESULT CALLBACK PatListWndProc(HWND hWnd, UINT message, WPARAM wParam, L
 }
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ ----------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹‚ğ•Ô‚· ----------------------------
 *
 *   Parameter
-*       ãªã—
+*       ‚È‚µ
 *
 *   Return Value
-*       HWND ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       HWND ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
 *----------------------------------------------------------------------------*/
 
 HWND GetMainDlgHwnd(void)
@@ -209,13 +209,13 @@ HWND GetMainDlgHwnd(void)
 }
 
 #ifdef _DEBUG
-/*----- ãƒ†ã‚­ã‚¹ãƒˆã‚’ãƒˆãƒ¬ãƒ¼ã‚¹ --------------------------
+/*----- ƒeƒLƒXƒg‚ğƒgƒŒ[ƒX --------------------------
 *
 *   Parameter
-*       TCHAR* text : ãƒˆãƒ¬ãƒ¼ã‚¹ã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆ
+*       TCHAR* text : ƒgƒŒ[ƒX‚·‚éƒeƒLƒXƒg
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 void Trace2(TCHAR * text)
 {
@@ -224,14 +224,14 @@ void Trace2(TCHAR * text)
     OutputDebugString(temp);
 }
 
-/*----- ã‚ªãƒ¼ãƒŠãƒ¼ãƒ‰ãƒ­ãƒ¼ã®é …ç›®ã‚’ãƒˆãƒ¬ãƒ¼ã‚¹ --------------------------
+/*----- ƒI[ƒi[ƒhƒ[‚Ì€–Ú‚ğƒgƒŒ[ƒX --------------------------
 *
 *   Parameter
-*       TCHAR* sItem : ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒ†ã‚­ã‚¹ãƒˆ
-*       DRAWITEMSTRUCT* pDrawItem : ã‚ªãƒ¼ãƒŠãƒ¼ãƒ‰ãƒ­ãƒ¼ã®é …ç›®
+*       TCHAR* sItem : ƒŠƒXƒgƒ{ƒbƒNƒX‚ÌƒAƒCƒeƒ€‚ÌƒeƒLƒXƒg
+*       DRAWITEMSTRUCT* pDrawItem : ƒI[ƒi[ƒhƒ[‚Ì€–Ú
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 void Trace(TCHAR * sItem, DRAWITEMSTRUCT * pDrawItem)
 {
@@ -279,16 +279,16 @@ void Trace(TCHAR * sItem, DRAWITEMSTRUCT * pDrawItem)
 }
 #endif /* end of _DEBUG */
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† --------------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌƒƒbƒZ[ƒWˆ— --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
-*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
-*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       UINT message  : ƒƒbƒZ[ƒW”Ô†
+*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
+*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
 *
 *   Return Value
-*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
+*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -315,7 +315,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
             SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, FALSE, 0);
             DispCommentToWin(hDlg);
             CopyPatList = NULL;
-            /* ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚µã‚¤ã‚ºã®åˆæœŸåŒ– */
+            /* ƒ_ƒCƒAƒƒOƒTƒCƒY‚Ì‰Šú‰» */
             DlgSizeInit(hDlg, &MainDlgSizeInfo, &MainDlgSize, FALSE);
             return(TRUE);
 
@@ -573,7 +573,7 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                 }
                 if (pDrawItem->itemID >= (UINT)SendMessage(pDrawItem->hwndItem, LB_GETCOUNT, 0, 0))
                 {
-                    /* ä½•æ•…ã‹åˆ†ã‹ã‚‰ãªã„ãŒã€ main_comment_dlg ã§ä¸æ­£ãª ID ã§å‘¼ã°ã‚Œã‚‹ã®ã§ç„¡è¦–ã™ã‚‹ */
+                    /* ‰½ŒÌ‚©•ª‚©‚ç‚È‚¢‚ªA main_comment_dlg ‚Å•s³‚È ID ‚ÅŒÄ‚Î‚ê‚é‚Ì‚Å–³‹‚·‚é */
 #ifdef _DEBUG
                     Trace(TEXT("Invalid Item"), pDrawItem);
 #endif /* end of _DEBUG */
@@ -617,14 +617,14 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
 }
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒœã‚¿ãƒ³ã®ãƒã‚¤ãƒ‰å‡¦ç† ----------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚Ìƒ{ƒ^ƒ“‚ÌƒnƒCƒhˆ— ----------------------------------
 *
 *   Parameter
-*       HWND hDlg : ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       int Ctrl : ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«
+*       HWND hDlg : ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       int Ctrl : ƒŠƒXƒgƒ{ƒbƒNƒX‚ÌƒRƒ“ƒgƒ[ƒ‹
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void ResetAllSel(HWND hDlg, int Ctrl)
@@ -638,13 +638,13 @@ static void ResetAllSel(HWND hDlg, int Ctrl)
 }
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒœã‚¿ãƒ³ã®ãƒã‚¤ãƒ‰å‡¦ç† ----------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚Ìƒ{ƒ^ƒ“‚ÌƒnƒCƒhˆ— ----------------------------------
 *
 *   Parameter
-*       HWND hDlg : ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       HWND hDlg : ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void SetMainDlgButtonHide(HWND hDlg)
@@ -682,13 +682,13 @@ static void SetMainDlgButtonHide(HWND hDlg)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã«è¿½åŠ  ----------------------------------------------------
+/*----- İ’è’lƒŠƒXƒg‚É’Ç‰Á ----------------------------------------------------
 *
 *   Parameter
-*       COPYPAT *Set : è¿½åŠ ã™ã‚‹è¨­å®šå€¤
+*       COPYPAT *Set : ’Ç‰Á‚·‚éİ’è’l
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -720,14 +720,14 @@ int AddPatToList(COPYPAT *Set)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã‚’æ›´æ–°ã™ã‚‹ ------------------------------------------------
+/*----- İ’è’lƒŠƒXƒg‚ğXV‚·‚é ------------------------------------------------
 *
 *   Parameter
-*       int Num : è¨­å®šå€¤å·ç•ªå·
-*       COPYPAT *Set : è¨­å®šå€¤
+*       int Num : İ’è’l†”Ô†
+*       COPYPAT *Set : İ’è’l
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -750,13 +750,13 @@ static int UpdatePatToList(int Num, COPYPAT *Set)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤ --------------------------------------------------
+/*----- İ’è’lƒŠƒXƒg‚©‚çíœ --------------------------------------------------
 *
 *   Parameter
-*       int Num : å‰Šé™¤ã™ã‚‹ç•ªå·
+*       int Num : íœ‚·‚é”Ô†
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -789,14 +789,14 @@ static int DelPatFromList(int Num)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã®ï¼’ã¤ã®é …ç›®ã‚’å…¥ã‚Œæ›ãˆã‚‹ ----------------------------------
+/*----- İ’è’lƒŠƒXƒg‚Ì‚Q‚Â‚Ì€–Ú‚ğ“ü‚êŠ·‚¦‚é ----------------------------------
 *
 *   Parameter
-*       int Num1 : é …ç›®ï¼‘
-*       int Num2 : é …ç›®ï¼’
+*       int Num1 : €–Ú‚P
+*       int Num2 : €–Ú‚Q
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -862,13 +862,13 @@ static int ExchangeListItem(int Num1, int Num2)
 }
 
 
-/*----- è¨­å®šã‚’æ¤œç´¢ã™ã‚‹ --------------------------------------------------------
+/*----- İ’è‚ğŒŸõ‚·‚é --------------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Name : è¨­å®šå
+*       LPTSTR Name : İ’è–¼
 *
 *   Return Value
-*       int è¨­å®šç•ªå· (0ï½ : -1=è¦‹ã¤ã‹ã‚‰ãªã„)
+*       int İ’è”Ô† (0` : -1=Œ©‚Â‚©‚ç‚È‚¢)
 *----------------------------------------------------------------------------*/
 
 int SearchPatList(LPTSTR Name)
@@ -892,14 +892,14 @@ int SearchPatList(LPTSTR Name)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã‹ã‚‰è¨­å®šå€¤ã‚’å–ã‚Šå‡ºã™ --------------------------------------
+/*----- İ’è’lƒŠƒXƒg‚©‚çİ’è’l‚ğæ‚èo‚· --------------------------------------
 *
 *   Parameter
-*       int Num : è¨­å®šå€¤å·ç•ªå·
-*       COPYPAT *Set : è¨­å®šå€¤ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ãƒ¯ãƒ¼ã‚¯
+*       int Num : İ’è’l†”Ô†
+*       COPYPAT *Set : İ’è’l‚ğƒRƒs[‚·‚éƒ[ƒN
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       int ƒXƒe[ƒ^ƒX
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -922,13 +922,13 @@ int CopyPatFromList(int Num, COPYPAT *Set)
 }
 
 
-/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã€å…ˆãŒç©ºç™½ã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã‹ãƒã‚§ãƒƒã‚¯ --------------------------
+/*----- ƒoƒbƒNƒAƒbƒvŒ³Aæ‚ª‹ó”’‚Ìƒpƒ^[ƒ“‚©ƒ`ƒFƒbƒN --------------------------
 *
 *   Parameter
-*       int Num : è¨­å®šå€¤å·ç•ªå·
+*       int Num : İ’è’l†”Ô†
 *
 *   Return Value
-*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       BOOL ƒXƒe[ƒ^ƒX
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 static BOOL CheckNullPat(int Num)
@@ -949,13 +949,13 @@ static BOOL CheckNullPat(int Num)
     return(Sts);
 }
 
-/*----- ãƒ‘ã‚¿ãƒ¼ãƒ³ã‹æœ‰åŠ¹åŒ–ã‹ãƒã‚§ãƒƒã‚¯ --------------------------
+/*----- ƒpƒ^[ƒ“‚©—LŒø‰»‚©ƒ`ƒFƒbƒN --------------------------
 *
 *   Parameter
-*       int Num : è¨­å®šå€¤å·ç•ªå·
+*       int Num : İ’è’l†”Ô†
 *
 *   Return Value
-*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*       BOOL ƒXƒe[ƒ^ƒX
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 static BOOL CheckValidPat(int Num)
@@ -974,14 +974,14 @@ static BOOL CheckValidPat(int Num)
 }
 
 
-/*----- è¨­å®šå€¤ãƒªã‚¹ãƒˆã‹ã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚’å–ã‚Šå‡ºã™ ------------------------------------
+/*----- İ’è’lƒŠƒXƒg‚©‚çƒRƒƒ“ƒg‚ğæ‚èo‚· ------------------------------------
 *
 *   Parameter
-*       int Num : è¨­å®šå€¤å·ç•ªå·
+*       int Num : İ’è’l†”Ô†
 *
 *   Return Value
-*       LPTSTR ã‚³ãƒ¡ãƒ³ãƒˆ
-*           NULL/""=ãªã—
+*       LPTSTR ƒRƒƒ“ƒg
+*           NULL/""=‚È‚µ
 *----------------------------------------------------------------------------*/
 
 LPTSTR GetPatComment(int Num)
@@ -1069,13 +1069,13 @@ LPTSTR GetPatComment(int Num)
 }
 
 
-/*----- ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®šå€¤ã‚’å–ã‚Šå‡ºã™ --------------------------------------------
+/*----- ƒfƒtƒHƒ‹ƒgİ’è’l‚ğæ‚èo‚· --------------------------------------------
 *
 *   Parameter
-*       COPYPAT *Set : è¨­å®šå€¤ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ãƒ¯ãƒ¼ã‚¯
+*       COPYPAT *Set : İ’è’l‚ğƒRƒs[‚·‚éƒ[ƒN
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 void CopyDefaultPat(COPYPAT *Set)
@@ -1124,14 +1124,14 @@ void CopyDefaultPat(COPYPAT *Set)
 }
 
 
-/*----- è¨­å®šåä¸€è¦§ã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é€ã‚‹ ------------------------------------------
+/*----- İ’è–¼ˆê——‚ğƒEƒBƒ“ƒhƒE‚É‘—‚é ------------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       int Cmd : ã‚³ãƒãƒ³ãƒ‰
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       int Cmd : ƒRƒ}ƒ“ƒh
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void SendAllPatNames(HWND hWnd, int Cmd)
@@ -1152,14 +1152,14 @@ static void SendAllPatNames(HWND hWnd, int Cmd)
 }
 
 
-/*----- intå€¤ã®å…¥ã‚Œæ›¿ãˆ -------------------------------------------------------
+/*----- int’l‚Ì“ü‚ê‘Ö‚¦ -------------------------------------------------------
 *
 *   Parameter
-*       int *Num1 : æ•°å€¤ï¼‘
-*       int *Num2 : æ•°å€¤ï¼’
+*       int *Num1 : ”’l‚P
+*       int *Num2 : ”’l‚Q
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void SwapInt(int *Num1, int *Num2)
@@ -1173,13 +1173,13 @@ static void SwapInt(int *Num1, int *Num2)
 }
 
 
-/*----- è¨­å®šã®æ•°ã‚’è¿”ã™ --------------------------------------------------------
+/*----- İ’è‚Ì”‚ğ•Ô‚· --------------------------------------------------------
 *
 *   Parameter
-*       ãªã—
+*       ‚È‚µ
 *
 *   Return Value
-*       int è¨­å®šã®æ•°
+*       int İ’è‚Ì”
 *----------------------------------------------------------------------------*/
 
 int GetPatterns(void)
@@ -1188,13 +1188,13 @@ int GetPatterns(void)
 }
 
 
-/*----- é¸æŠã•ã‚Œã¦ã„ã‚‹è¨­å®šã®æ•°ã‚’è¿”ã™ ------------------------------------------
+/*----- ‘I‘ğ‚³‚ê‚Ä‚¢‚éİ’è‚Ì”‚ğ•Ô‚· ------------------------------------------
 *
 *   Parameter
-*       ãªã—
+*       ‚È‚µ
 *
 *   Return Value
-*       int è¨­å®šã®æ•°
+*       int İ’è‚Ì”
 *----------------------------------------------------------------------------*/
 
 int GetSelectedCount(void)
@@ -1203,14 +1203,14 @@ int GetSelectedCount(void)
 }
 
 
-/*----- é¸æŠã•ã‚Œã¦ã„ã‚‹è¨­å®šã®ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ ----------------------------------
+/*----- ‘I‘ğ‚³‚ê‚Ä‚¢‚éİ’è‚ÌƒŠƒXƒg‚ğì¬‚·‚é ----------------------------------
 *
 *   Parameter
-*       COPYPATLIST **Top : ãƒªã‚¹ãƒˆã®å…ˆé ­
-*       int All : å…¨é …ç›®ã‚’é¸ã¶ã‹ã©ã†ã‹ (YES/NO)
+*       COPYPATLIST **Top : ƒŠƒXƒg‚Ìæ“ª
+*       int All : ‘S€–Ú‚ğ‘I‚Ô‚©‚Ç‚¤‚© (YES/NO)
 *
 *   Return Value
-*       int è¨­å®šã®æ•°
+*       int İ’è‚Ì”
 *----------------------------------------------------------------------------*/
 
 static int GetSelectedPat(COPYPATLIST **Top, int All)
@@ -1246,14 +1246,14 @@ static int GetSelectedPat(COPYPATLIST **Top, int All)
 }
 
 
-/*----- æŒ‡å®šã•ã‚ŒãŸåå‰ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ --------------------------------------
+/*----- w’è‚³‚ê‚½–¼‘O‚ÌƒŠƒXƒg‚ğì¬‚·‚é --------------------------------------
 *
 *   Parameter
-*       COPYPATLIST **Top : ãƒªã‚¹ãƒˆã®å…ˆé ­
-*       LPTSTR Name : åå‰
+*       COPYPATLIST **Top : ƒŠƒXƒg‚Ìæ“ª
+*       LPTSTR Name : –¼‘O
 *
 *   Return Value
-*       int è¨­å®šã®æ•°
+*       int İ’è‚Ì”
 *----------------------------------------------------------------------------*/
 
 static int GetNamedPat(COPYPATLIST **Top, LPTSTR Name)
@@ -1289,13 +1289,13 @@ static int GetNamedPat(COPYPATLIST **Top, LPTSTR Name)
 }
 
 
-/*----- é¸æŠã•ã‚Œã¦ã„ã‚‹è¨­å®šã®ãƒªã‚¹ãƒˆã‚’å‰Šé™¤ã™ã‚‹ ----------------------------------
+/*----- ‘I‘ğ‚³‚ê‚Ä‚¢‚éİ’è‚ÌƒŠƒXƒg‚ğíœ‚·‚é ----------------------------------
 *
 *   Parameter
-*       COPYPATLIST **Top : ãƒªã‚¹ãƒˆã®å…ˆé ­
+*       COPYPATLIST **Top : ƒŠƒXƒg‚Ìæ“ª
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void DeletePatList(COPYPATLIST **Top)
@@ -1316,18 +1316,18 @@ static void DeletePatList(COPYPATLIST **Top)
 }
 
 
-/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—é–‹å§‹ç¢ºèªãƒ€ã‚¤ã‚¢ãƒ­ã‚° ----------------------------------------
+/*----- ƒoƒbƒNƒAƒbƒvŠJnŠm”Fƒ_ƒCƒAƒƒO ----------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       COPYPATLIST *Pat : ãƒªã‚¹ãƒˆã®å…ˆé ­
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       COPYPATLIST *Pat : ƒŠƒXƒg‚Ìæ“ª
 *
 *   Return Value
-*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
-*           YES/NO=ä¸­æ­¢
+*       int ƒXƒe[ƒ^ƒX
+*           YES/NO=’†~
 *
 *   Note
-*       ç¢ºèªã‚’è¡Œãªã‚ãªã„æŒ‡å®šãŒã•ã‚Œã¦ã„ã‚‹æ™‚ã¯å¸¸ã«YES
+*       Šm”F‚ğs‚È‚í‚È‚¢w’è‚ª‚³‚ê‚Ä‚¢‚é‚Íí‚ÉYES
 *----------------------------------------------------------------------------*/
 
 int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
@@ -1359,16 +1359,16 @@ int NotifyBackup(HWND hWnd, COPYPATLIST *Pat)
 }
 
 
-/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—é–‹å§‹ç¢ºèªãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------
+/*----- ƒoƒbƒNƒAƒbƒvŠJnŠm”Fƒ_ƒCƒAƒƒO‚ÌƒƒbƒZ[ƒWˆ— ------------------------
 *
 *   Parameter
-*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
-*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
-*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       UINT message  : ƒƒbƒZ[ƒW”Ô†
+*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
+*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
 *
 *   Return Value
-*       ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
+*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1410,7 +1410,7 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
 #endif /* USE_SAME_AS_SUCCESS */
             }
 
-            /* ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚µã‚¤ã‚ºã®åˆæœŸåŒ– */
+            /* ƒ_ƒCƒAƒƒOƒTƒCƒY‚Ì‰Šú‰» */
             DlgSizeInit(hDlg, &NotifyDlgSizeInfo, &NotifyDlgSize, TRUE);
             return(TRUE);
 
@@ -1455,15 +1455,15 @@ static LRESULT CALLBACK NotifyDlgWndProc(HWND hDlg, UINT message, WPARAM wParam,
 }
 
 
-/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã¨ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã‚’è¡¨ç¤ºã™ã‚‹ ------------------------------
+/*----- ƒoƒbƒNƒAƒbƒvŒ³‚ÆƒoƒbƒNƒAƒbƒvæ‚ğ•\¦‚·‚é ------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       COPYPATLIST *Pat : ãƒªã‚¹ãƒˆã®å…ˆé ­
-*       int Num : è¨­å®šã®æ•°
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       COPYPATLIST *Pat : ƒŠƒXƒg‚Ìæ“ª
+*       int Num : İ’è‚Ì”
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 
 static void DispSrcAndDest(HWND hDlg, COPYPATLIST *Pat, int Num)
@@ -1499,13 +1499,13 @@ static void DispSrcAndDest(HWND hDlg, COPYPATLIST *Pat, int Num)
 }
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®ã‚µã‚¤ã‚ºã‚’ä¿å­˜ ----------------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌƒTƒCƒY‚ğ•Û‘¶ ----------------------------------------
 *
 *   Parameter
-*       ãªã—
+*       ‚È‚µ
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 void SaveMainDlgSize(void)
 {
@@ -1513,13 +1513,13 @@ void SaveMainDlgSize(void)
 }
 
 
-/*----- ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®æœ€å°ã‚µã‚¤ã‚ºã‚’è¿”ã™ ------------------------------------
+/*----- ƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÌÅ¬ƒTƒCƒY‚ğ•Ô‚· ------------------------------------
 *
 *   Parameter
-*       POINT *Point : æœ€å°ã‚µã‚¤ã‚ºã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
+*       POINT *Point : Å¬ƒTƒCƒY‚ğ•Ô‚·ƒ[ƒN
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 void AsdMainDlgMinSize(POINT *Point)
 {
@@ -1528,14 +1528,14 @@ void AsdMainDlgMinSize(POINT *Point)
 }
 
 
-/*----- ã‚³ãƒ¡ãƒ³ãƒˆã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã«ã‚³ãƒ¡ãƒ³ãƒˆã‚’è¡¨ç¤º ------------------------------------
+/*----- ƒRƒƒ“ƒgƒEƒCƒ“ƒhƒE‚ÉƒRƒƒ“ƒg‚ğ•\¦ ------------------------------------
 *
 *   Parameter
-*       HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       int Num : é …ç›®ç•ªå·
+*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       int Num : €–Ú”Ô†
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 static void DispCommentToWin(HWND hDlg)
 {
@@ -1567,13 +1567,13 @@ static void DispCommentToWin(HWND hDlg)
 
 
 
-/*----- ã‚³ãƒ¡ãƒ³ãƒˆè¡¨ç¤ºã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•° ------------------------------
+/*----- ƒRƒƒ“ƒg•\¦ƒEƒCƒ“ƒhƒE‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ” ------------------------------
 *
 *   Parameter
-*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
-*       UINT message : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
-*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
-*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
+*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
+*       UINT message : ƒƒbƒZ[ƒW”Ô†
+*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
+*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
 *
 *   Return Value
 *       BOOL TRUE/FALSE
@@ -1614,13 +1614,13 @@ static BOOL CALLBACK ShowCommentDlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 }
 
 
-/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆç•ªå·ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹ ------------------------------
+/*----- ƒoƒbƒNƒAƒbƒvæ”Ô†‚ğƒCƒ“ƒNƒŠƒƒ“ƒg‚·‚é ------------------------------
 *
 *   Parameter
-*       int PatNum : ãƒ‘ã‚¿ãƒ¼ãƒ³ç•ªå·
+*       int PatNum : ƒpƒ^[ƒ“”Ô†
 *
 *   Return Value
-*       ãªã—
+*       ‚È‚µ
 *----------------------------------------------------------------------------*/
 void IncrementDstNum(int PatNum)
 {
@@ -1644,16 +1644,16 @@ void IncrementDstNum(int PatNum)
 }
 
 
-/*----- ãƒªã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã«è¡¨ç¤ºã™ã‚‹è¨­å®šåã‚’è¿”ã™ --------------------------------------
+/*----- ƒŠƒXƒgƒ{ƒbƒNƒX‚É•\¦‚·‚éİ’è–¼‚ğ•Ô‚· --------------------------------------
 *
 *   Parameter
-*       COPYPAT *Pat : ãƒ‘ã‚¿ãƒ¼ãƒ³
+*       COPYPAT *Pat : ƒpƒ^[ƒ“
 *
 *   Return Value
-*       _TCHAR* åå‰
+*       _TCHAR* –¼‘O
 *
 *   Comment
-*       åå‰ã¯freeã™ã‚‹ã“ã¨
+*       –¼‘O‚Ífree‚·‚é‚±‚Æ
 *----------------------------------------------------------------------------*/
 
 static _TCHAR *MakeListBoxName(COPYPAT *Pat)
