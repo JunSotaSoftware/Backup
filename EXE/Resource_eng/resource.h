@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ Ç≈ê∂ê¨Ç≥ÇÍÇΩÉCÉìÉNÉãÅ[Éh ÉtÉ@ÉCÉãÅB
-// Backup_eng.rc Ç≈égóp
+Ôªø//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ „ÅßÁîüÊàê„Åï„Çå„Åü„Ç§„É≥„ÇØ„É´„Éº„Éâ „Éï„Ç°„Ç§„É´„ÄÇ
+// Backup_eng.rc „Åß‰ΩøÁî®
 //
 #define MENU_PATHCONVERT                0
 #define IDR_RT_MANIFEST1                1
@@ -270,7 +270,6 @@
 #define NOBACK_SYSTEM_FILE              1190
 #define IDC_CHECK2                      1191
 #define MISC_SUPPRESS_BATTERY           1191
-#define PATSET_DST_EFS                  1191
 #define NOBACK_HIDDEN_FILE              1192
 #define PATSET_SOUND                    1193
 #define PATSET_TIMER_INT_SW             1194
@@ -363,7 +362,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        165
+#define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         40021
 #define _APS_NEXT_CONTROL_VALUE         1251
 #define _APS_NEXT_SYMED_VALUE           101

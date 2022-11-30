@@ -13,11 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ì˙ñ{åÍ (ì˙ñ{) resources
+// Êó•Êú¨Ë™û (Êó•Êú¨) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)
+#pragma code_page(65001)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -36,12 +36,12 @@ notify2_icon            ICON                    "ico00001.ico"
 
 IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
 
-#endif    // ì˙ñ{åÍ (ì˙ñ{) resources
+#endif    // Êó•Êú¨Ë™û (Êó•Êú¨) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// âpåÍ (ïƒçë) resources
+// Ëã±Ë™û (Á±≥ÂõΩ) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -165,8 +165,8 @@ FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.20a",-1,29,13,98,8
-    CTEXT           "Copyright(C) 1997-2022 Sota",-1,7,27,141,8
+    CTEXT           "Backup  Ver.1.19",-1,29,13,98,8
+    CTEXT           "Copyright(C) 1997-2018 Sota",-1,7,27,141,8
     CTEXT           "Backup is Freeware.",-1,7,42,141,8
 END
 
@@ -220,7 +220,7 @@ BEGIN
     LTEXT           "Prepareing",TRANS_PREPARE,161,20,46,8
 END
 
-patset_name_dlg DIALOGEX 0, 0, 231, 253
+patset_name_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -229,12 +229,12 @@ BEGIN
     EDITTEXT        PATSET_NAME,5,48,221,13,ES_AUTOHSCROLL
     LTEXT           "&Comment",-1,5,68,41,8
     EDITTEXT        PATSET_COMMENT,5,79,221,65,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
-    LTEXT           "Following macros are acceptable :\n    $L=Volume Label of the backup destination media.",-1,48,149,178,19,SS_SUNKEN
+    LTEXT           "Following macros are acceptable :\n    $L=Volume Label of the backup destination media.",-1,48,113,178,19,SS_SUNKEN
     CONTROL         "&Show comment in the dialog at backup begins.",PATSET_SHOW_COMMENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,171,177,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,171,151,10
 END
 
-patset_dir_dlg DIALOGEX 0, 0, 231, 253
+patset_dir_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -249,7 +249,7 @@ BEGIN
     GROUPBOX        "Files/Folders which backup",-1,5,5,221,209
 END
 
-patset_flg_dlg DIALOGEX 0, 0, 231, 253
+patset_flg_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -276,13 +276,13 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,154,221,10
     CONTROL         "C&omfirm overwriting.",PATSET_NOTIFY_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,166,221,10
     CONTROL         "Ignore &errors.",PATSET_NOERROR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,185,221,10
-    GROUPBOX        "Copy &Speed",-1,5,200,170,29
+    GROUPBOX        "Copy &Speed",-1,5,202,170,29
     CONTROL         "Slider1",PATSET_WAIT,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,29,212,121,12
     LTEXT           "Fast",-1,11,214,14,8
     LTEXT           "Slow",-1,154,214,15,8
 END
 
-patset_ign1_dlg DIALOGEX 0, 0, 231, 253
+patset_ign1_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -515,7 +515,7 @@ BEGIN
     CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
 END
 
-patset_system_dlg DIALOGEX 0, 0, 207, 253
+patset_system_dlg DIALOGEX 0, 0, 207, 240
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -543,21 +543,21 @@ BEGIN
     CTEXT           "?X?^?e?B?b?N",CDOWN_MSG2,7,16,141,8
 END
 
-patset_frame_dlg DIALOGEX 0, 0, 322, 294
+patset_frame_dlg DIALOGEX 0, 0, 322, 274
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
     LTEXT           "Settings(&1)",-1,7,7,49,8
     CONTROL         "",PATSET_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | TVS_NOSCROLL | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,17,69,228
-    DEFPUSHBUTTON   "OK",IDOK,91,273,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,148,273,50,14
-    PUSHBUTTON      "Help",IDHELP,265,273,50,14
-    LTEXT           "??????",PATSET_DIALOG_POS,82,7,231,253,NOT WS_VISIBLE | WS_DISABLED
-    PUSHBUTTON      "File Size",MENU_FILESIZE,206,273,50,14
+    DEFPUSHBUTTON   "OK",IDOK,91,253,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,148,253,50,14
+    PUSHBUTTON      "Help",IDHELP,265,253,50,14
+    LTEXT           "??????",PATSET_DIALOG_POS,82,7,231,236,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "File Size",MENU_FILESIZE,206,253,50,14
 END
 
-patset_dst_dlg DIALOGEX 0, 0, 231, 253
+patset_dst_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
@@ -578,11 +578,10 @@ BEGIN
     LTEXT           "*When multiple destination folders are specified this button get a volume label from first destination drive.",-1,13,190,213,18,SS_SUNKEN
     LTEXT           "*When multiple backup destinations are specified, Backup does not copy files to multiple destinations at once. Backup destination is changed at each backup operation.",PATSET_DST_COMMENT,14,107,212,27,SS_SUNKEN
     CONTROL         "Backup destination is Dropbox folder",PATSET_DST_DROPBOX,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,219,125,10
-    CONTROL         "Allow &decrypted destination",PATSET_DST_EFS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,238,97,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,221,125,10
 END
 
-patset_timer_dlg DIALOGEX 0, 0, 231, 253
+patset_timer_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 400, 0, 0x0
 BEGIN
@@ -594,7 +593,7 @@ BEGIN
     LTEXT           "minutes",-1,86,25,21,8
 END
 
-patset_adv_dlg DIALOGEX 0, 0, 231, 253
+patset_adv_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -602,7 +601,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,211,10
     LTEXT           "The file which is not assumed may be deleted if the usage is mistaken.\n\nPlease be fully careful.\n\nThis can be used only when one backup source is specified.",-1,27,19,175,60,SS_SUNKEN
     ICON            notify_icon,-1,5,19,18,21
-    PUSHBUTTON      "Reset settings on this page",PATSET_ADV_RESET,124,234,102,14
+    PUSHBUTTON      "Reset settings on this page",PATSET_ADV_RESET,124,217,102,14
 END
 
 path_convert_dlg DIALOGEX 0, 0, 222, 77
@@ -701,7 +700,7 @@ BEGIN
     CTEXT           "Do you wish to stop backup?",IDC_STATIC,7,21,172,8
 END
 
-patset_ign2_dlg DIALOGEX 0, 0, 231, 253
+patset_ign2_dlg DIALOGEX 0, 0, 231, 236
 STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -863,7 +862,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     patset_dir_dlg, DIALOG
@@ -871,7 +870,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     patset_flg_dlg, DIALOG
@@ -879,7 +878,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     patset_ign1_dlg, DIALOG
@@ -887,7 +886,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     opt_log_dlg, DIALOG
@@ -991,7 +990,7 @@ BEGIN
     BEGIN
         LEFTMARGIN, 5
         TOPMARGIN, 5
-        BOTTOMMARGIN, 244
+        BOTTOMMARGIN, 231
     END
 
     countdown_dlg, DIALOG
@@ -1007,7 +1006,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 315
         TOPMARGIN, 7
-        BOTTOMMARGIN, 287
+        BOTTOMMARGIN, 267
     END
 
     patset_dst_dlg, DIALOG
@@ -1015,7 +1014,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     patset_timer_dlg, DIALOG
@@ -1023,7 +1022,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     patset_adv_dlg, DIALOG
@@ -1031,7 +1030,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     path_convert_dlg, DIALOG
@@ -1103,7 +1102,7 @@ BEGIN
         LEFTMARGIN, 5
         RIGHTMARGIN, 226
         TOPMARGIN, 5
-        BOTTOMMARGIN, 248
+        BOTTOMMARGIN, 231
     END
 
     main_comment_dlg_old, DIALOG
@@ -1132,8 +1131,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,20,1,0
- PRODUCTVERSION 1,20,1,0
+ FILEVERSION 1,19,0,0
+ PRODUCTVERSION 1,19,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1151,12 +1150,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.20.1.0"
+            VALUE "FileVersion", "1.19.0.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2022 Sota"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2018 Sota"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.20.1.0"
+            VALUE "ProductVersion", "1.19.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1215,52 +1214,7 @@ BEGIN
     0
 END
 
-patset_dst_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_adv_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_dir_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_flg_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_frame_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_ign1_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_ign2_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_name_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-patset_timer_dlg AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-#endif    // âpåÍ (ïƒçë) resources
+#endif    // Ëã±Ë™û (Á±≥ÂõΩ) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

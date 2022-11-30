@@ -1,10 +1,10 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
-/                                   Backup
-/                           ƒNƒCƒbƒNƒoƒbƒNƒAƒbƒv
+/									Backup
+/							ã‚¯ã‚¤ãƒƒã‚¯ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
 /
 /============================================================================
-/ Copyright (C) 1997-2022 Sota. All rights reserved.
+/ Copyright (C) 1997-2015 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@
 #include "resource.h"
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void MakeCopyPatFromDialog(HWND hDlg, COPYPATLIST *Pat);
@@ -56,313 +56,312 @@ static HWND hWndQuickPat;
 static WNDPROC QuickSrcProcPtr;
 static WNDPROC QuickDstProcPtr;
 static COPYPAT OrgPat = {
-    1,          /* —LŒø/–³Œø */
-    _T(""),     /* ƒpƒ^[ƒ“–¼ */
-    _T(""),     /* ƒRƒƒ“ƒg */
-    _T("\0"),   /* ƒoƒbƒNƒAƒbƒvŒ³ (ƒ}ƒ‹ƒ`•¶š—ñ) */
-    _T("\0"),   /* ƒoƒbƒNƒAƒbƒvæ (ƒ}ƒ‹ƒ`•¶š—ñ) */
-    _T("\0"),   /* ƒoƒbƒNƒAƒbƒv‚µ‚È‚¢ƒtƒHƒ‹ƒ_ (ƒ}ƒ‹ƒ`•¶š—ñ) */
-    _T("\0"),   /* ƒoƒbƒNƒAƒbƒv‚µ‚È‚¢ƒtƒ@ƒCƒ‹ (ƒ}ƒ‹ƒ`•¶š—ñ) */
-    _T(""),     /* ƒ{ƒŠƒ…[ƒ€ƒ‰ƒxƒ‹ */
-    _T(""),     /* ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹ */
-    0,      /* í‚Éƒtƒ@ƒCƒ‹‚ğƒRƒs[ */
-    0,      /* ƒtƒHƒ‹ƒ_‚ğíœ‚·‚é */
-    0,      /* ƒtƒ@ƒCƒ‹‚ğíœ‚·‚é */
-    1,      /* ƒGƒ‰[‚ğ–³‹‚·‚é */
-    1,      /* íœ‚ÌŠm”F‚ğs‚È‚¤ */
-    0,      /* ã‘‚«‚ÌŠm”F‚ğs‚È‚¤ */
-    0,      /* ƒoƒbƒNƒAƒbƒv‚µ‚È‚¢ƒtƒ@ƒCƒ‹^ƒtƒHƒ‹ƒ_‚ğíœ‚µ‚È‚¢ */
-    0,      /* ƒoƒbƒNƒAƒbƒvæ‚ªV‚µ‚¢‚ÍƒRƒs[‚µ‚È‚¢ */
-    0,      /* ƒtƒ@ƒCƒ‹ƒRƒs[‚Ì‘Ò‚¿ŠÔ */
-    0,      /* ƒ{ƒŠƒ…[ƒ€ƒ‰ƒxƒ‹‚ğƒ`ƒFƒbƒN‚·‚é */
-    0,      /* ‚²‚İ” ‚ğg—p‚·‚é */
-    2,      /* ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚Ì‹–—eŒë· */
+    1,          /* æœ‰åŠ¹/ç„¡åŠ¹ */
+	_T(""),		/* ãƒ‘ã‚¿ãƒ¼ãƒ³å */
+	_T(""),		/* ã‚³ãƒ¡ãƒ³ãƒˆ */
+	_T("\0"),	/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒ (ãƒãƒ«ãƒæ–‡å­—åˆ—) */
+	_T("\0"),	/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆ (ãƒãƒ«ãƒæ–‡å­—åˆ—) */
+	_T("\0"),	/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã—ãªã„ãƒ•ã‚©ãƒ«ãƒ€ (ãƒãƒ«ãƒæ–‡å­—åˆ—) */
+	_T("\0"),	/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã—ãªã„ãƒ•ã‚¡ã‚¤ãƒ« (ãƒãƒ«ãƒæ–‡å­—åˆ—) */
+	_T(""),		/* ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ©ãƒ™ãƒ« */
+	_T(""),		/* ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ« */
+	0,		/* å¸¸ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ */
+	0,		/* ãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤ã™ã‚‹ */
+	0,		/* ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã™ã‚‹ */
+	1,		/* ã‚¨ãƒ©ãƒ¼ã‚’ç„¡è¦–ã™ã‚‹ */
+	1,		/* å‰Šé™¤ã®ç¢ºèªã‚’è¡Œãªã† */
+	0,		/* ä¸Šæ›¸ãã®ç¢ºèªã‚’è¡Œãªã† */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã—ãªã„ãƒ•ã‚¡ã‚¤ãƒ«ï¼ãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤ã—ãªã„ */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆãŒæ–°ã—ã„æ™‚ã¯ã‚³ãƒ”ãƒ¼ã—ãªã„ */
+	0,		/* ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼æ™‚ã®å¾…ã¡æ™‚é–“ */
+	0,		/* ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ©ãƒ™ãƒ«ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹ */
+	0,		/* ã”ã¿ç®±ã‚’ä½¿ç”¨ã™ã‚‹ */
+	2,		/* ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã®è¨±å®¹èª¤å·® */
     {
-        AUTOCLOSE_ACTION_DEFAULT_SUCCESS,   /* ¬Œ÷I—¹‚Ìˆ— */
-        AUTOCLOSE_ACTION_DEFAULT_ERROR,     /* ƒGƒ‰[I—¹‚Ìˆ— */
-    }, /* ƒoƒbƒNƒAƒbƒvŒã‚Ìˆ— */
-    0,      /* ƒVƒXƒeƒ€ƒtƒ@ƒCƒ‹‚ÍœŠO */
-    0,      /* ‰B‚µƒtƒ@ƒCƒ‹‚ÍœŠO */
-    0,      /* ‘å‚«‚Èƒtƒ@ƒCƒ‹‚ÍœŠO */
-    100,    /* ‘å‚«‚Èƒtƒ@ƒCƒ‹‚Ìè‡’l */
-    0,      /* ‘®«‚Ìˆá‚¢‚Í–³‹ */
-    0,      /* ƒoƒbƒNƒAƒbƒvI—¹Œã‚ÉƒTƒEƒ“ƒh‚ğ–Â‚ç‚·‚©‚Ç‚¤‚© */
-    -60,        /* ÄƒoƒbƒNƒAƒbƒv‘Ò‚¿ŠÔFƒ}ƒCƒiƒX’l‚È‚çÄƒoƒbƒNƒAƒbƒv‚È‚µ */
-    0,      /* ƒoƒbƒNƒAƒbƒvæ‚ÌƒtƒHƒ‹ƒ_‚ğì‚ç‚È‚¢ */
-    0,      /* ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚Ìˆá‚¢‚Í–³‹ */
-    0,      /* ƒoƒbƒNƒAƒbƒvŠJn‚ÉƒRƒƒ“ƒg‚ğƒEƒCƒ“ƒhƒE‚Å•\¦‚·‚é */
-    0,      /* Ÿ‚ÌƒoƒbƒNƒAƒbƒvæ”Ô† */
-    0,      /* ƒoƒbƒNƒAƒbƒvæ‚ÍDropbox */
-    0,      /* íœ‚Ì‘ã‚í‚è‚Éƒtƒ@ƒCƒ‹‚ğˆÚ“®‚·‚é */
-    0,      /* EFS‚É‚æ‚éˆÃ†‰»•s‰Â‚Å‚à¬Œ÷‚³‚¹‚é */
-    _T(""), /* ƒtƒ@ƒCƒ‹ˆÚ“®æ‚ÌƒtƒHƒ‹ƒ_[ */
-    NULL,   /* Ÿ‚ÌƒoƒbƒNƒAƒbƒvæ */
-    0,      /* ƒpƒ^[ƒ“”Ô† */
+        AUTOCLOSE_ACTION_DEFAULT_SUCCESS,   /* æˆåŠŸçµ‚äº†æ™‚ã®å‡¦ç† */
+        AUTOCLOSE_ACTION_DEFAULT_ERROR,     /* ã‚¨ãƒ©ãƒ¼çµ‚äº†æ™‚ã®å‡¦ç† */
+    }, /* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å¾Œã®å‡¦ç† */
+	0,		/* ã‚·ã‚¹ãƒ†ãƒ ãƒ•ã‚¡ã‚¤ãƒ«ã¯é™¤å¤– */
+	0,		/* éš ã—ãƒ•ã‚¡ã‚¤ãƒ«ã¯é™¤å¤– */
+	0,		/* å¤§ããªãƒ•ã‚¡ã‚¤ãƒ«ã¯é™¤å¤– */
+	100,	/* å¤§ããªãƒ•ã‚¡ã‚¤ãƒ«ã®é–¾å€¤ */
+	0,		/* å±æ€§ã®é•ã„ã¯ç„¡è¦– */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—çµ‚äº†å¾Œã«ã‚µã‚¦ãƒ³ãƒ‰ã‚’é³´ã‚‰ã™ã‹ã©ã†ã‹ */
+	-60,		/* å†ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å¾…ã¡æ™‚é–“ï¼šãƒã‚¤ãƒŠã‚¹å€¤ãªã‚‰å†ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãªã— */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œã‚‰ãªã„ */
+	0,		/* ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã®é•ã„ã¯ç„¡è¦– */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—é–‹å§‹æ™‚ã«ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§è¡¨ç¤ºã™ã‚‹ */
+    0,      /* æ¬¡ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆç•ªå· */
+	0,		/* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã¯Dropbox */
+	0,		/* å‰Šé™¤ã®ä»£ã‚ã‚Šã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç§»å‹•ã™ã‚‹ */
+	_T(""),	/* ãƒ•ã‚¡ã‚¤ãƒ«ç§»å‹•å…ˆã®ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ */
+    NULL,   /* æ¬¡ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆ */
+    0,      /* ãƒ‘ã‚¿ãƒ¼ãƒ³ç•ªå· */
 };
 
 
 
 
 
-/*----- ƒNƒCƒbƒNƒoƒbƒNƒAƒbƒv‚Ì“ü—Í --------------------------------------------
+/*----- ã‚¯ã‚¤ãƒƒã‚¯ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã®å…¥åŠ› --------------------------------------------
 *
-*   Parameter
-*       COPYPATLIST **Top : ƒŠƒXƒg‚Ìæ“ª
-*       HWND hWnd : eƒEƒCƒ“ƒhƒE
+*	Parameter
+*		COPYPATLIST **Top : ãƒªã‚¹ãƒˆã®å…ˆé ­
+*		HWND hWnd : è¦ªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
 *
-*   Return Value
-*       int İ’è‚Ì”
+*	Return Value
+*		int è¨­å®šã®æ•°
 *----------------------------------------------------------------------------*/
 int GetQuickBackupParam(COPYPATLIST **Top, HWND hWnd)
 {
-    int Num;
-    COPYPATLIST *Pat;
+	int Num;
+	COPYPATLIST *Pat;
 
-    Num = 0;
-    if((Pat = malloc(sizeof(COPYPATLIST))) != NULL)
-    {
-        memcpy(&Pat->Set, &OrgPat, sizeof(COPYPAT));
-        Pat->Next = NULL;
-        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quick_dlg), hWnd, QuickBaclupDialogProc, (LPARAM)Pat) == YES)
-        {
-            memcpy(&OrgPat, &Pat->Set, sizeof(COPYPAT));
-            *Top = Pat;
-            Num = 1;
-        }
-        else
-            free(Pat);
-    }
-    return(Num);
+	Num = 0;
+	if((Pat = malloc(sizeof(COPYPATLIST))) != NULL)
+	{
+		memcpy(&Pat->Set, &OrgPat, sizeof(COPYPAT));
+		Pat->Next = NULL;
+		if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(quick_dlg), hWnd, QuickBaclupDialogProc, (LPARAM)Pat) == YES)
+		{
+			memcpy(&OrgPat, &Pat->Set, sizeof(COPYPAT));
+			*Top = Pat;
+			Num = 1;
+		}
+		else
+			free(Pat);
+	}
+	return(Num);
 }
 
 
-/*----- ƒNƒCƒbƒNƒoƒbƒNƒAƒbƒvƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ------------------------
+/*----- ã‚¯ã‚¤ãƒƒã‚¯ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------
 *
-*   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*	Parameter
+*		HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*		UINT message : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*		WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*		LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
-*   Return Value
-*       BOOL TRUE/FALSE
+*	Return Value
+*		BOOL TRUE/FALSE
 *----------------------------------------------------------------------------*/
 static BOOL CALLBACK QuickBaclupDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static COPYPATLIST *Pat;
-    _TCHAR Tmp[MY_MAX_PATH+1];
-    HWND hWndChild;
-    LPTSTR Tmp2;
+	static COPYPATLIST *Pat;
+	_TCHAR Tmp[MY_MAX_PATH+1];
+	HWND hWndChild;
+	LPTSTR Tmp2;
 
-    switch (message)
-    {
-        case WM_INITDIALOG :
-            Pat = (COPYPATLIST*)lParam;
-            SendDlgItemMessage(hDlg, QUICK_SRC, EM_LIMITTEXT, SRC_PATH_LEN-1, 0);
-            SendDlgItemMessage(hDlg, QUICK_DST, EM_LIMITTEXT, DST_PATH_LEN, 0);
-            ReplaceAll(Pat->Set.Src, StrMultiLen(Pat->Set.Src), '\0', ';');
-            SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Pat->Set.Src);
-            SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Pat->Set.Dst);
-            SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_SETCHECK, Pat->Set.DelDir, 0);
-            SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_SETCHECK, Pat->Set.DelFile, 0);
-            SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_SETCHECK, Pat->Set.NotifyDel, 0);
-            SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, Pat->Set.UseTrashCan, 0);
-            SendDlgItemMessage(hDlg, PATSET_FORCE, BM_SETCHECK, Pat->Set.ForceCopy, 0);
-            SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_SETCHECK, Pat->Set.NewOnly, 0);
-            SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_SETCHECK, Pat->Set.IgnoreErr, 0);
+	switch (message)
+	{
+		case WM_INITDIALOG :
+			Pat = (COPYPATLIST*)lParam;
+			SendDlgItemMessage(hDlg, QUICK_SRC, EM_LIMITTEXT, SRC_PATH_LEN-1, 0);
+			SendDlgItemMessage(hDlg, QUICK_DST, EM_LIMITTEXT, DST_PATH_LEN, 0);
+			ReplaceAll(Pat->Set.Src, StrMultiLen(Pat->Set.Src), '\0', ';');
+			SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Pat->Set.Src);
+			SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Pat->Set.Dst);
+			SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_SETCHECK, Pat->Set.DelDir, 0);
+			SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_SETCHECK, Pat->Set.DelFile, 0);
+			SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_SETCHECK, Pat->Set.NotifyDel, 0);
+			SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, Pat->Set.UseTrashCan, 0);
+			SendDlgItemMessage(hDlg, PATSET_FORCE, BM_SETCHECK, Pat->Set.ForceCopy, 0);
+			SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_SETCHECK, Pat->Set.NewOnly, 0);
+			SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_SETCHECK, Pat->Set.IgnoreErr, 0);
 
-            hWndQuickPat = hDlg;
-            hWndChild = GetDlgItem(hDlg, QUICK_SRC);
-            DragAcceptFiles(hWndChild, TRUE);
-            QuickSrcProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)QuickSrcWndProc);
+			hWndQuickPat = hDlg;
+			hWndChild = GetDlgItem(hDlg, QUICK_SRC);
+			DragAcceptFiles(hWndChild, TRUE);
+			QuickSrcProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)QuickSrcWndProc);
 
-            hWndChild = GetDlgItem(hDlg, QUICK_DST);
-            DragAcceptFiles(hWndChild, TRUE);
-            QuickDstProcPtr = (WNDPROC)SetWindowLong(hWndChild, GWL_WNDPROC, (LONG)QuickDstWndProc);
-            return(TRUE);
+			hWndChild = GetDlgItem(hDlg, QUICK_DST);
+			DragAcceptFiles(hWndChild, TRUE);
+			QuickDstProcPtr = (WNDPROC)SetWindowLongPtr(hWndChild, GWLP_WNDPROC, (LONG_PTR)QuickDstWndProc);
+			return(TRUE);
 
-        case WM_COMMAND :
-            switch(GET_WM_COMMAND_ID(wParam, lParam))
-            {
-                case IDOK :
-                    MakeCopyPatFromDialog(hDlg, Pat);
-                    if((_tcslen(Pat->Set.Dst) > 0) && (_tcslen(Pat->Set.Src) > 0))
-                        EndDialog(hDlg, YES);
-                    else
-                        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_84);
-                    break;
+		case WM_COMMAND :
+			switch(GET_WM_COMMAND_ID(wParam, lParam))
+			{
+				case IDOK :
+					MakeCopyPatFromDialog(hDlg, Pat);
+					if((_tcslen(Pat->Set.Dst) > 0) && (_tcslen(Pat->Set.Src) > 0))
+						EndDialog(hDlg, YES);
+					else
+						DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_84);
+					break;
 
-                case IDCANCEL :
-                    EndDialog(hDlg, NO);
-                    break;
+				case IDCANCEL :
+					EndDialog(hDlg, NO);
+					break;
 
-                case QUICK_SIZE :
-                    MakeCopyPatFromDialog(hDlg, Pat);
-                    if(_tcslen(Pat->Set.Src) > 0)
-                        FilesSizeDialog(hDlg, Pat);
-                    else
-                        DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_86);
-                    break;
+				case QUICK_SIZE :
+					MakeCopyPatFromDialog(hDlg, Pat);
+					if(_tcslen(Pat->Set.Src) > 0)
+						FilesSizeDialog(hDlg, Pat);
+					else
+						DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(folder_notify_dlg), hDlg, ExeEscDialogProc, (LPARAM)MSGJPN_86);
+					break;
 
-                case IDHELP :
-                    HtmlHelp(NULL, AskHelpFilePath(), HH_HELP_CONTEXT, IDH_HELP_TOPIC_0000020);
-                    break;
+				case IDHELP :
+					HtmlHelp(NULL, AskHelpFilePath(), HH_HELP_CONTEXT, IDH_HELP_TOPIC_0000020);
+					break;
 
-                case QUICK_SRC_BR :
-                    if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_36) == TRUE)
-                        SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp);
-                    break;
+				case QUICK_SRC_BR :
+					if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_36) == TRUE)
+						SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp);
+					break;
 
-                case QUICK_DST_BR :
-                    if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_33) == TRUE)
-                        SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Tmp);
-                    break;
-            }
-            return(TRUE);
+				case QUICK_DST_BR :
+					if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_33) == TRUE)
+						SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)Tmp);
+					break;
+			}
+			return(TRUE);
 
-        case WM_ADD_SRCLIST :
-            Tmp2 = malloc((SRC_PATH_LEN+1) * sizeof(_TCHAR));
-            if(Tmp2 != NULL)
-            {
-                SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Tmp2);
-                if((_tcslen(Tmp2) + _tcslen((_TCHAR*)lParam) + 1) <= SRC_PATH_LEN)
-                {
-                    SetCharTail(Tmp2, _T(";"));
-                    _tcscat(Tmp2, (_TCHAR*)lParam);
-                    SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp2);
-                    SendDlgItemMessage(hDlg, QUICK_SRC, EM_SETSEL, 0, (LPARAM)-1);
-                }
-                else
-                    MessageBeep((UINT)-1);
-                free(Tmp2);
-            }
-            free((_TCHAR*)lParam);
-            break;
+		case WM_ADD_SRCLIST :
+			Tmp2 = malloc((SRC_PATH_LEN+1) * sizeof(_TCHAR));
+			if(Tmp2 != NULL)
+			{
+				SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Tmp2);
+				if((_tcslen(Tmp2) + _tcslen((_TCHAR*)lParam) + 1) <= SRC_PATH_LEN)
+				{
+					SetCharTail(Tmp2, _T(";"));
+					_tcscat(Tmp2, (_TCHAR*)lParam);
+					SendDlgItemMessage(hDlg, QUICK_SRC, WM_SETTEXT, 0, (LPARAM)Tmp2);
+					SendDlgItemMessage(hDlg, QUICK_SRC, EM_SETSEL, 0, (LPARAM)-1);
+				}
+				else
+					MessageBeep((UINT)-1);
+				free(Tmp2);
+			}
+			free((_TCHAR*)lParam);
+			break;
 
-        case WM_ADD_DSTLIST :
-            SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)lParam);
-            free((_TCHAR*)lParam);
-            break;
-    }
+		case WM_ADD_DSTLIST :
+			SendDlgItemMessage(hDlg, QUICK_DST, WM_SETTEXT, 0, (LPARAM)lParam);
+			free((_TCHAR*)lParam);
+			break;
+	}
     return(FALSE);
 }
 
 
-/*----- ƒ_ƒCƒAƒƒO‚Ìî•ñ‚©‚çƒpƒ^[ƒ“ƒf[ƒ^‚ğì¬‚·‚é --------------------------
+/*----- ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®æƒ…å ±ã‹ã‚‰ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹ --------------------------
 *
-*   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       COPYPATLIST *Pat : ƒpƒ^[ƒ“ƒf[ƒ^‚ÌŠi”[æ
+*	Parameter
+*		HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*		COPYPATLIST *Pat : ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒ‡ãƒ¼ã‚¿ã®æ ¼ç´å…ˆ
 *
-*   Return Value
-*       ‚È‚µ
+*	Return Value
+*		ãªã—
 *----------------------------------------------------------------------------*/
 static void MakeCopyPatFromDialog(HWND hDlg, COPYPATLIST *Pat)
 {
-    SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Pat->Set.Src);
-    CheckSemicolon(Pat->Set.Src);
-    Pat->Set.Src[_tcslen(Pat->Set.Src) + 1] = '\0';
-    ReplaceAll(Pat->Set.Src, _tcslen(Pat->Set.Src), ';', '\0');
-    SendDlgItemMessage(hDlg, QUICK_DST, WM_GETTEXT, DST_PATH_LEN, (LPARAM)Pat->Set.Dst);
-    Pat->Set.Dst[_tcslen(Pat->Set.Dst) + 1] = '\0';
-    Pat->Set.DelDir = SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
-    Pat->Set.DelFile = SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
-    Pat->Set.NotifyDel = SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_GETCHECK, 0, 0);
-    Pat->Set.UseTrashCan = SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
-    Pat->Set.ForceCopy = SendDlgItemMessage(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
-    Pat->Set.NewOnly = SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
-    Pat->Set.IgnoreErr = SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
-    return;
+	SendDlgItemMessage(hDlg, QUICK_SRC, WM_GETTEXT, SRC_PATH_LEN, (LPARAM)Pat->Set.Src);
+	CheckSemicolon(Pat->Set.Src);
+	Pat->Set.Src[_tcslen(Pat->Set.Src) + 1] = '\0';
+	ReplaceAll(Pat->Set.Src, _tcslen(Pat->Set.Src), ';', '\0');
+	SendDlgItemMessage(hDlg, QUICK_DST, WM_GETTEXT, DST_PATH_LEN, (LPARAM)Pat->Set.Dst);
+	Pat->Set.Dst[_tcslen(Pat->Set.Dst) + 1] = '\0';
+	Pat->Set.DelDir = SendDlgItemMessage(hDlg, PATSET_RMDIR, BM_GETCHECK, 0, 0);
+	Pat->Set.DelFile = SendDlgItemMessage(hDlg, PATSET_RMFILE, BM_GETCHECK, 0, 0);
+	Pat->Set.NotifyDel = SendDlgItemMessage(hDlg, PATSET_NOTIFY_DEL2, BM_GETCHECK, 0, 0);
+	Pat->Set.UseTrashCan = SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0);
+	Pat->Set.ForceCopy = SendDlgItemMessage(hDlg, PATSET_FORCE, BM_GETCHECK, 0, 0);
+	Pat->Set.NewOnly = SendDlgItemMessage(hDlg, PATSET_NEWONLY, BM_GETCHECK, 0, 0);
+	Pat->Set.IgnoreErr = SendDlgItemMessage(hDlg, PATSET_NOERROR, BM_GETCHECK, 0, 0);
+	return;
 }
 
 
-/*----- •s—v‚ÈƒZƒ~ƒRƒƒ“‚Ìƒ`ƒFƒbƒN --------------------------------------------
+/*----- ä¸è¦ãªã‚»ãƒŸã‚³ãƒ­ãƒ³ã®ãƒã‚§ãƒƒã‚¯ --------------------------------------------
 *
-*   Parameter
-*       LPTSTR Str : •¶š—ñ
+*	Parameter
+*		LPTSTR Str : æ–‡å­—åˆ—
 *
-*   Return Value
-*       ‚È‚µ
+*	Return Value
+*		ãªã—
 *----------------------------------------------------------------------------*/
 static void CheckSemicolon(LPTSTR Str)
 {
-    LPTSTR Put;
-    _TCHAR Prev;
+	LPTSTR Put;
+	_TCHAR Prev;
 
-    Prev= '\0';
-    Put = Str;
-    while(*Str != '\0')
-    {
-        if(*Str != ';')
-            break;
-        Str++;
-    }
+	Prev= '\0';
+	Put = Str;
+	while(*Str != '\0')
+	{
+		if(*Str != ';')
+			break;
+		Str++;
+	}
 
-    while(*Str != '\0')
-    {
-        if((*Str != ';') || (Prev != ';'))
-        {
-            Prev = *Str++;
-            *Put++ = Prev;
-        }
-        else
-            Str++;
-    }
-    *Put = '\0';
-    return;
+	while(*Str != '\0')
+	{
+		if((*Str != ';') || (Prev != ';'))
+		{
+			Prev = *Str++;
+			*Put++ = Prev;
+		}
+		else
+			Str++;
+	}
+	*Put = '\0';
+	return;
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒvŒ³ƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------------
 *
-*   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*	Parameter
+*		HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*		UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*		WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*		LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
-*   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*	Return Value
+*		ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK QuickSrcWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    switch (message)
-    {
+	switch (message)
+	{
         case WM_DROPFILES:
-            SendDropFilesToControl(hWndQuickPat, WM_ADD_SRCLIST, wParam, lParam, SEND_FOLDER | SEND_FILE);
-            break;
+			SendDropFilesToControl(hWndQuickPat, WM_ADD_SRCLIST, wParam, lParam, SEND_FOLDER | SEND_FILE);
+			break;
 
-        default :
-            return(CallWindowProc(QuickSrcProcPtr, hWnd, message, wParam, lParam));
-    }
+		default :
+			return(CallWindowProc(QuickSrcProcPtr, hWnd, message, wParam, lParam));
+	}
     return(0L);
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒvæƒEƒCƒ“ƒhƒE‚ÌƒƒbƒZ[ƒWˆ— ------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç† ------------------------------
 *
-*   Parameter
-*       HWND hWnd : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message  : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*	Parameter
+*		HWND hWnd : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*		UINT message  : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*		WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*		LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
-*   Return Value
-*       ƒƒbƒZ[ƒW‚É‘Î‰‚·‚é–ß‚è’l
+*	Return Value
+*		ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¯¾å¿œã™ã‚‹æˆ»ã‚Šå€¤
 *----------------------------------------------------------------------------*/
 
 static LRESULT CALLBACK QuickDstWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    switch (message)
-    {
+	switch (message)
+	{
         case WM_DROPFILES:
-            SendDropFilesToControl(hWndQuickPat, WM_ADD_DSTLIST, wParam, lParam, SEND_FOLDER);
-            break;
+			SendDropFilesToControl(hWndQuickPat, WM_ADD_DSTLIST, wParam, lParam, SEND_FOLDER);
+			break;
 
-        default :
-            return(CallWindowProc(QuickDstProcPtr, hWnd, message, wParam, lParam));
-    }
+		default :
+			return(CallWindowProc(QuickDstProcPtr, hWnd, message, wParam, lParam));
+	}
     return(0L);
 }
 
