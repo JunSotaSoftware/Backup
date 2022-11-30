@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                               ƒtƒ@ƒCƒ‹“]‘—
+/                               ãƒ•ã‚¡ã‚¤ãƒ«è»¢é€
 /
 /============================================================================
 / Copyright (C) 1997-2022 Sota. All rights reserved.
@@ -43,16 +43,16 @@
 #include "resource.h"
 
 
-//#define NO_OPERATION      /* ƒtƒ@ƒCƒ‹‚Ì‘€ì‚ğÀÛ‚É‚Í‚µ‚È‚¢iƒfƒoƒbƒO—p) */
+//#define NO_OPERATION      /* ãƒ•ã‚¡ã‚¤ãƒ«ã®æ“ä½œã‚’å®Ÿéš›ã«ã¯ã—ãªã„ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨) */
 
-#define READFILE_WRITEFILE      0   /* ReadFile/WriteFileŠÖ”‚Åƒtƒ@ƒCƒ‹‚ğƒRƒs[‚·‚é */
-#define COPYFILEEX              1   /* CopyFileExŠÖ”‚Åƒtƒ@ƒCƒ‹‚ğƒRƒs[‚·‚é */
-#define BACKUPREAD_BACKUPWRITE  2   /* BackupRead/BackupWriteŠÖ”‚Åƒtƒ@ƒCƒ‹‚ğƒRƒs[‚·‚é */
+#define READFILE_WRITEFILE      0   /* ReadFile/WriteFileé–¢æ•°ã§ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ */
+#define COPYFILEEX              1   /* CopyFileExé–¢æ•°ã§ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ */
+#define BACKUPREAD_BACKUPWRITE  2   /* BackupRead/BackupWriteé–¢æ•°ã§ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ */
 
 #define FILECOPY_METHOD         COPYFILEEX
 
-#define NORMALIZATION_TYPE_NONE     0   /* ³‹K‰»‚µ‚È‚¢ */
-#define NORMALIZATION_TYPE_NFC      1   /* NFC‚É³‹K‰» */
+#define NORMALIZATION_TYPE_NONE     0   /* æ­£è¦åŒ–ã—ãªã„ */
+#define NORMALIZATION_TYPE_NFC      1   /* NFCã«æ­£è¦åŒ– */
 
 typedef struct dirtree {
     _TCHAR Fname[MY_MAX_PATH+1];
@@ -78,7 +78,7 @@ typedef struct {
 
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static void BackupThread(void *Dummy);
 static void SuppressSleepThread(void *Dummy);
@@ -118,7 +118,7 @@ static int CheckNormlization(LPCTSTR dest);
 static int FnameCompare(LPCTSTR src, LPCTSTR dst);
 static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo);
 
-/*===== ƒ[ƒJƒ‹‚Èƒ[ƒN ======*/
+/*===== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
 static int GoAbort = NO;
 static int Pause = NO;
@@ -145,7 +145,7 @@ int TviewDispCounter=0;
 
 int NormalizationType;
 
-/*===== ƒOƒ[ƒoƒ‹‚Èƒ[ƒN ======*/
+/*===== ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
 extern int LogVerbose;
 extern int SleepSuppressAC;
@@ -154,13 +154,13 @@ extern int SleepSuppressBatteryPercent;
 
 
 
-/*----- ƒoƒbƒNƒAƒbƒvƒXƒŒƒbƒh‚ğ‹N“®‚·‚é ----------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’èµ·å‹•ã™ã‚‹ ----------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX (=SUCCESS)
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (=SUCCESS)
 *----------------------------------------------------------------------------*/
 
 int MakeBackupThread(void)
@@ -174,13 +174,13 @@ int MakeBackupThread(void)
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒvƒXƒŒƒbƒh‚ğI—¹‚·‚é ----------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’çµ‚äº†ã™ã‚‹ ----------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void CloseBackupThread(void)
@@ -191,13 +191,13 @@ void CloseBackupThread(void)
 }
 
 
-/*----- g—p‚·‚éƒoƒbƒNƒAƒbƒvƒpƒ^[ƒ“‚ğƒZƒbƒg‚·‚é ------------------------------
+/*----- ä½¿ç”¨ã™ã‚‹ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ ------------------------------
 *
 *   Parameter
-*       COPYPATLIST *Pat : ƒpƒ^[ƒ“
+*       COPYPATLIST *Pat : ãƒ‘ã‚¿ãƒ¼ãƒ³
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetBackupPat(COPYPATLIST *Pat)
@@ -207,13 +207,13 @@ void SetBackupPat(COPYPATLIST *Pat)
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒv’†~ƒtƒ‰ƒO‚ğƒZƒbƒg ----------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ä¸­æ­¢ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ ----------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetBackupAbort(void)
@@ -223,13 +223,13 @@ void SetBackupAbort(void)
 }
 
 
-/*----- ƒ|[ƒYƒtƒ‰ƒO‚ğƒZƒbƒg ----------------------------------------
+/*----- ãƒãƒ¼ã‚ºãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ ----------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetBackupPause(void)
@@ -239,13 +239,13 @@ void SetBackupPause(void)
 }
 
 
-/*----- ƒ|[ƒYƒtƒ‰ƒO‚ğƒŠƒZƒbƒg ----------------------------------------
+/*----- ãƒãƒ¼ã‚ºãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ ----------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SetBackupRestart(void)
@@ -255,13 +255,13 @@ void SetBackupRestart(void)
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒvƒXƒŒƒbƒh‚ÌƒƒCƒ“ƒ‹[ƒv ------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚¹ãƒ¬ãƒƒãƒ‰ã®ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ— ------------------------------------
 *
 *   Parameter
-*       void *Dummy : g‚í‚È‚¢
+*       void *Dummy : ä½¿ã‚ãªã„
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 static void BackupThread(void *Dummy)
@@ -284,13 +284,13 @@ static void BackupThread(void *Dummy)
     _endthread();
 }
 
-/*----- ƒXƒŠ[ƒv‚ğ—}~‚·‚é‚©”»’f‚·‚éˆ—  -------------------------------------
+/*----- ã‚¹ãƒªãƒ¼ãƒ—ã‚’æŠ‘æ­¢ã™ã‚‹ã‹åˆ¤æ–­ã™ã‚‹å‡¦ç†  -------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       BOOL ƒXƒe[ƒ^ƒX
+*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 static BOOL CheckSuppressSleep()
@@ -319,20 +319,20 @@ static BOOL CheckSuppressSleep()
     return DefaultSuppress;
 }
 
-/*----- ƒXƒŠ[ƒv‚ğ‘j~‚·‚éƒXƒŒƒbƒh‚ÌƒƒCƒ“ƒ‹[ƒv ------------------------------------
+/*----- ã‚¹ãƒªãƒ¼ãƒ—ã‚’é˜»æ­¢ã™ã‚‹ã‚¹ãƒ¬ãƒƒãƒ‰ã®ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ— ------------------------------------
 *
 *   Parameter
-*       void *Dummy : g‚í‚È‚¢
+*       void *Dummy : ä½¿ã‚ãªã„
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 static void SuppressSleepThread(void *Dummy)
 {
     /*
-        ƒEƒFƒCƒgŠÔ‚ğ 30 •b‚É‚µ‚Ä‚¢‚é‚Ì‚ÍƒXƒŠ[ƒv‚É“ü‚é‚Ü‚Å‚ÌŠÔ‚ÌÅ’Z‚ª1•ª‚È‚Ì‚Å
-        ‚»‚ê‚æ‚è’Z‚¢ŠÔŠu‚Å SetThreadExecutionState() ‚ğŒÄ‚Ño‚¹‚é‚æ‚¤‚É‚·‚é‚½‚ß
+        ã‚¦ã‚§ã‚¤ãƒˆæ™‚é–“ã‚’ 30 ç§’ã«ã—ã¦ã„ã‚‹ã®ã¯ã‚¹ãƒªãƒ¼ãƒ—ã«å…¥ã‚‹ã¾ã§ã®æ™‚é–“ã®æœ€çŸ­ãŒ1åˆ†ãªã®ã§
+        ãã‚Œã‚ˆã‚ŠçŸ­ã„é–“éš”ã§ SetThreadExecutionState() ã‚’å‘¼ã³å‡ºã›ã‚‹ã‚ˆã†ã«ã™ã‚‹ãŸã‚
     */
     while(WaitForSingleObject(hRunMutex, 30 * 1000) == WAIT_TIMEOUT)
     {
@@ -348,13 +348,13 @@ static void SuppressSleepThread(void *Dummy)
     _endthread();
 }
 
-/*----- ƒoƒbƒNƒAƒbƒvˆ— ------------------------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å‡¦ç† ------------------------------------------------------
 *
 *   Parameter
-*       COPYPATLIST *Pat : ƒpƒ^[ƒ“
+*       COPYPATLIST *Pat : ãƒ‘ã‚¿ãƒ¼ãƒ³
 *
 *   Return Value
-*       ƒXƒe[ƒ^ƒX
+*       ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -426,7 +426,7 @@ static int BackupProc(COPYPATLIST *Pat)
         }
         Pat->Set.NextDst = GetSpecifiedStringFromMultiString(Pat->Set.Dst, Pat->Set.NextDstNum);
 
-        /* ƒoƒbƒNƒAƒbƒvæƒtƒHƒ‹ƒ_‚Ìƒ}ƒNƒ‚ğ“WŠJ */
+        /* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆãƒ•ã‚©ãƒ«ãƒ€ã®ãƒã‚¯ãƒ­ã‚’å±•é–‹ */
 //      MakeDestinationPath(Pat->Set.NextDst, &DestPath);
 
         OpenErrorLogfile();
@@ -446,7 +446,7 @@ static int BackupProc(COPYPATLIST *Pat)
             continue;
         }
 
-        /* ƒoƒbƒNƒAƒbƒvæ‚Ì³‹K‰»‚Ìƒ^ƒCƒv‚ğƒ`ƒFƒbƒN */
+        /* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã®æ­£è¦åŒ–ã®ã‚¿ã‚¤ãƒ—ã‚’ãƒã‚§ãƒƒã‚¯ */
         // NormalizationType = CheckNormlization(Pat->Set.NextDst);
         NormalizationType = NORMALIZATION_TYPE_NONE;
         if (Pat->Set.DstDropbox)
@@ -454,14 +454,14 @@ static int BackupProc(COPYPATLIST *Pat)
             NormalizationType = NORMALIZATION_TYPE_NFC;
         }
 
-        /* ƒoƒbƒNƒAƒbƒvæ‚Ìì¬‚Æƒ`ƒFƒbƒN */
+        /* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã®ä½œæˆã¨ãƒã‚§ãƒƒã‚¯ */
         if((Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, Pat->Set.IgnAttr)) == SUCCESS)
         {
             GetCurrentDirectory(MY_MAX_PATH+1, Tmp);
             if(SetCurrentDirectory_My(Pat->Set.NextDst, YES) == TRUE)
             {
                 SetCurrentDirectory_My(Tmp, NO);
-                /* ƒ{ƒŠƒ…[ƒ€ƒ‰ƒxƒ‹‚Ìƒ`ƒFƒbƒN */
+                /* ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒ©ãƒ™ãƒ«ã®ãƒã‚§ãƒƒã‚¯ */
                 if(Pat->Set.ChkVolLabel)
                 {
                     GetVolumeLabel(Pat->Set.NextDst, Tmp, MY_MAX_PATH+1);
@@ -560,15 +560,15 @@ static int BackupProc(COPYPATLIST *Pat)
 }
 
 
-/*----- ƒRƒs[Œ³‚É‚È‚¢ƒTƒuƒfƒBƒŒƒNƒgƒŠ‚ğƒRƒs[æ‚©‚çíœ ----------------------
+/*----- ã‚³ãƒ”ãƒ¼å…ƒã«ãªã„ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ã‚³ãƒ”ãƒ¼å…ˆã‹ã‚‰å‰Šé™¤ ----------------------
 *
 *   Parameter
-*       LPTSTR SrcPath : İ’èã‚Ì“]‘—Œ³‚ÌƒpƒX–¼
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
+*       LPTSTR SrcPath : è¨­å®šä¸Šã®è»¢é€å…ƒã®ãƒ‘ã‚¹å
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -601,17 +601,17 @@ static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *op
 }
 
 
-/*----- ƒRƒs[Œ³‚É‚È‚¢ƒTƒuƒfƒBƒŒƒNƒgƒŠ‚ğƒRƒs[æ‚©‚çíœiƒTƒuj---------------
+/*----- ã‚³ãƒ”ãƒ¼å…ƒã«ãªã„ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ã‚³ãƒ”ãƒ¼å…ˆã‹ã‚‰å‰Šé™¤ï¼ˆã‚µãƒ–ï¼‰---------------
 *
 *   Parameter
-*       LPTSTR SrcPath : İ’èã‚Ì“]‘—Œ³‚ÌƒpƒX–¼
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
-*       LPTSTR DstSub : ƒTƒuƒfƒBƒŒƒNƒgƒŠ
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
-*       int DialogResult : ƒ_ƒCƒAƒƒO‚Å‘I‚Î‚ê‚½‘I‘ğˆ
+*       LPTSTR SrcPath : è¨­å®šä¸Šã®è»¢é€å…ƒã®ãƒ‘ã‚¹å
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
+*       LPTSTR DstSub : ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+*       int DialogResult : ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã§é¸ã°ã‚ŒãŸé¸æŠè‚¢
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -630,12 +630,12 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
 
     Sts = SUCCESS;
 
-    _tcscpy(Cur, DstPath);      /* “]‘—æ‚ÌƒfƒBƒŒƒNƒgƒŠ–¼‚ğì¬ */
+    _tcscpy(Cur, DstPath);      /* è»¢é€å…ˆã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã‚’ä½œæˆ */
     SetYenTail(Cur);
 
     if(0 == NoMakeTopDir)
     {
-        //‚±‚±
+        //ã“ã“
         _tcscat(Cur, GetFileName(SrcPath));
         SetYenTail(Cur);
     }
@@ -665,7 +665,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
             if((CheckFnameWithArray(Tmp, options->IgnoreDirs) == NO) &&
                (CheckIgnSysHid(Tmp, options->IgnSys, options->IgnHid, -1) == NO))
             {
-                /* œŠO‚·‚éƒtƒHƒ‹ƒ_‚Å‚Í‚È‚¢ */
+                /* é™¤å¤–ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã§ã¯ãªã„ */
                 if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
                 {
                     FindClose(fHnd);
@@ -718,7 +718,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
             }
             else if(options->IgnNoDel == NO)
             {
-                /* œŠO‚·‚éƒtƒHƒ‹ƒ_ */
+                /* é™¤å¤–ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ */
 #ifdef NO_OPERATION
                 DoPrintf(_T("    Delete %s\n"), Cur);
                 Sts = SUCCESS;
@@ -738,14 +738,14 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
 }
 
 
-/*----- ƒTƒuƒfƒBƒŒƒNƒgƒŠˆÈ‰º‚ğíœ --------------------------------------------
+/*----- ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªä»¥ä¸‹ã‚’å‰Šé™¤ --------------------------------------------
 *
 *   Parameter
-*       LPTSTR Name : ƒpƒX
-*       int DialogResult : ƒ_ƒCƒAƒƒO‚Å‘I‚Î‚ê‚½‘I‘ğˆ
+*       LPTSTR Name : ãƒ‘ã‚¹
+*       int DialogResult : ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã§é¸ã°ã‚ŒãŸé¸æŠè‚¢
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -778,7 +778,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
                 {
                     if((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                     {
-                        /* ƒtƒ@ƒCƒ‹ */
+                        /* ãƒ•ã‚¡ã‚¤ãƒ« */
                         _tcscpy(NamePos, FindBuf.cFileName);
                         Sts = GoDelete1(Find, YES, DialogResult);
 
@@ -791,7 +791,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
                     else if((_tcscmp(FindBuf.cFileName, _T(".")) != 0) &&
                             (_tcscmp(FindBuf.cFileName, _T("..")) != 0))
                     {
-                        /* ƒTƒuƒfƒBƒŒƒNƒgƒŠ */
+                        /* ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª */
                         _tcscpy(NamePos, FindBuf.cFileName);
                         Sts = DeleteSubDir(Find, DialogResult);
                     }
@@ -815,14 +815,14 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
 }
 
 
-/*----- ƒRƒs[Œ³‚É‚È‚¢ƒtƒ@ƒCƒ‹‚ğƒRƒs[æ‚©‚çíœ ------------------------------
+/*----- ã‚³ãƒ”ãƒ¼å…ƒã«ãªã„ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼å…ˆã‹ã‚‰å‰Šé™¤ ------------------------------
 *
 *   Parameter
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -942,14 +942,14 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
 }
 
 
-/*----- ƒRƒs[æ‚ÌƒTƒuƒfƒBƒŒƒNƒgƒŠ‚ğì¬ --------------------------------------
+/*----- ã‚³ãƒ”ãƒ¼å…ˆã®ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆ --------------------------------------
 *
 *   Parameter
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1002,15 +1002,15 @@ static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options)
 }
 
 
-/*----- ƒTƒuƒfƒBƒŒƒNƒgƒŠ‚ğì¬ ------------------------------------------------
+/*----- ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆ ------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Make : ƒfƒBƒŒƒNƒgƒŠ–¼
-*       LPTSTR Org : ƒRƒs[Œ³‚ÌƒfƒBƒŒƒNƒgƒŠ
-*       int IgnErr : ƒGƒ‰[‚ğ–³‹‚·‚é‚©‚Ç‚¤‚© (YES/NO)
+*       LPTSTR Make : ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
+*       LPTSTR Org : ã‚³ãƒ”ãƒ¼å…ƒã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+*       int IgnErr : ã‚¨ãƒ©ãƒ¼ã‚’ç„¡è¦–ã™ã‚‹ã‹ã©ã†ã‹ (YES/NO)
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1056,7 +1056,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
 //              if(_tcscmp(GetFileName(Tmp), FindBuf.cFileName) != 0)
                 if(FnameCompare(GetFileName(Tmp), FindBuf.cFileName) != 0)
                 {
-                    GoMake = 2;     /* ‘å•¶š/¬•¶š‚ªˆá‚¤ */
+                    GoMake = 2;     /* å¤§æ–‡å­—/å°æ–‡å­—ãŒé•ã† */
                 }
 
                 GoAttr = 0;
@@ -1113,7 +1113,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
             else if(GoMake == 2)
             {
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Tmp);
-                MoveFile_My(Tmp, Tmp, YES);  /* ‘å•¶š/¬•¶š‚ğ‡‚í‚¹‚é */
+                MoveFile_My(Tmp, Tmp, YES);  /* å¤§æ–‡å­—/å°æ–‡å­—ã‚’åˆã‚ã›ã‚‹ */
             }
 
             if(GoAttr == 1)
@@ -1132,17 +1132,17 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
 }
 
 
-/*----- ƒfƒBƒŒƒNƒgƒŠ‚Ìì¬Às ------------------------------------------------
+/*----- ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ä½œæˆå®Ÿè¡Œ ------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒfƒBƒŒƒNƒgƒŠ–¼
+*       LPTSTR Path : ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
-*           0=¬Œ÷/else ¸”s
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*           0=æˆåŠŸ/else å¤±æ•—
 *
 *   Note
-*       •¡”ŠK‘w‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğì¬‚·‚é
+*       è¤‡æ•°éšå±¤ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆã™ã‚‹
 *----------------------------------------------------------------------------*/
 
 static int GoMakeDir(LPTSTR Path)
@@ -1174,15 +1174,15 @@ static int GoMakeDir(LPTSTR Path)
 }
 
 
-/*----- XV‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ğƒRƒs[æ‚ÉƒRƒs[ ----------------------------------
+/*----- æ›´æ–°ã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼å…ˆã«ã‚³ãƒ”ãƒ¼ ----------------------------------
 *
 *   Parameter
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
-*       UINT DrvType : ƒhƒ‰ƒCƒu‚Ìƒ^ƒCƒv
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
+*       UINT DrvType : ãƒ‰ãƒ©ã‚¤ãƒ–ã®ã‚¿ã‚¤ãƒ—
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1208,7 +1208,7 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
 
         if((Type = GetSrcType()) == TREE_FOLDER)
         {
-            /*===== ƒtƒHƒ‹ƒ_’PˆÊ‚ÅƒoƒbƒNƒAƒbƒv =====*/
+            /*===== ãƒ•ã‚©ãƒ«ãƒ€å˜ä½ã§ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ— =====*/
 
             GetDstPath(Dst, DstPath);
             SetYenTail(Dst);
@@ -1230,14 +1230,14 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
             }
             while((Sts == SUCCESS) && (*ScnPos != NUL));
 
-            /* ƒtƒHƒ‹ƒ_‚Ìƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‚ ‚í‚¹‚é */
+            /* ãƒ•ã‚©ãƒ«ãƒ€ã®ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’ã‚ã‚ã›ã‚‹ */
             *DstFpos = 0;
             *SrcFpos = 0;
             SetFileTimeStamp(Src, Dst, DrvType);
         }
         else if (Type == TREE_FILE)
         {
-            /*===== ƒtƒ@ƒCƒ‹’PˆÊ‚ÅƒoƒbƒNƒAƒbƒv =====*/
+            /*===== ãƒ•ã‚¡ã‚¤ãƒ«å˜ä½ã§ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ— =====*/
 
             GetSrcPath(Src, ScnName);
             SrcFpos = GetFileName(Src);
@@ -1263,18 +1263,18 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹ƒRƒs[‚ğÀs --------------------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼ã‚’å®Ÿè¡Œ --------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Src : ƒRƒs[Œ³‚ÌƒpƒX–¼
-*       LPTSTR SrcFpos : ƒRƒs[Œ³‚Ìƒtƒ@ƒCƒ‹–¼‚ÌƒZƒbƒgˆÊ’u
-*       LPTSTR Dst : ƒRƒs[æ‚ÌƒpƒX–¼
-*       LPTSTR DstFpos : ƒRƒs[æ‚Ìƒtƒ@ƒCƒ‹–¼‚ÌƒZƒbƒgˆÊ’u
-*       UINT DrvType : ƒhƒ‰ƒCƒu‚Ìƒ^ƒCƒv
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
+*       LPTSTR Src : ã‚³ãƒ”ãƒ¼å…ƒã®ãƒ‘ã‚¹å
+*       LPTSTR SrcFpos : ã‚³ãƒ”ãƒ¼å…ƒã®ãƒ•ã‚¡ã‚¤ãƒ«åã®ã‚»ãƒƒãƒˆä½ç½®
+*       LPTSTR Dst : ã‚³ãƒ”ãƒ¼å…ˆã®ãƒ‘ã‚¹å
+*       LPTSTR DstFpos : ã‚³ãƒ”ãƒ¼å…ˆã®ãƒ•ã‚¡ã‚¤ãƒ«åã®ã‚»ãƒƒãƒˆä½ç½®
+*       UINT DrvType : ãƒ‰ãƒ©ã‚¤ãƒ–ã®ã‚¿ã‚¤ãƒ—
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1310,7 +1310,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                (CheckFnameWithArray(Src, options->IgnoreFiles) == YES) ||
                (DoCheckIgnSysHid(&SrcFinfo, options->IgnSys, options->IgnHid, options->IgnBigSize) == YES))
             {
-                /* ƒRƒs[‚µ‚È‚¢ */
+                /* ã‚³ãƒ”ãƒ¼ã—ãªã„ */
             }
             else
             {
@@ -1358,7 +1358,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                             DoPrintf(MSGJPN_73, Dst);
 #else
                             SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Dst);
-                            MoveFile_My(Dst, Dst, YES);  /* ‘å•¶š/¬•¶š‚ğ‡‚í‚¹‚é */
+                            MoveFile_My(Dst, Dst, YES);  /* å¤§æ–‡å­—/å°æ–‡å­—ã‚’åˆã‚ã›ã‚‹ */
 #endif
                         }
 
@@ -1378,7 +1378,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 
                 if(Copy == 1)
                 {
-                    /* ã‘‚«‚ÌŠm”F */
+                    /* ä¸Šæ›¸ãã®ç¢ºèª */
                     if((OverwriteMode != YES_ALL) && (OverwriteMode != NO_ALL) && (OverwriteMode != GO_ABORT))
                     {
                         overWrite.Fname         = Dst;
@@ -1487,15 +1487,15 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 
 
 
-/*----- ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚Ì‹–—eŒë·‚Ìƒ`ƒFƒbƒN ------------------------------------
+/*----- ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã®è¨±å®¹èª¤å·®ã®ãƒã‚§ãƒƒã‚¯ ------------------------------------
 *
 *   Parameter
-*       LPTSTR Src : ƒRƒs[Œ³
-*       LPTSTR Dst : ƒRƒs[æ
-*       int Tole : ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚Ì‹–—eŒë·
+*       LPTSTR Src : ã‚³ãƒ”ãƒ¼å…ƒ
+*       LPTSTR Dst : ã‚³ãƒ”ãƒ¼å…ˆ
+*       int Tole : ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã®è¨±å®¹èª¤å·®
 *
 *   Return Value
-*       BOOL ƒXƒe[ƒ^ƒX
+*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
@@ -1541,17 +1541,17 @@ DWORD CALLBACK CopyProgressRoutine(
 );
 
 
-/*----- ƒtƒ@ƒCƒ‹‚ğƒRƒs[‚·‚é --------------------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ --------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Src : ƒRƒs[Œ³
-*       LPTSTR Dst : ƒRƒs[æ
-*       int Wait : “]‘—‚ÌƒEƒGƒCƒgŠÔ
-*       UINT DrvType : ƒhƒ‰ƒCƒu‚Ìƒ^ƒCƒv
-*       int AllowDecrypted : EFS‚É‚æ‚éˆÃ†‰»•s‰Â‚Å‚à¬Œ÷‚³‚¹‚é
+*       LPTSTR Src : ã‚³ãƒ”ãƒ¼å…ƒ
+*       LPTSTR Dst : ã‚³ãƒ”ãƒ¼å…ˆ
+*       int Wait : è»¢é€æ™‚ã®ã‚¦ã‚¨ã‚¤ãƒˆæ™‚é–“
+*       UINT DrvType : ãƒ‰ãƒ©ã‚¤ãƒ–ã®ã‚¿ã‚¤ãƒ—
+*       int AllowDecrypted : EFSã«ã‚ˆã‚‹æš—å·åŒ–ä¸å¯ã§ã‚‚æˆåŠŸã•ã›ã‚‹
 *
 *   Return Value
-*       BOOL ƒXƒe[ƒ^ƒX
+*       BOOL ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
@@ -1623,7 +1623,7 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
             if(Wait != 0)
                 Sleep(Wait * WAIT_TIMER);
 
-            /* ƒtƒ@ƒCƒ‹‚Ìƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‡‚í‚¹‚é */
+            /* ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’åˆã‚ã›ã‚‹ */
             if(Sts == TRUE)
             {
                 if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
@@ -1645,7 +1645,7 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
         CloseHandle(hRead);
     }
 
-    /* ƒtƒ@ƒCƒ‹‚Ì‘®«‚ğ‡‚í‚¹‚é */
+    /* ãƒ•ã‚¡ã‚¤ãƒ«ã®å±æ€§ã‚’åˆã‚ã›ã‚‹ */
     if(Sts == TRUE)
     {
         if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
@@ -1734,7 +1734,7 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
             if(Wait != 0)
                 Sleep(Wait * WAIT_TIMER);
 
-            /* ƒtƒ@ƒCƒ‹‚Ìƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‡‚í‚¹‚é */
+            /* ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’åˆã‚ã›ã‚‹ */
             if(Sts == TRUE)
             {
                 if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
@@ -1756,7 +1756,7 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
         CloseHandle(hRead);
     }
 
-    /* ƒtƒ@ƒCƒ‹‚Ì‘®«‚ğ‡‚í‚¹‚é */
+    /* ãƒ•ã‚¡ã‚¤ãƒ«ã®å±æ€§ã‚’åˆã‚ã›ã‚‹ */
     if(Sts == TRUE)
     {
         if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
@@ -1841,13 +1841,13 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
 
 
 #if FILECOPY_METHOD==COPYFILEEX
-/*----- CopyFileExŠÖ”‚ÌƒR[ƒ‹ƒoƒbƒN ------------------------------------------
+/*----- CopyFileExé–¢æ•°ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ ------------------------------------------
 *
 *   Parameter
-*       CopyFileExŠÖ”‚ğQÆ
+*       CopyFileExé–¢æ•°ã‚’å‚ç…§
 *
 *   Return Value
-*       CopyFileExŠÖ”‚ğQÆ
+*       CopyFileExé–¢æ•°ã‚’å‚ç…§
 *----------------------------------------------------------------------------*/
 DWORD CALLBACK CopyProgressRoutine(
     LARGE_INTEGER TotalFileSize,
@@ -1883,15 +1883,15 @@ DWORD CALLBACK CopyProgressRoutine(
 #endif
 
 
-/*----- ‚P‚Â‚Ìƒtƒ@ƒCƒ‹^ƒfƒBƒŒƒNƒgƒŠ‚Ìíœ ------------------------------------
+/*----- ï¼‘ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ï¼ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®å‰Šé™¤ ------------------------------------
 *
 *   Parameter
-*       LPTSTR Fname : ƒtƒ@ƒCƒ‹–¼
-*       int ErrRep : ƒGƒ‰[•ñ‚·‚é‚©‚Ç‚¤‚© (YES/NO)
-*       int DialogResult : ƒ_ƒCƒAƒƒO‚Å‘I‚Î‚ê‚½‘I‘ğˆ
+*       LPTSTR Fname : ãƒ•ã‚¡ã‚¤ãƒ«å
+*       int ErrRep : ã‚¨ãƒ©ãƒ¼å ±å‘Šã™ã‚‹ã‹ã©ã†ã‹ (YES/NO)
+*       int DialogResult : ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã§é¸ã°ã‚ŒãŸé¸æŠè‚¢
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1979,13 +1979,13 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹íœŠm”F‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ” ------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤ç¢ºèªã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•° ------------------------------------
 *
 *   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
 *       BOOL TRUE/FALSE
@@ -2032,13 +2032,13 @@ static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam,
 }
 
 
-/*----- ƒtƒ@ƒCƒ‹ã‘‚«Šm”F‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ” -----------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ä¸Šæ›¸ãç¢ºèªã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•° -----------------------------------
 *
 *   Parameter
-*       HWND hDlg : ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-*       UINT message : ƒƒbƒZ[ƒW”Ô†
-*       WPARAM wParam : ƒƒbƒZ[ƒW‚Ì WPARAM ˆø”
-*       LPARAM lParam : ƒƒbƒZ[ƒW‚Ì LPARAM ˆø”
+*       HWND hDlg : ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+*       UINT message : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç•ªå·
+*       WPARAM wParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® WPARAM å¼•æ•°
+*       LPARAM lParam : ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã® LPARAM å¼•æ•°
 *
 *   Return Value
 *       BOOL TRUE/FALSE
@@ -2131,29 +2131,29 @@ static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wPar
 }
 
 
-/*----- TreeView‚ğÁ‹----------------- --------------------------------------
+/*----- TreeViewã‚’æ¶ˆå»----------------- --------------------------------------
 *
 *   Parameter
-*       HWND hWnd : TreeViewƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹
+*       HWND hWnd : TreeViewã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 static void EraseSourceTree(HWND hWnd)
 {
     SendMessage(hWnd, TVM_DELETEITEM, 0, (LPARAM)TVI_ROOT);
 }
 
-/*----- ƒfƒBƒŒƒNƒgƒŠ\‘¢‚ğTreeView‚Éì¬ --------------------------------------
+/*----- ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹é€ ã‚’TreeViewã«ä½œæˆ --------------------------------------
 *
 *   Parameter
-*       LPTSTR SrcRoot : İ’èã‚Ì“]‘—Œ³‚ÌƒpƒX–¼
-*       LPTSTR IgnoreDirs : ƒoƒbƒNƒAƒbƒv‚µ‚È‚¢ƒtƒHƒ‹ƒ_
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
-*       HWND hWnd : TreeViewƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹
+*       LPTSTR SrcRoot : è¨­å®šä¸Šã®è»¢é€å…ƒã®ãƒ‘ã‚¹å
+*       LPTSTR IgnoreDirs : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã—ãªã„ãƒ•ã‚©ãƒ«ãƒ€
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+*       HWND hWnd : TreeViewã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2204,16 +2204,16 @@ static int MakeSourceTree(LPTSTR SrcPath, PROC_OPTIONS *options, HWND hWnd)
 }
 
 
-/*----- ƒfƒBƒŒƒNƒgƒŠ\‘¢‚ğTreeView‚Éì¬iƒTƒuj-------------------------------
+/*----- ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹é€ ã‚’TreeViewã«ä½œæˆï¼ˆã‚µãƒ–ï¼‰-------------------------------
 *
 *   Parameter
-*       LPTSTR SrcRoot : İ’èã‚Ì“]‘—Œ³‚ÌƒpƒX–¼
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
-*       HTREEITEM Parent : eƒm[ƒh‚Ìƒnƒ“ƒhƒ‹
-*       HWND hWnd : TreeViewƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹
+*       LPTSTR SrcRoot : è¨­å®šä¸Šã®è»¢é€å…ƒã®ãƒ‘ã‚¹å
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+*       HTREEITEM Parent : è¦ªãƒãƒ¼ãƒ‰ã®ãƒãƒ³ãƒ‰ãƒ«
+*       HWND hWnd : TreeViewã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2236,21 +2236,21 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     MakePathandFile(Dname, Fname, NO);
 
     Type = FILE_ATTRIBUTE_DIRECTORY;
-//    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)        //20150317 ƒoƒbƒNƒAƒbƒvŒ³‚É D:\;*.mp3 ‚È‚Ç‚Æ‚µ‚½‚Ì“®ì‚ª‚¨‚©‚µ‚¢
+//    if(_tcscmp(SrcRoot+1, _T(":\\")) != 0)        //20150317 ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã« D:\;*.mp3 ãªã©ã¨ã—ãŸæ™‚ã®å‹•ä½œãŒãŠã‹ã—ã„
     if(_tcscmp(Dname+1, _T(":\\")) != 0)
     {
-        /* ƒtƒHƒ‹ƒ_^ƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©ƒ`ƒFƒbƒN */
+        /* ãƒ•ã‚©ãƒ«ãƒ€ï¼ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ */
         RemoveYenTail(Dname);
         if((_tcschr(Dname, '*') != NULL) || (_tcschr(Dname, '?') != NULL))
         {
-            // ƒƒCƒ‹ƒhƒJ[ƒhg—p‚Ìƒtƒ@ƒCƒ‹’PˆÊ‚Å‚ÌƒoƒbƒNƒAƒbƒv
-            // 20150626 ƒoƒbƒNƒAƒbƒvŒ³‚ÌƒtƒHƒ‹ƒ_iƒhƒ‰ƒCƒuj‚ª‘¶İ‚·‚é‚©ƒ`ƒFƒbƒN
+            // ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ä½¿ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«å˜ä½ã§ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
+            // 20150626 ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã®ãƒ•ã‚©ãƒ«ãƒ€ï¼ˆãƒ‰ãƒ©ã‚¤ãƒ–ï¼‰ãŒå­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
             _tcscpy(Dname2, Dname);
             Pos = _tcsrchr(Dname2, '\\');
             *(Pos + 1) = 0;
-            if (_tcscmp(Dname2 + 1, _T(":\\")) != 0)    // ƒhƒ‰ƒCƒu‚Ìw’èH (D:\*.txt ‚Ì‚æ‚¤‚Èê‡j
+            if (_tcscmp(Dname2 + 1, _T(":\\")) != 0)    // ãƒ‰ãƒ©ã‚¤ãƒ–ã®æŒ‡å®šï¼Ÿ (D:\*.txt ã®ã‚ˆã†ãªå ´åˆï¼‰
             {
-                // ƒtƒHƒ‹ƒ_‚ª‚ ‚é‚©ƒ`ƒFƒbƒN (D:\src\*.txt ‚Ì‚æ‚¤‚Èê‡‚É D:\src ‚ª‚ ‚é‚©j
+                // ãƒ•ã‚©ãƒ«ãƒ€ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ (D:\src\*.txt ã®ã‚ˆã†ãªå ´åˆã« D:\src ãŒã‚ã‚‹ã‹ï¼‰
                 Type = 0;
                 RemoveYenTail(Dname2);
                 if (GetFileAttributes_My(Dname2, NO) == 0xFFFFFFFF)
@@ -2263,7 +2263,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
             }
             else
             {
-                // ƒhƒ‰ƒCƒu‚ª‚ ‚é‚©ƒ`ƒFƒbƒN (D:\*.txt ‚Ì‚æ‚¤‚Èê‡‚É D:\ ‚ª‚ ‚é‚©j
+                // ãƒ‰ãƒ©ã‚¤ãƒ–ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ (D:\*.txt ã®ã‚ˆã†ãªå ´åˆã« D:\ ãŒã‚ã‚‹ã‹ï¼‰
                 Type = 0;
                 if (GetDriveType(Dname2) == DRIVE_NO_ROOT_DIR)
                 {
@@ -2276,7 +2276,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
         }
         else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
         {
-            /* ‘å•¶š^¬•¶š‚ğ‡‚í‚¹‚é‚½‚ß‚Ìˆ— */
+            /* å¤§æ–‡å­—ï¼å°æ–‡å­—ã‚’åˆã‚ã›ã‚‹ãŸã‚ã®å‡¦ç† */
             if((fHnd = FindFirstFile_My(Dname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
             {
                 FindClose(fHnd);
@@ -2292,7 +2292,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     }
     else
     {
-//        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||        //20150317 ƒoƒbƒNƒAƒbƒvŒ³‚É D:\;*.mp3 ‚È‚Ç‚Æ‚µ‚½‚Ì“®ì‚ª‚¨‚©‚µ‚¢
+//        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||        //20150317 ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã« D:\;*.mp3 ãªã©ã¨ã—ãŸæ™‚ã®å‹•ä½œãŒãŠã‹ã—ã„
         if((GetDriveType(Dname) == DRIVE_NO_ROOT_DIR) ||
            ((Type = GetFileAttributes_My(Dname, NO)) == 0xFFFFFFFF))
         {
@@ -2341,16 +2341,16 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
 }
 
 
-/*----- ƒTƒuƒfƒBƒŒƒNƒgƒŠ\‘¢‚ğTreeView‚Éì¬iƒTƒu‚Qj-------------------------
+/*----- ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹é€ ã‚’TreeViewã«ä½œæˆï¼ˆã‚µãƒ–ï¼’ï¼‰-------------------------
 *
 *   Parameter
-*       LPTSTR SrcRoot : ƒpƒX–¼
-        PROC_OPTIONS options : ˆ—ƒIƒvƒVƒ‡ƒ“
-*       HTREEITEM Parent : eƒm[ƒh‚Ìƒnƒ“ƒhƒ‹
-*       HWND hWnd : TreeViewƒRƒ“ƒgƒ[ƒ‹‚Ìƒnƒ“ƒhƒ‹
+*       LPTSTR SrcRoot : ãƒ‘ã‚¹å
+        PROC_OPTIONS options : å‡¦ç†ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+*       HTREEITEM Parent : è¦ªãƒãƒ¼ãƒ‰ã®ãƒãƒ³ãƒ‰ãƒ«
+*       HWND hWnd : TreeViewã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2389,7 +2389,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                    ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) && (options->IgnSys == YES)) ||
                    ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) && (options->IgnHid == YES)))
                 {
-                    /* œŠO */
+                    /* é™¤å¤– */
                 }
                 else
                 {
@@ -2410,7 +2410,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                         break;
 
                     SendMessage(hWnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
-                    /* “K“–‚Èƒ^ƒCƒ~ƒ“ƒO‚ÅTreeView‚ğÄ•\¦‚·‚é */
+                    /* é©å½“ãªã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§TreeViewã‚’å†è¡¨ç¤ºã™ã‚‹ */
                     if(++TviewDispCounter == 200)
                     {
                         SendMessage(hWnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
@@ -2463,13 +2463,13 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
 }
 
 
-/*----- TreeView‚ÌÅ‰‚Ì€–Ú‚ÉˆÚ“® --------------------------------------------
+/*----- TreeViewã®æœ€åˆã®é …ç›®ã«ç§»å‹• --------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2489,13 +2489,13 @@ static int MoveFirstItem(void)
 }
 
 
-/*----- TreeView‚ÌŸ‚Ì€–Ú‚ÉˆÚ“® ----------------------------------------------
+/*----- TreeViewã®æ¬¡ã®é …ç›®ã«ç§»å‹• ----------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2529,13 +2529,13 @@ static int MoveNextItem(void)
 }
 
 
-/*----- TreeView‚ÌŒ»İ‚Ì€–Ú‚Ìí—Ş‚ğ•Ô‚· --------------------------------------
+/*----- TreeViewã®ç¾åœ¨ã®é …ç›®ã®ç¨®é¡ã‚’è¿”ã™ --------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒ^ƒCƒv (TREE_xxx)
+*       int ã‚¿ã‚¤ãƒ— (TREE_xxx)
 *----------------------------------------------------------------------------*/
 
 static int GetSrcType(void)
@@ -2555,21 +2555,21 @@ static int GetSrcType(void)
 }
 
 
-/*----- TreeView‚ÌŒ»İ‚Ì€–Ú‚ÌƒpƒX‚ğ•Ô‚· --------------------------------------
+/*----- TreeViewã®ç¾åœ¨ã®é …ç›®ã®ãƒ‘ã‚¹ã‚’è¿”ã™ --------------------------------------
 *
 *   Parameter
-*       LPTSTR Src : ƒpƒX–¼‚ÌƒRƒs[æ
-*       LPTSTR ScnName : ‘ÎÛƒtƒ@ƒCƒ‹–¼‚ÌƒŠƒXƒgiƒ}ƒ‹ƒ`•¶š—ñj
+*       LPTSTR Src : ãƒ‘ã‚¹åã®ã‚³ãƒ”ãƒ¼å…ˆ
+*       LPTSTR ScnName : å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒªã‚¹ãƒˆï¼ˆãƒãƒ«ãƒæ–‡å­—åˆ—ï¼‰
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *
 *   Note
-*       ‘ÎÛƒtƒ@ƒCƒ‹–¼‚ÌƒŠƒXƒg‚ÍAƒoƒbƒNƒAƒbƒvŒ³‚ğƒtƒHƒ‹ƒ_–¼{ƒtƒ@ƒCƒ‹–¼‚Åw’è
-*       ‚µ‚½ê‡‚Ìƒtƒ@ƒCƒ‹–¼•”•ª
+*       å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒªã‚¹ãƒˆã¯ã€ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã‚’ãƒ•ã‚©ãƒ«ãƒ€åï¼‹ãƒ•ã‚¡ã‚¤ãƒ«åã§æŒ‡å®š
+*       ã—ãŸå ´åˆã®ãƒ•ã‚¡ã‚¤ãƒ«åéƒ¨åˆ†
 *           D:\backup;*.txt;*.log
-*               --> ƒpƒX–¼FD:\backupA  ‘ÎÛƒtƒ@ƒCƒ‹–¼F*.txt *.log
+*               --> ãƒ‘ã‚¹åï¼šD:\backupã€  å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«åï¼š*.txt *.log
 *----------------------------------------------------------------------------*/
 
 static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
@@ -2620,14 +2620,14 @@ static int GetSrcPath(LPTSTR Src, LPTSTR ScnName)
 }
 
 
-/*----- TreeView‚ÌŒ»İ‚Ì€–Ú‚ğ‚©‚ç“]‘—æ‚ÌƒpƒX‚ğì¬‚µ‚Ä•Ô‚· ------------------
+/*----- TreeViewã®ç¾åœ¨ã®é …ç›®ã‚’ã‹ã‚‰è»¢é€å…ˆã®ãƒ‘ã‚¹ã‚’ä½œæˆã—ã¦è¿”ã™ ------------------
 *
 *   Parameter
-*       LPTSTR Dst : ƒpƒX–¼‚ÌƒRƒs[æ
-*       LPTSTR DstPath : İ’èã‚Ì“]‘—æ‚ÌƒpƒX–¼
+*       LPTSTR Dst : ãƒ‘ã‚¹åã®ã‚³ãƒ”ãƒ¼å…ˆ
+*       LPTSTR DstPath : è¨­å®šä¸Šã®è»¢é€å…ˆã®ãƒ‘ã‚¹å
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2668,7 +2668,7 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
                     {
                         MakePathandFile(Tmp, NULL, NO);
 
-                        //‚±‚±
+                        //ã“ã“
 
                         if(_tcslen(GetFileName(Tmp)) > 0)
                         {
@@ -2695,15 +2695,15 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
 }
 
 
-/*----- ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ÌƒfƒBƒŒƒNƒgƒŠƒŠƒXƒg‚ğì¬‚·‚é --------------------
+/*----- ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ --------------------
 *
 *   Parameter
-*       LPTSTR ScnPath : ŒŸõƒpƒX–¼
-*       DIRTREE **Base : ƒfƒBƒŒƒNƒgƒŠƒŠƒXƒg‚Ìƒx[ƒXƒ|ƒCƒ“ƒ^
-*       int Type : ƒŠƒXƒg‚Ìƒ^ƒCƒv (0=ƒtƒHƒ‹ƒ_, 1=ƒtƒ@ƒCƒ‹)
+*       LPTSTR ScnPath : æ¤œç´¢ãƒ‘ã‚¹å
+*       DIRTREE **Base : ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒªã‚¹ãƒˆã®ãƒ™ãƒ¼ã‚¹ãƒã‚¤ãƒ³ã‚¿
+*       int Type : ãƒªã‚¹ãƒˆã®ã‚¿ã‚¤ãƒ— (0=ãƒ•ã‚©ãƒ«ãƒ€, 1=ãƒ•ã‚¡ã‚¤ãƒ«)
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -2757,13 +2757,13 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
 }
 
 
-/*----- ƒfƒBƒŒƒNƒgƒŠƒŠƒXƒg‚ğíœ‚·‚é ------------------------------------------
+/*----- ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒªã‚¹ãƒˆã‚’å‰Šé™¤ã™ã‚‹ ------------------------------------------
 *
 *   Parameter
-*       DIRTREE **Base : ƒfƒBƒŒƒNƒgƒŠƒŠƒXƒg‚Ìƒx[ƒXƒ|ƒCƒ“ƒ^
+*       DIRTREE **Base : ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒªã‚¹ãƒˆã®ãƒ™ãƒ¼ã‚¹ãƒã‚¤ãƒ³ã‚¿
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 static void ReleaseDirList(DIRTREE **Base)
@@ -2783,14 +2783,14 @@ static void ReleaseDirList(DIRTREE **Base)
 }
 
 
-/*----- ˆ—‚Ì’†~‚ªs‚í‚ê‚½‚©‚Ç‚¤‚©‚ğƒ`ƒFƒbƒN --------------------------------
+/*----- å‡¦ç†ã®ä¸­æ­¢ãŒè¡Œã‚ã‚ŒãŸã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯ --------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
-*           SUCCESS/FAIL=’†~‚³‚ê‚½
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+*           SUCCESS/FAIL=ä¸­æ­¢ã•ã‚ŒãŸ
 *----------------------------------------------------------------------------*/
 
 static int CheckAbort(void)
@@ -2813,21 +2813,21 @@ static int CheckAbort(void)
 }
 
 
-/*----- ƒoƒbƒNƒAƒbƒvŒ³‚ğƒpƒX–¼‚Æƒtƒ@ƒCƒ‹–¼‚É•ª‚¯‚é ----------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã‚’ãƒ‘ã‚¹åã¨ãƒ•ã‚¡ã‚¤ãƒ«åã«åˆ†ã‘ã‚‹ ----------------------------
 *
 *   Parameter
-*       LPTSTR Path : ƒoƒbƒNƒAƒbƒvŒ³^ƒpƒX–¼‚ğ•Ô‚·ƒ[ƒN
-*       LPTSTR Fname : ƒtƒ@ƒCƒ‹–¼‚ğ•Ô‚·ƒ[ƒN (NULL=•Ô‚³‚È‚¢)
-*       int Multi : ƒtƒ@ƒCƒ‹–¼‚ğƒ}ƒ‹ƒ`•¶š—ñ‚É‚·‚é‚©‚Ç‚¤‚© (YES/NO)
+*       LPTSTR Path : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒï¼ãƒ‘ã‚¹åã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
+*       LPTSTR Fname : ãƒ•ã‚¡ã‚¤ãƒ«åã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯ (NULL=è¿”ã•ãªã„)
+*       int Multi : ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ãƒãƒ«ãƒæ–‡å­—åˆ—ã«ã™ã‚‹ã‹ã©ã†ã‹ (YES/NO)
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *
 *   Note
-*       Path = _T("C:\Home;*.log;*.txt") , Multi = NO ‚Ìê‡‚Ì–ß‚è’l
+*       Path = _T("C:\Home;*.log;*.txt") , Multi = NO ã®å ´åˆã®æˆ»ã‚Šå€¤
 *           Path = _T("C:\Home") , Fname = _T("*.log;*.txt")
 *
-*       Path = _T("C:\Home;*.log;*.txt") , Multi = YES ‚Ìê‡‚Ì–ß‚è’l
+*       Path = _T("C:\Home;*.log;*.txt") , Multi = YES ã®å ´åˆã®æˆ»ã‚Šå€¤
 *           Path = _T("C:\Home") , Fname = _T("*.log\0*.txt\0")
 *----------------------------------------------------------------------------*/
 
@@ -2847,7 +2847,7 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi)
             _tcscpy(Fname, Pos+1);
             if(Multi == YES)
             {
-                *(_tcschr(Fname, NUL)+1) = NUL;     /* ––”ö‚ÌNUL‚Í‚Q‚Â */
+                *(_tcschr(Fname, NUL)+1) = NUL;     /* æœ«å°¾ã®NULã¯ï¼’ã¤ */
                 Pos = Fname;
                 while((Pos = _tcschr(Pos, ';')) != NULL)
                     *Pos++ = NUL;
@@ -2858,15 +2858,15 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi)
 }
 
 
-/*----- ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‚ ‚í‚¹‚é ----------------------------------------------
+/*----- ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’ã‚ã‚ã›ã‚‹ ----------------------------------------------
 *
 *   Parameter
-*       LPTSTR Src : ƒoƒbƒNƒAƒbƒvŒ³
-*       LPTSTR Dst : ƒoƒbƒNƒAƒbƒvæ
-*       UINT DrvType : ƒhƒ‰ƒCƒu‚Ìƒ^ƒCƒv
+*       LPTSTR Src : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒ
+*       LPTSTR Dst : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆ
+*       UINT DrvType : ãƒ‰ãƒ©ã‚¤ãƒ–ã®ã‚¿ã‚¤ãƒ—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
@@ -2893,7 +2893,7 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
             CloseHandle(hFile);
             if(Sts != 0)
             {
-                // GENERIC_WRITE‚ğw’è‚·‚é‚½‚ß‚ÉReadOnly‚ğ‰ğœ
+                // GENERIC_WRITEã‚’æŒ‡å®šã™ã‚‹ãŸã‚ã«ReadOnlyã‚’è§£é™¤
                 if((Attr = GetFileAttributes_My(Dst, YES)) != 0xFFFFFFFF)
                     SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY, YES);
 
@@ -2911,7 +2911,7 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
                     CloseHandle(hFile);
                 }
 
-                // ƒAƒgƒŠƒrƒ…[ƒg‚ğŒ³‚É–ß‚µ‚Ä‚¨‚­
+                // ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’å…ƒã«æˆ»ã—ã¦ãŠã
                 if(Attr != 0xFFFFFFFF)
                     SetFileAttributes_My(Dst, Attr, YES);
             }
@@ -2922,16 +2922,16 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 }
 
 
-/*----- œŠO‚·‚×‚«ƒtƒ@ƒCƒ‹‚©ƒ`ƒFƒbƒN ------------------------------------------
+/*----- é™¤å¤–ã™ã¹ããƒ•ã‚¡ã‚¤ãƒ«ã‹ãƒã‚§ãƒƒã‚¯ ------------------------------------------
 *
 *   Parameter
-*       LPTSTR Fname : ƒtƒ@ƒCƒ‹–¼
-*       int IgnSys : ƒVƒXƒeƒ€ƒtƒ@ƒCƒ‹‚ğœŠOƒtƒ‰ƒO
-*       int IgnHid : ‰B‚µƒtƒ@ƒCƒ‹‚ğœŠOƒtƒ‰ƒO
-*       int BigSize : ‚±‚ÌƒTƒCƒY(MB)ˆÈã‚Ìƒtƒ@ƒCƒ‹‚ğœŠO(-1=œŠO‚µ‚È‚¢)
+*       LPTSTR Fname : ãƒ•ã‚¡ã‚¤ãƒ«å
+*       int IgnSys : ã‚·ã‚¹ãƒ†ãƒ ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–ãƒ•ãƒ©ã‚°
+*       int IgnHid : éš ã—ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–ãƒ•ãƒ©ã‚°
+*       int BigSize : ã“ã®ã‚µã‚¤ã‚º(MB)ä»¥ä¸Šã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–(-1=é™¤å¤–ã—ãªã„)
 *
 *   Return Value
-*       ƒXƒe[ƒ^ƒX YES=œŠO‚·‚é
+*       ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ YES=é™¤å¤–ã™ã‚‹
 *----------------------------------------------------------------------------*/
 
 static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize)
@@ -2950,16 +2950,16 @@ static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize)
 }
 
 
-/*----- œŠO‚·‚×‚«ƒtƒ@ƒCƒ‹‚©ƒ`ƒFƒbƒN ------------------------------------------
+/*----- é™¤å¤–ã™ã¹ããƒ•ã‚¡ã‚¤ãƒ«ã‹ãƒã‚§ãƒƒã‚¯ ------------------------------------------
 *
 *   Parameter
-*       WIN32_FIND_DATA *FindBuf : ŒŸõ‚µ‚½ƒtƒ@ƒCƒ‹î•ñ
-*       int IgnSys : ƒVƒXƒeƒ€ƒtƒ@ƒCƒ‹‚ğœŠOƒtƒ‰ƒO
-*       int IgnHid : ‰B‚µƒtƒ@ƒCƒ‹‚ğœŠOƒtƒ‰ƒO
-*       int BigSize : ‚±‚ÌƒTƒCƒY(MB)ˆÈã‚Ìƒtƒ@ƒCƒ‹‚ğœŠO(-1=œŠO‚µ‚È‚¢)
+*       WIN32_FIND_DATA *FindBuf : æ¤œç´¢ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±
+*       int IgnSys : ã‚·ã‚¹ãƒ†ãƒ ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–ãƒ•ãƒ©ã‚°
+*       int IgnHid : éš ã—ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–ãƒ•ãƒ©ã‚°
+*       int BigSize : ã“ã®ã‚µã‚¤ã‚º(MB)ä»¥ä¸Šã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é™¤å¤–(-1=é™¤å¤–ã—ãªã„)
 *
 *   Return Value
-*       ƒXƒe[ƒ^ƒX YES=œŠO‚·‚é
+*       ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ YES=é™¤å¤–ã™ã‚‹
 *----------------------------------------------------------------------------*/
 
 static int DoCheckIgnSysHid(WIN32_FIND_DATA *FindBuf, int IgnSys, int IgnHid, int BigSize)
@@ -2988,14 +2988,14 @@ static int DoCheckIgnSysHid(WIN32_FIND_DATA *FindBuf, int IgnSys, int IgnHid, in
 }
 
 
-/*----- MAX_PATHˆÈã‚ÌƒpƒX–¼‚É‘Î‰‚³‚¹‚é --------------------------------------
+/*----- MAX_PATHä»¥ä¸Šã®ãƒ‘ã‚¹åã«å¯¾å¿œã•ã›ã‚‹ --------------------------------------
 *
 *   Parameter
-*       path : ƒpƒX–¼
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       path : ãƒ‘ã‚¹å
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       ƒpƒX–¼ (g—pŒã‚Ífree‚·‚é‚±‚Æj
+*       ãƒ‘ã‚¹å (ä½¿ç”¨å¾Œã¯freeã™ã‚‹ã“ã¨ï¼‰
 *----------------------------------------------------------------------------*/
 
 static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
@@ -3050,13 +3050,13 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
 }
 
 
-/*----- MAX_PATHˆÈã‚ÌƒpƒX–¼‚É‘Î‰‚³‚¹‚éií‚ÉNFD‚É•ÏŠ·j --------------------------
+/*----- MAX_PATHä»¥ä¸Šã®ãƒ‘ã‚¹åã«å¯¾å¿œã•ã›ã‚‹ï¼ˆå¸¸ã«NFDã«å¤‰æ›ï¼‰ --------------------------
 *
 *   Parameter
-*       path : ƒpƒX–¼
+*       path : ãƒ‘ã‚¹å
 *
 *   Return Value
-*       ƒpƒX–¼ (g—pŒã‚Ífree‚·‚é‚±‚Æj
+*       ãƒ‘ã‚¹å (ä½¿ç”¨å¾Œã¯freeã™ã‚‹ã“ã¨ï¼‰
 *----------------------------------------------------------------------------*/
 
 static LPTSTR MakeLongPathNFD(LPCTSTR path)
@@ -3081,7 +3081,7 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
     }
     else
     {
-        /* ‚±‚±‚É‚Í—ˆ‚È‚¢‚Í‚¸ */
+        /* ã“ã“ã«ã¯æ¥ãªã„ã¯ãš */
         newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
         _tcscpy(newPath, path);
     }
@@ -3089,14 +3089,14 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
 }
 
 
-/*----- SetCurrentDirectory‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- SetCurrentDirectoryã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       SetCurrentDirectoryŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       SetCurrentDirectoryé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       SetCurrentDirectoryŠÖ”‚Æ“¯‚¶
+*       SetCurrentDirectoryé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
 {
@@ -3110,14 +3110,14 @@ BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
     return ret;
 }
 
-/*----- FindFirstFile‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------------
+/*----- FindFirstFileã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------------
 *
 *   Parameter
-*       FindFirstFileŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       FindFirstFileé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       FindFirstFileŠÖ”‚Æ“¯‚¶
+*       FindFirstFileé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization)
 {
@@ -3136,14 +3136,14 @@ HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, in
     return ret;
 }
 
-/*----- GetFileAttributes‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- GetFileAttributesã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       GetFileAttributesŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       GetFileAttributesé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       GetFileAttributesŠÖ”‚Æ“¯‚¶
+*       GetFileAttributesé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization)
 {
@@ -3157,14 +3157,14 @@ DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization)
     return ret;
 }
 
-/*----- GetFileAttributes‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- GetFileAttributesã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
 *       GetFileAttributes
-*       GetLastError() ‚Ì–ß‚è’l‚ğ•Ô‚·
+*       GetLastError() ã®æˆ»ã‚Šå€¤ã‚’è¿”ã™
 *
 *   Return Value
-*       GetFileAttributesŠÖ”‚Æ“¯‚¶
+*       GetFileAttributesé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
 {
@@ -3181,14 +3181,14 @@ DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
     return ret;
 }
 
-/*----- SetFileAttributes‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- SetFileAttributesã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       SetFileAttributesŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       SetFileAttributesé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       SetFileAttributesŠÖ”‚Æ“¯‚¶
+*       SetFileAttributesé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization)
 {
@@ -3202,14 +3202,14 @@ BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normal
     return ret;
 }
 
-/*----- MoveFile‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- MoveFileã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       MoveFileŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       MoveFileé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       MoveFileŠÖ”‚Æ“¯‚¶
+*       MoveFileé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization)
 {
@@ -3226,14 +3226,14 @@ BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normaliz
     return ret;
 }
 
-/*----- CreateFile‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- CreateFileã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       CreateFileŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       CreateFileé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       CreateFileŠÖ”‚Æ“¯‚¶
+*       CreateFileé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization)
 {
@@ -3247,14 +3247,14 @@ HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMod
     return ret;
 }
 
-/*----- RemoveDirectory‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- RemoveDirectoryã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       RemoveDirectoryŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       RemoveDirectoryé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       RemoveDirectoryŠÖ”‚Æ“¯‚¶
+*       RemoveDirectoryé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization)
 {
@@ -3268,14 +3268,14 @@ BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization)
     return ret;
 }
 
-/*----- CreateDirectory‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- CreateDirectoryã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       CreateDirectoryŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       CreateDirectoryé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       CreateDirectoryŠÖ”‚Æ“¯‚¶
+*       CreateDirectoryé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization)
 {
@@ -3289,14 +3289,14 @@ BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttr
     return ret;
 }
 
-/*----- DeleteFile‚ÌMAX_PATHˆÈã‚Ö‚ÌŠg’£ -----------------------------
+/*----- DeleteFileã®MAX_PATHä»¥ä¸Šã¸ã®æ‹¡å¼µ -----------------------------
 *
 *   Parameter
-*       DeleteFileŠÖ”‚Æ“¯‚¶
-*       normalization : ³‹K‰»ƒtƒ‰ƒO (YES/NO)
+*       DeleteFileé–¢æ•°ã¨åŒã˜
+*       normalization : æ­£è¦åŒ–ãƒ•ãƒ©ã‚° (YES/NO)
 *
 *   Return Value
-*       DeleteFileŠÖ”‚Æ“¯‚¶
+*       DeleteFileé–¢æ•°ã¨åŒã˜
 *----------------------------------------------------------------------------*/
 BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization)
 {
@@ -3311,23 +3311,23 @@ BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization)
 }
 
 /*
-* CheckNormlizationŠÖ”‚ÍAƒoƒbƒNƒAƒbƒvæ‚ªDropbox‚©‚Ç‚¤‚©‚ğ”»’f‚·‚é‚±‚Æ‚ğ–Ú“I‚É
-* ì¬‚µ‚½‚à‚ÌB
-* ƒoƒbƒNƒAƒbƒvæ‚ªDropbox‚ÌƒtƒHƒ‹ƒ_‚Ìê‡AUnicode‚ÌNFDi‡¬•¶š‚ğg‚¤j‚Ìƒtƒ@ƒCƒ‹–¼‚Å
-* ‘‚«‚ñ‚Å‚àADropbox‚Ì‹@”\‚É‚æ‚èNFC‚É³‹K‰»‚³‚ê‚éB‚»‚ê‚ğŒŸo‚µ‚æ‚¤‚Æ–Ú˜_‚ñ‚¾B
-* ‚¾‚ªAˆÈ‰º‚Ì——R‚É‚æ‚èACheckNormlizationŠÖ”‚Í‚¤‚Ü‚­“®ì‚µ‚È‚¢B
-* NFD‚Ì–¼‘O‚Ìƒtƒ@ƒCƒ‹‚ğ‘‚«‚ñ‚Å‚©‚çA‚»‚ê‚ğDropbox‚ªNFC‚É•ÏŠ·‚·‚é‚Ü‚ÅAáŠ±‚ÌŠÔ‚ª‚©‚©‚éB
-* •ÏŠ·‚ªŠ®—¹‚·‚é‚Ü‚Å‚ÍNFD‚Ìƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚Á‚Ä‚µ‚Ü‚¢A‚³‚ç‚ÉA‚Ç‚ê‚­‚ç‚¢‘Ò‚Ä‚ÎNFC‚É•ÏŠ·‚³‚ê‚é‚©‚ª
-* •s–¾‚Å‚ ‚é‚½‚ßANFC‚É•ÏŠ·‚³‚ê‚éDropbox‚©‚Ç‚¤‚©‚ÌŠmÀ‚È”»’f‚ª‚Å‚«‚È‚¢B
+* CheckNormlizationé–¢æ•°ã¯ã€ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆãŒDropboxã‹ã©ã†ã‹ã‚’åˆ¤æ–­ã™ã‚‹ã“ã¨ã‚’ç›®çš„ã«
+* ä½œæˆã—ãŸã‚‚ã®ã€‚
+* ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆãŒDropboxã®ãƒ•ã‚©ãƒ«ãƒ€ã®å ´åˆã€Unicodeã®NFDï¼ˆåˆæˆæ–‡å­—ã‚’ä½¿ã†ï¼‰ã®ãƒ•ã‚¡ã‚¤ãƒ«åã§
+* æ›¸ãè¾¼ã‚“ã§ã‚‚ã€Dropboxã®æ©Ÿèƒ½ã«ã‚ˆã‚ŠNFCã«æ­£è¦åŒ–ã•ã‚Œã‚‹ã€‚ãã‚Œã‚’æ¤œå‡ºã—ã‚ˆã†ã¨ç›®è«–ã‚“ã ã€‚
+* ã ãŒã€ä»¥ä¸‹ã®ç†ç”±ã«ã‚ˆã‚Šã€CheckNormlizationé–¢æ•°ã¯ã†ã¾ãå‹•ä½œã—ãªã„ã€‚
+* NFDã®åå‰ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ›¸ãè¾¼ã‚“ã§ã‹ã‚‰ã€ãã‚Œã‚’DropboxãŒNFCã«å¤‰æ›ã™ã‚‹ã¾ã§ã€è‹¥å¹²ã®æ™‚é–“ãŒã‹ã‹ã‚‹ã€‚
+* å¤‰æ›ãŒå®Œäº†ã™ã‚‹ã¾ã§ã¯NFDã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã£ã¦ã—ã¾ã„ã€ã•ã‚‰ã«ã€ã©ã‚Œãã‚‰ã„å¾…ã¦ã°NFCã«å¤‰æ›ã•ã‚Œã‚‹ã‹ãŒ
+* ä¸æ˜ã§ã‚ã‚‹ãŸã‚ã€NFCã«å¤‰æ›ã•ã‚Œã‚‹ï¼Dropboxã‹ã©ã†ã‹ã®ç¢ºå®Ÿãªåˆ¤æ–­ãŒã§ããªã„ã€‚
 */
 #if 0
-/*----- ƒoƒbƒNƒAƒbƒvæ‚Ì³‹K‰»‚Ìƒ^ƒCƒv‚ğæ“¾ ------------------------------------
+/*----- ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã®æ­£è¦åŒ–ã®ã‚¿ã‚¤ãƒ—ã‚’å–å¾— ------------------------------------
 *
 *   Parameter
-*       LPCTSTR dest : ƒoƒbƒNƒAƒbƒvæ‚ÌƒpƒX
+*       LPCTSTR dest : ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ˆã®ãƒ‘ã‚¹
 *
 *   Return Value
-*       int ³‹K‰»‚Ìƒ^ƒCƒv (NORMALIZATION_TYPE_xxx)
+*       int æ­£è¦åŒ–ã®ã‚¿ã‚¤ãƒ— (NORMALIZATION_TYPE_xxx)
 *----------------------------------------------------------------------------*/
 static int CheckNormlization(LPCTSTR dest)
 {
@@ -3336,7 +3336,7 @@ static int CheckNormlization(LPCTSTR dest)
     TCHAR path[MAX_PATH];
     int error = GetTempFileName(dest, nfdPath, 0, path);
 
-    Sleep(1000);    //NFC‚Ö‚Ì•ÏŠ·‘Ò‚¿
+    Sleep(1000);    //NFCã¸ã®å¤‰æ›å¾…ã¡
 
     if (error != 0)
     {
@@ -3375,14 +3375,14 @@ static int CheckNormlization(LPCTSTR dest)
 }
 #endif
 
-/*----- NFC‚É³‹K‰»‚µ‚Äƒtƒ@ƒCƒ‹–¼‚ğ”äŠr ----------------------------------------
+/*----- NFCã«æ­£è¦åŒ–ã—ã¦ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ¯”è¼ƒ ----------------------------------------
 *
 *   Parameter
-*       LPCTSTR src : ƒtƒ@ƒCƒ‹–¼1
-*       LPCTSTR dst : ƒtƒ@ƒCƒ‹–¼2
+*       LPCTSTR src : ãƒ•ã‚¡ã‚¤ãƒ«å1
+*       LPCTSTR dst : ãƒ•ã‚¡ã‚¤ãƒ«å2
 *
 *   Return Value
-*       int ”äŠrŒ‹‰Ê (_tcscmp‚Ì’l)
+*       int æ¯”è¼ƒçµæœ (_tcscmpã®å€¤)
 *----------------------------------------------------------------------------*/
 static int FnameCompare(LPCTSTR src, LPCTSTR dst)
 {
@@ -3402,14 +3402,14 @@ static int FnameCompare(LPCTSTR src, LPCTSTR dst)
     return ret;
 }
 
-/*----- ƒtƒ@ƒCƒ‹‚ğíœæƒtƒHƒ‹ƒ_‚ÖˆÚ“® -------------------------------------------
+/*----- ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤å…ˆãƒ•ã‚©ãƒ«ãƒ€ã¸ç§»å‹• -------------------------------------------
 *
 *   Parameter
-*       LPCTSTR path : íœ‚·‚éƒtƒ@ƒCƒ‹
-*       LPCTSTR moveTo : ˆÚ“®æ
+*       LPCTSTR path : å‰Šé™¤ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
+*       LPCTSTR moveTo : ç§»å‹•å…ˆ
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX (0=³íI—¹)
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (0=æ­£å¸¸çµ‚äº†)
 *----------------------------------------------------------------------------*/
 static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo)
 {

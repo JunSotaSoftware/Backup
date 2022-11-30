@@ -1,5 +1,5 @@
-/*=============================================================================
-/                           ‚a‚Ѓ‚ѓ‚‹‚•‚ђ‚М‹¤’КђЭ’и
+п»ї/*=============================================================================
+/                           пјўпЅЃпЅѓпЅ‹пЅ•пЅђгЃ®е…±йЂљиЁ­е®љ
 /
 /============================================================================
 / Copyright (C) 1997-2022 Sota. All rights reserved.
@@ -50,8 +50,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.20a")      /* ѓoЃ[ѓWѓ‡ѓ“ */
-#define PROGRAM_VERSION_NUM     0x01140100      /* ѓoЃ[ѓWѓ‡ѓ“ */
+#define PROGRAM_VERSION         _T("1.20a")      /* гѓђгѓјг‚ёгѓ§гѓі */
+#define PROGRAM_VERSION_NUM     0x01140100      /* гѓђгѓјг‚ёгѓ§гѓі */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -62,7 +62,7 @@
 #define MYWEB_URL   _T("http://www2.biglobe.ne.jp/~sota/backup-qa.html")
 
 
-/*===== ѓ†Ѓ[ѓUѓRѓ}ѓ“ѓh =====*/
+/*===== гѓ¦гѓјг‚¶г‚ігѓћгѓігѓ‰ =====*/
 
 #define WM_BACKUP_END   (WM_USER+1)
 #define WM_BACKUP_ERROR (WM_USER+2)
@@ -76,7 +76,7 @@
 #define WM_FORMAT_TEXT  (WM_USER+10)
 #define WM_SIZE_CHANGE  (WM_USER+11)
 
-/*===== ѓIѓvѓVѓ‡ѓ“ =====*/
+/*===== г‚Єгѓ—г‚·гѓ§гѓі =====*/
 
 #define OPT_FORCE               0x00000001
 #define OPT_RMDIR               0x00000002
@@ -114,37 +114,37 @@
 #define OPT_SUPPRESS_SLEEP_BATTERY      0x400000000LL
 #define OPT_NO_SUPPRESS_SLEEP_BATTERY   0x800000000LL
 
-/*===== ѓgѓЊѓCѓAѓCѓRѓ“ђ§Њд =====*/
+/*===== гѓ€гѓ¬г‚¤г‚ўг‚¤г‚ігѓіе€¶еѕЎ =====*/
 
-#define TICON_NEW       0       /* ђV‚µ‚­’З‰Б */
-#define TICON_CHANGE    1       /* Ћw’и”ФЌ†‚Й•ПЌX */
-#define TICON_NEXT      2       /* Ћџ‚Ц */
-#define TICON_DELETE    3       /* ЌнЏњ */
+#define TICON_NEW       0       /* ж–°гЃ—гЃЏиїЅеЉ  */
+#define TICON_CHANGE    1       /* жЊ‡е®љз•ЄеЏ·гЃ«е¤‰ж›ґ */
+#define TICON_NEXT      2       /* ж¬ЎгЃё */
+#define TICON_DELETE    3       /* е‰Љй™¤ */
 
-/*===== ѓ^ѓXѓNѓЃѓbѓZЃ[ѓW =====*/
+/*===== г‚їг‚№г‚ЇгѓЎгѓѓг‚»гѓјг‚ё =====*/
 
-#define TASKMSG_NOR     0       /* ’КЏн‚МѓЃѓbѓZЃ[ѓW */
-#define TASKMSG_ERR     1       /* ѓGѓ‰Ѓ[ѓЃѓbѓZЃ[ѓW */
+#define TASKMSG_NOR     0       /* йЂљеёёгЃ®гѓЎгѓѓг‚»гѓјг‚ё */
+#define TASKMSG_ERR     1       /* г‚Ёгѓ©гѓјгѓЎгѓѓг‚»гѓјг‚ё */
 
-/*===== ѓЌѓO =====*/
+/*===== гѓ­г‚° =====*/
 
-#define LOG_SW_OFF      0       /* ѓЌѓO‚рЋж‚з‚И‚ў */
-#define LOG_SW_APPEND   1       /* ѓЌѓO‚р’З‰БЏ‘‚«Ќћ‚Э */
-#define LOG_SW_NEW      2       /* ѓЌѓO‚рЏгЏ‘‚« */
+#define LOG_SW_OFF      0       /* гѓ­г‚°г‚’еЏ–г‚‰гЃЄгЃ„ */
+#define LOG_SW_APPEND   1       /* гѓ­г‚°г‚’иїЅеЉ ж›ёгЃЌиѕјгЃї */
+#define LOG_SW_NEW      2       /* гѓ­г‚°г‚’дёЉж›ёгЃЌ */
 
-/*===== ѓЊѓWѓXѓgѓЉ‚Мѓ^ѓCѓv =====*/
+/*===== гѓ¬г‚ёг‚№гѓ€гѓЄгЃ®г‚їг‚¤гѓ— =====*/
 
-#define REGTYPE_REG     0       /* ѓЊѓWѓXѓgѓЉ */
-#define REGTYPE_INI     1       /* INIѓtѓ@ѓCѓ‹ */
+#define REGTYPE_REG     0       /* гѓ¬г‚ёг‚№гѓ€гѓЄ */
+#define REGTYPE_INI     1       /* INIгѓ•г‚Ўг‚¤гѓ« */
 
-#define REG_SECT_MAX    (16*1024)   /* ѓЊѓWѓXѓgѓЉ‚М‚PѓZѓNѓVѓ‡ѓ“‚МЌЕ‘еѓfЃ[ѓ^ѓTѓCѓY */
+#define REG_SECT_MAX    (16*1024)   /* гѓ¬г‚ёг‚№гѓ€гѓЄгЃ®пј‘г‚»г‚Їг‚·гѓ§гѓігЃ®жњЂе¤§гѓ‡гѓјг‚їг‚µг‚¤г‚є */
 
-/*===== ”FЏШѓ_ѓCѓAѓЌѓO‚р•\Ћ¦‚·‚й‚©  =====*/
+/*===== иЄЌиЁјгѓЂг‚¤г‚ўгѓ­г‚°г‚’иЎЁз¤єгЃ™г‚‹гЃ‹  =====*/
 
-#define AUTH_DIALOG_HIDE          0       /* ”FЏШѓ_ѓCѓAѓЌѓO‚р•\Ћ¦‚µ‚И‚ў */
-#define AUTH_DIALOG_SHOW          1       /* ”FЏШѓ_ѓCѓAѓЌѓO‚р•\Ћ¦‚·‚й   */
+#define AUTH_DIALOG_HIDE          0       /* иЄЌиЁјгѓЂг‚¤г‚ўгѓ­г‚°г‚’иЎЁз¤єгЃ—гЃЄгЃ„ */
+#define AUTH_DIALOG_SHOW          1       /* иЄЌиЁјгѓЂг‚¤г‚ўгѓ­г‚°г‚’иЎЁз¤єгЃ™г‚‹   */
 
-/*===== TreeView‚МѓfЃ[ѓ^ѓ^ѓCѓv =====*/
+/*===== TreeViewгЃ®гѓ‡гѓјг‚їг‚їг‚¤гѓ— =====*/
 
 #define TREE_FOLDER     0
 #define TREE_FILE       1
@@ -153,50 +153,50 @@
 #define TREE_FILE_SEL   4
 #define TREE_ERROR      -1
 
-/*===== •\Ћ¦‚µ‚Д‚ў‚йѓEѓCѓ“ѓhѓE =====*/
+/*===== иЎЁз¤єгЃ—гЃ¦гЃ„г‚‹г‚¦г‚¤гѓігѓ‰г‚¦ =====*/
 
-#define WIN_MAIN        0       /* ѓЃѓCѓ“ѓEѓCѓ“ѓhѓE */
-#define WIN_TRANS       1       /* “]‘—’†ѓEѓCѓ“ѓhѓE */
+#define WIN_MAIN        0       /* гѓЎг‚¤гѓіг‚¦г‚¤гѓігѓ‰г‚¦ */
+#define WIN_TRANS       1       /* и»ўйЂЃдё­г‚¦г‚¤гѓігѓ‰г‚¦ */
 
-/*===== FS‚МЋн—Ю =====*/
+/*===== FSгЃ®зЁ®йЎћ =====*/
 
-#define FS_OTHER        0       /* ‰є‹L€ИЉO */
+#define FS_OTHER        0       /* дё‹иЁд»Ґе¤– */
 #define FS_FAT          1       /* FAT */
 
 #define MY_MAX_PATH     512
 #define MY_MAX_PATH2    (MY_MAX_PATH*2)
 
-#define PATNAME_LEN     160         /* ѓpѓ^Ѓ[ѓ“–ј‚М’·‚і */
-#define COMMENT_LEN     640         /* ѓRѓЃѓ“ѓg‚М’·‚і */
-#define SRC_PATH_LEN    8192        /* ѓoѓbѓNѓAѓbѓvЊі */
-#define DST_PATH_LEN    8192        /* ѓoѓbѓNѓAѓbѓvђж */
-#define IGN_PATH_LEN    8192        /* ѓoѓbѓNѓAѓbѓv‚µ‚И‚ўѓtѓHѓ‹ѓ_‚М’·‚і */
+#define PATNAME_LEN     160         /* гѓ‘г‚їгѓјгѓіеђЌгЃ®й•·гЃ• */
+#define COMMENT_LEN     640         /* г‚ігѓЎгѓігѓ€гЃ®й•·гЃ• */
+#define SRC_PATH_LEN    8192        /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…ѓ */
+#define DST_PATH_LEN    8192        /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€ */
+#define IGN_PATH_LEN    8192        /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гЃ—гЃЄгЃ„гѓ•г‚©гѓ«гѓЂгЃ®й•·гЃ• */
 
-#define COPY_SIZE       65536       /* ѓtѓ@ѓCѓ‹‚рѓRѓsЃ[‚·‚йЋћ‚Мѓoѓbѓtѓ@ѓTѓCѓY */
+#define COPY_SIZE       65536       /* гѓ•г‚Ўг‚¤гѓ«г‚’г‚ігѓ”гѓјгЃ™г‚‹ж™‚гЃ®гѓђгѓѓгѓ•г‚Ўг‚µг‚¤г‚є */
 
 #define WAIT_TIMER      25
 
-/*===== ѓhѓ‰ѓbѓOЃ•ѓhѓЌѓbѓv‰В”\‚ИЋн—Ю ======*/
+/*===== гѓ‰гѓ©гѓѓг‚°пј†гѓ‰гѓ­гѓѓгѓ—еЏЇиѓЅгЃЄзЁ®йЎћ ======*/
 
 #define SEND_FOLDER     0x01
 #define SEND_FILE       0x02
 
 
-/*===== ѓVѓѓѓbѓgѓ_ѓEѓ“‚Ь‚Е‚МЋћЉФ ======*/
+/*===== г‚·гѓЈгѓѓгѓ€гѓЂг‚¦гѓігЃѕгЃ§гЃ®ж™‚й–“ ======*/
 
-#define SHUTDOWN_PERIOD 6           /* •b */
+#define SHUTDOWN_PERIOD 6           /* з§’ */
 
-/* Њ»ЌЭ‚МЏу‘Ф */
+/* зЏѕењЁгЃ®зЉ¶ж…‹ */
 typedef enum {
-    AUTOCLOSE_ACTION_DO_NOTHING,            /* ‚»‚М‚Ь‚Ь‘Т‹@ */
-    AUTOCLOSE_ACTION_EXIT,                  /* ѓvѓЌѓOѓ‰ѓЂ‚р•В‚¶‚й */
-    AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS,      /* Windows‚рѓVѓѓѓbѓgѓ_ѓEѓ“‚·‚й */
-    AUTOCLOSE_ACTION_STANBY,                /* Windows‚рѓXѓ^ѓ“ѓoѓC‚Й‚·‚й */
-    AUTOCLOSE_ACTION_HIBERNATE,             /* Windows‚р‹xЋ~Џу‘Ф‚Й‚·‚й */
-    AUTOCLOSE_ACTION_EXIT_AND_STANBY,       /* •В‚¶‚й+Windows‚рѓXѓ^ѓ“ѓoѓC‚Й‚·‚й */
-    AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE,    /* •В‚¶‚й+Windows‚р‹xЋ~Џу‘Ф‚Й‚·‚й */
+    AUTOCLOSE_ACTION_DO_NOTHING,            /* гЃќгЃ®гЃѕгЃѕеѕ…ж©џ */
+    AUTOCLOSE_ACTION_EXIT,                  /* гѓ—гѓ­г‚°гѓ©гѓ г‚’й–‰гЃг‚‹ */
+    AUTOCLOSE_ACTION_SHUTDOWN_WINDOWS,      /* Windowsг‚’г‚·гѓЈгѓѓгѓ€гѓЂг‚¦гѓігЃ™г‚‹ */
+    AUTOCLOSE_ACTION_STANBY,                /* Windowsг‚’г‚№г‚їгѓігѓђг‚¤гЃ«гЃ™г‚‹ */
+    AUTOCLOSE_ACTION_HIBERNATE,             /* Windowsг‚’дј‘ж­ўзЉ¶ж…‹гЃ«гЃ™г‚‹ */
+    AUTOCLOSE_ACTION_EXIT_AND_STANBY,       /* й–‰гЃг‚‹+Windowsг‚’г‚№г‚їгѓігѓђг‚¤гЃ«гЃ™г‚‹ */
+    AUTOCLOSE_ACTION_EXIT_AND_HIBERNATE,    /* й–‰гЃг‚‹+Windowsг‚’дј‘ж­ўзЉ¶ж…‹гЃ«гЃ™г‚‹ */
 #if USE_SAME_AS_SUCCESS
-    AUTOCLOSE_ACTION_SAME_AS_SUCCESS = -1,  /* ђ¬ЊчЋћ‚Ж“Ї‚¶ */
+    AUTOCLOSE_ACTION_SAME_AS_SUCCESS = -1,  /* ж€ђеЉџж™‚гЃЁеђЊгЃ */
 #endif /* USE_SAME_AS_SUCCESS */
 
     AUTOCLOSE_ACTION_DEFAULT_SUCCESS = AUTOCLOSE_ACTION_DO_NOTHING,
@@ -207,88 +207,88 @@ typedef enum {
 #endif /* USE_SAME_AS_SUCCESS */
 } AUTOCLOSE_ACTION;
 
-/*===== ѓoѓbѓNѓAѓbѓvЊг‚МЏ€—ќ =====*/
+/*===== гѓђгѓѓг‚Їг‚ўгѓѓгѓ—еѕЊгЃ®е‡¦зђ† =====*/
 typedef struct {
     AUTOCLOSE_ACTION Success;
     AUTOCLOSE_ACTION Error;
 } AUTOCLOSE;
 
-/*===== ѓoѓbѓNѓAѓbѓvѓpѓ^Ѓ[ѓ“ =====*/
+/*===== гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гѓ‘г‚їгѓјгѓі =====*/
 
 typedef struct {
-    int Enabled;                    /* —LЊш */
-    _TCHAR Name[PATNAME_LEN+1];     /* ѓpѓ^Ѓ[ѓ“–ј */
-    _TCHAR Comment[COMMENT_LEN+1];  /* ѓRѓЃѓ“ѓg */
-    _TCHAR Src[SRC_PATH_LEN+1];     /* ѓoѓbѓNѓAѓbѓvЊі (ѓ}ѓ‹ѓ`•¶Ћљ—с) */
-    _TCHAR Dst[DST_PATH_LEN+1];     /* ѓoѓbѓNѓAѓbѓvђж (ѓ}ѓ‹ѓ`•¶Ћљ—с) */
-    _TCHAR IgnDir[IGN_PATH_LEN+1];  /* ѓoѓbѓNѓAѓbѓv‚µ‚И‚ўѓtѓHѓ‹ѓ_ (ѓ}ѓ‹ѓ`•¶Ћљ—с) */
-    _TCHAR IgnFile[IGN_PATH_LEN+1]; /* ѓoѓbѓNѓAѓbѓv‚µ‚И‚ўѓtѓ@ѓCѓ‹ (ѓ}ѓ‹ѓ`•¶Ћљ—с) */
-    _TCHAR VolLabel[MY_MAX_PATH+1]; /* ѓ{ѓЉѓ…Ѓ[ѓЂѓ‰ѓxѓ‹ */
-    _TCHAR SoundFile[MY_MAX_PATH+1];/* ѓTѓEѓ“ѓhѓtѓ@ѓCѓ‹ */
-    int ForceCopy;                  /* Џн‚Йѓtѓ@ѓCѓ‹‚рѓRѓsЃ[ */
-    int DelDir;                     /* ѓtѓHѓ‹ѓ_‚рЌнЏњ‚·‚й */
-    int DelFile;                    /* ѓtѓ@ѓCѓ‹‚рЌнЏњ‚·‚й */
-    int IgnoreErr;                  /* ѓGѓ‰Ѓ[‚р–іЋ‹‚·‚й */
-    int NotifyDel;                  /* ЌнЏњ‚МЉm”F‚рЌs‚И‚¤ */
-    int NotifyOvw;                  /* ЏгЏ‘‚«‚МЉm”F‚рЌs‚И‚¤ */
-    int IgnNoDel;                   /* ѓoѓbѓNѓAѓbѓv‚µ‚И‚ўѓtѓ@ѓCѓ‹Ѓ^ѓtѓHѓ‹ѓ_‚рЌнЏњ‚µ‚И‚ў */
-    int NewOnly;                    /* ѓoѓbѓNѓAѓbѓvђж‚ЄђV‚µ‚ўЋћ‚НѓRѓsЃ[‚µ‚И‚ў */
-    int Wait;                       /* ѓtѓ@ѓCѓ‹ѓRѓsЃ[Ћћ‚М‘Т‚їЋћЉФ */
-    int ChkVolLabel;                /* ѓ{ѓЉѓ…Ѓ[ѓЂѓ‰ѓxѓ‹‚рѓ`ѓFѓbѓN‚·‚й */
-    int UseTrashCan;                /* ‚І‚Э” ‚рЋg—p‚·‚й */
-    int Tolerance;                  /* ѓ^ѓCѓЂѓXѓ^ѓ“ѓv‚М‹–—eЊлЌ· */
-    AUTOCLOSE AutoClose;            /* ѓoѓbѓNѓAѓbѓvЊг‚МЏ€—ќ */
-    int IgnSystemFile;              /* ѓVѓXѓeѓЂѓtѓ@ѓCѓ‹‚НЏњЉO */
-    int IgnHiddenFile;              /* ‰B‚µѓtѓ@ѓCѓ‹‚НЏњЉO */
-    int IgnBigFile;                 /* ‘е‚«‚Иѓtѓ@ѓCѓ‹‚НЏњЉO */
-    int IgnBigSize;                 /* ‘е‚«‚Иѓtѓ@ѓCѓ‹‚Ми‡’l */
-    int IgnAttr;                    /* ‘®ђ«‚М€б‚ў‚Н–іЋ‹ */
-    int Sound;                      /* ѓoѓbѓNѓAѓbѓvЏI—№Њг‚ЙѓTѓEѓ“ѓh‚р–В‚з‚·‚©‚З‚¤‚© */
-    int IntervalTime;               /* ЌДѓoѓbѓNѓAѓbѓv‘Т‚їЋћЉФЃFѓ}ѓCѓiѓX’l‚И‚зЌДѓoѓbѓNѓAѓbѓv‚И‚µ */
-    int NoMakeTopDir;               /* ѓoѓbѓNѓAѓbѓvђж‚МѓtѓHѓ‹ѓ_‚рЌм‚з‚И‚ў */
-    int IgnTime;                    /* ѓ^ѓCѓЂѓXѓ^ѓ“ѓv‚М€б‚ў‚Н–іЋ‹ */
-    int ShowComment;                /* ѓoѓbѓNѓAѓbѓvЉJЋnЋћ‚ЙѓRѓЃѓ“ѓg‚рѓEѓCѓ“ѓhѓE‚Е•\Ћ¦‚·‚й */
-    int NextDstNum;                 /* Ћџ‚МѓoѓbѓNѓAѓbѓvђж”ФЌ† */
-    int DstDropbox;                 /* ѓoѓbѓNѓAѓbѓvђж‚НDropbox */
-    int MoveInsteadDelete;          /* ЌнЏњ‚М‘г‚н‚и‚Йѓtѓ@ѓCѓ‹‚р€Ъ“®‚·‚й */
-    int AllowDecrypted;             /* EFS‚Й‚ж‚й€ГЌ†‰»•s‰В‚Е‚ађ¬Њч‚і‚№‚й */
-    _TCHAR MoveToFolder[MY_MAX_PATH+1]; /* ѓtѓ@ѓCѓ‹€Ъ“®ђж‚МѓtѓHѓ‹ѓ_Ѓ[ */
-    /* €И‰є‚НђЭ’и’l‚Е‚Н‚И‚ўЃB“а•”Џ€—ќ‚ЕЋg—p‚·‚йЃB */
-    _TCHAR *NextDst;                /* Ћџ‚МѓoѓbѓNѓAѓbѓvђж‚Ц‚Мѓ|ѓCѓ“ѓ^ */
-    int PatNum;                     /* ѓpѓ^Ѓ[ѓ“”ФЌ† */
+    int Enabled;                    /* жњ‰еЉ№ */
+    _TCHAR Name[PATNAME_LEN+1];     /* гѓ‘г‚їгѓјгѓіеђЌ */
+    _TCHAR Comment[COMMENT_LEN+1];  /* г‚ігѓЎгѓігѓ€ */
+    _TCHAR Src[SRC_PATH_LEN+1];     /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…ѓ (гѓћгѓ«гѓЃж–‡е­—е€—) */
+    _TCHAR Dst[DST_PATH_LEN+1];     /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€ (гѓћгѓ«гѓЃж–‡е­—е€—) */
+    _TCHAR IgnDir[IGN_PATH_LEN+1];  /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гЃ—гЃЄгЃ„гѓ•г‚©гѓ«гѓЂ (гѓћгѓ«гѓЃж–‡е­—е€—) */
+    _TCHAR IgnFile[IGN_PATH_LEN+1]; /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гЃ—гЃЄгЃ„гѓ•г‚Ўг‚¤гѓ« (гѓћгѓ«гѓЃж–‡е­—е€—) */
+    _TCHAR VolLabel[MY_MAX_PATH+1]; /* гѓњгѓЄгѓҐгѓјгѓ гѓ©гѓ™гѓ« */
+    _TCHAR SoundFile[MY_MAX_PATH+1];/* г‚µг‚¦гѓігѓ‰гѓ•г‚Ўг‚¤гѓ« */
+    int ForceCopy;                  /* еёёгЃ«гѓ•г‚Ўг‚¤гѓ«г‚’г‚ігѓ”гѓј */
+    int DelDir;                     /* гѓ•г‚©гѓ«гѓЂг‚’е‰Љй™¤гЃ™г‚‹ */
+    int DelFile;                    /* гѓ•г‚Ўг‚¤гѓ«г‚’е‰Љй™¤гЃ™г‚‹ */
+    int IgnoreErr;                  /* г‚Ёгѓ©гѓјг‚’з„Ўи¦–гЃ™г‚‹ */
+    int NotifyDel;                  /* е‰Љй™¤гЃ®зўєиЄЌг‚’иЎЊгЃЄгЃ† */
+    int NotifyOvw;                  /* дёЉж›ёгЃЌгЃ®зўєиЄЌг‚’иЎЊгЃЄгЃ† */
+    int IgnNoDel;                   /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гЃ—гЃЄгЃ„гѓ•г‚Ўг‚¤гѓ«пјЏгѓ•г‚©гѓ«гѓЂг‚’е‰Љй™¤гЃ—гЃЄгЃ„ */
+    int NewOnly;                    /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€гЃЊж–°гЃ—гЃ„ж™‚гЃЇг‚ігѓ”гѓјгЃ—гЃЄгЃ„ */
+    int Wait;                       /* гѓ•г‚Ўг‚¤гѓ«г‚ігѓ”гѓјж™‚гЃ®еѕ…гЃЎж™‚й–“ */
+    int ChkVolLabel;                /* гѓњгѓЄгѓҐгѓјгѓ гѓ©гѓ™гѓ«г‚’гѓЃг‚§гѓѓг‚ЇгЃ™г‚‹ */
+    int UseTrashCan;                /* гЃ”гЃїз®±г‚’дЅїз”ЁгЃ™г‚‹ */
+    int Tolerance;                  /* г‚їг‚¤гѓ г‚№г‚їгѓігѓ—гЃ®иЁ±е®№иЄ¤е·® */
+    AUTOCLOSE AutoClose;            /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—еѕЊгЃ®е‡¦зђ† */
+    int IgnSystemFile;              /* г‚·г‚№гѓ†гѓ гѓ•г‚Ўг‚¤гѓ«гЃЇй™¤е¤– */
+    int IgnHiddenFile;              /* йљ гЃ—гѓ•г‚Ўг‚¤гѓ«гЃЇй™¤е¤– */
+    int IgnBigFile;                 /* е¤§гЃЌгЃЄгѓ•г‚Ўг‚¤гѓ«гЃЇй™¤е¤– */
+    int IgnBigSize;                 /* е¤§гЃЌгЃЄгѓ•г‚Ўг‚¤гѓ«гЃ®й–ѕеЂ¤ */
+    int IgnAttr;                    /* е±ћжЂ§гЃ®йЃ•гЃ„гЃЇз„Ўи¦– */
+    int Sound;                      /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—зµ‚дє†еѕЊгЃ«г‚µг‚¦гѓігѓ‰г‚’йіґг‚‰гЃ™гЃ‹гЃ©гЃ†гЃ‹ */
+    int IntervalTime;               /* е†Ќгѓђгѓѓг‚Їг‚ўгѓѓгѓ—еѕ…гЃЎж™‚й–“пјљгѓћг‚¤гѓЉг‚№еЂ¤гЃЄг‚‰е†Ќгѓђгѓѓг‚Їг‚ўгѓѓгѓ—гЃЄгЃ— */
+    int NoMakeTopDir;               /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€гЃ®гѓ•г‚©гѓ«гѓЂг‚’дЅњг‚‰гЃЄгЃ„ */
+    int IgnTime;                    /* г‚їг‚¤гѓ г‚№г‚їгѓігѓ—гЃ®йЃ•гЃ„гЃЇз„Ўи¦– */
+    int ShowComment;                /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—й–‹е§‹ж™‚гЃ«г‚ігѓЎгѓігѓ€г‚’г‚¦г‚¤гѓігѓ‰г‚¦гЃ§иЎЁз¤єгЃ™г‚‹ */
+    int NextDstNum;                 /* ж¬ЎгЃ®гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€з•ЄеЏ· */
+    int DstDropbox;                 /* гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€гЃЇDropbox */
+    int MoveInsteadDelete;          /* е‰Љй™¤гЃ®д»Јг‚Џг‚ЉгЃ«гѓ•г‚Ўг‚¤гѓ«г‚’з§»е‹•гЃ™г‚‹ */
+    int AllowDecrypted;             /* EFSгЃ«г‚€г‚‹жљ—еЏ·еЊ–дёЌеЏЇгЃ§г‚‚ж€ђеЉџгЃ•гЃ›г‚‹ */
+    _TCHAR MoveToFolder[MY_MAX_PATH+1]; /* гѓ•г‚Ўг‚¤гѓ«з§»е‹•е…€гЃ®гѓ•г‚©гѓ«гѓЂгѓј */
+    /* д»Ґдё‹гЃЇиЁ­е®љеЂ¤гЃ§гЃЇгЃЄгЃ„гЂ‚е†…йѓЁе‡¦зђ†гЃ§дЅїз”ЁгЃ™г‚‹гЂ‚ */
+    _TCHAR *NextDst;                /* ж¬ЎгЃ®гѓђгѓѓг‚Їг‚ўгѓѓгѓ—е…€гЃёгЃ®гѓќг‚¤гѓіг‚ї */
+    int PatNum;                     /* гѓ‘г‚їгѓјгѓіз•ЄеЏ· */
 } COPYPAT;
 
 
-/*===== ѓoѓbѓNѓAѓbѓvѓpѓ^Ѓ[ѓ“ѓЉѓXѓg =====*/
+/*===== гѓђгѓѓг‚Їг‚ўгѓѓгѓ—гѓ‘г‚їгѓјгѓігѓЄг‚№гѓ€ =====*/
 
 typedef struct copypatlist {
-    COPYPAT Set;                /* ѓpѓ^Ѓ[ѓ“ */
+    COPYPAT Set;                /* гѓ‘г‚їгѓјгѓі */
     struct copypatlist *Next;
 } COPYPATLIST;
 
 
-/*===== ѓ‰ѓWѓIѓ{ѓ^ѓ“‚МђЭ’и =====*/
+/*===== гѓ©г‚ёг‚Єгѓњг‚їгѓігЃ®иЁ­е®љ =====*/
 
 typedef struct {
-    int ButID;      /* ѓ{ѓ^ѓ“‚МID */
-    int Value;      /* ’l */
+    int ButID;      /* гѓњг‚їгѓігЃ®ID */
+    int Value;      /* еЂ¤ */
 } RADIOBUTTON;
 
 
-/*===== ѓ_ѓCѓAѓЌѓOѓ{ѓbѓNѓX•ПЌXЏ€—ќ—p =====*/
+/*===== гѓЂг‚¤г‚ўгѓ­г‚°гѓњгѓѓг‚Їг‚№е¤‰ж›ґе‡¦зђ†з”Ё =====*/
 
 typedef struct {
-    int HorMoveList[20];    /* ђ…•Ѕ‚Й“®‚©‚·•”•i‚МѓЉѓXѓg */
-    int VarMoveList[20];    /* ђ‚’ј‚Й“®‚©‚·•”•i‚МѓЉѓXѓg */
-    int ResizeList[10];     /* ѓTѓCѓY•ПЌX‚·‚й•”•i‚МѓЉѓXѓg */
-    int ResizeHorList[10];  /* ђ…•Ѕ•ыЊь‚Й‚М‚ЭѓTѓCѓY•ПЌX‚·‚й•”•i‚МѓЉѓXѓg */
-    int ResizeVarList[10];  /* ђ‚’ј•ыЊь‚Й‚М‚ЭѓTѓCѓY•ПЌX‚·‚й•”•i‚МѓЉѓXѓg */
-    SIZE MinSize;           /* ЌЕЏ­ѓTѓCѓY */
-    SIZE CurSize;           /* Њ»ЌЭ‚МѓTѓCѓY */
+    int HorMoveList[20];    /* ж°ґе№ігЃ«е‹•гЃ‹гЃ™йѓЁе“ЃгЃ®гѓЄг‚№гѓ€ */
+    int VarMoveList[20];    /* ећ‚з›ґгЃ«е‹•гЃ‹гЃ™йѓЁе“ЃгЃ®гѓЄг‚№гѓ€ */
+    int ResizeList[10];     /* г‚µг‚¤г‚єе¤‰ж›ґгЃ™г‚‹йѓЁе“ЃгЃ®гѓЄг‚№гѓ€ */
+    int ResizeHorList[10];  /* ж°ґе№іж–№еђ‘гЃ«гЃ®гЃїг‚µг‚¤г‚єе¤‰ж›ґгЃ™г‚‹йѓЁе“ЃгЃ®гѓЄг‚№гѓ€ */
+    int ResizeVarList[10];  /* ећ‚з›ґж–№еђ‘гЃ«гЃ®гЃїг‚µг‚¤г‚єе¤‰ж›ґгЃ™г‚‹йѓЁе“ЃгЃ®гѓЄг‚№гѓ€ */
+    SIZE MinSize;           /* жњЂе°‘г‚µг‚¤г‚є */
+    SIZE CurSize;           /* зЏѕењЁгЃ®г‚µг‚¤г‚є */
 } DIALOGSIZE;
 
 
-/*===== ЏгЏ‘‚«Љm”FЏо•с =====*/
+/*===== дёЉж›ёгЃЌзўєиЄЌжѓ…е ± =====*/
 typedef struct {
     _TCHAR          *Fname;
     FILETIME        SrcTime;
@@ -300,7 +300,7 @@ typedef struct {
 } OVERWRITENOTIFYDATA;
 
 
-/*===== ѓvѓЌѓgѓ^ѓCѓv =====*/
+/*===== гѓ—гѓ­гѓ€г‚їг‚¤гѓ— =====*/
 
 /* main.c */
 

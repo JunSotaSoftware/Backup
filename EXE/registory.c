@@ -1,7 +1,7 @@
-/*===========================================================================
+ï»¿/*===========================================================================
 /
 /                                   Backup
-/                               ƒŒƒWƒXƒgƒŠ‘€ì
+/                               ãƒ¬ã‚¸ã‚¹ãƒˆãƒªæ“ä½œ
 /
 /============================================================================
 / Copyright (C) 1997-2022 Sota. All rights reserved.
@@ -41,7 +41,7 @@
 #include "resource.h"
 
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static void SetRegType(int Type);
 static int OpenReg(LPTSTR Name, void **Handle);
@@ -61,9 +61,9 @@ static int WriteMultiStringToReg(void *Handle, LPTSTR Name, LPTSTR Str);
 static int ReadBinaryFromReg(void *Handle, LPTSTR Name, void *Bin, DWORD Size);
 static int WriteBinaryToReg(void *Handle, LPTSTR Name, void *Bin, int Len);
 
-/*===== ƒOƒ[ƒoƒ‹‚Èƒ[ƒN ======*/
+/*===== ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªãƒ¯ãƒ¼ã‚¯ ======*/
 
-/* İ’è */
+/* è¨­å®š */
 extern int LogSwitch;
 extern int LogLimit;
 extern int LogUnicode;
@@ -79,7 +79,7 @@ extern SIZE MainDlgSize;
 extern SIZE TransDlgSize;
 extern SIZE NotifyDlgSize;
 extern int ExitOnEsc;
-extern int ShowComment;     /* 0=•\¦‚µ‚È‚¢,1=ƒc[ƒ‹ƒ`ƒbƒv‚Å•\¦A2=ƒEƒCƒ“ƒhƒE‚Å•\¦ */
+extern int ShowComment;     /* 0=è¡¨ç¤ºã—ãªã„,1=ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã§è¡¨ç¤ºã€2=ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§è¡¨ç¤º */
 extern int AuthDialog;
 extern int SleepSuppressAC;
 extern int SleepSuppressBattery;
@@ -90,13 +90,13 @@ extern int ListWindowType;
 
 
 
-/*----- ƒŒƒWƒXƒgƒŠ‚É•Û‘¶ ------------------------------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã«ä¿å­˜ ------------------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *----------------------------------------------------------------------------*/
 
 int SaveRegistory(void)
@@ -145,7 +145,7 @@ int SaveRegistory(void)
 
             WriteIntValueToReg(hKey4, _T("ListWindowType"), ListWindowType);
 
-            /* ŒÃ‚¢Œ`®‚ÌƒŒƒWƒXƒgƒŠ‚ğíœ */
+            /* å¤ã„å½¢å¼ã®ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‚’å‰Šé™¤ */
             DeleteValue(hKey4, _T("IntTime"));
 
             CloseSubKey(hKey4);
@@ -209,7 +209,7 @@ int SaveRegistory(void)
                 }
             }
 
-            /* ‚È‚­‚È‚Á‚½ƒGƒ“ƒgƒŠ‚ğíœ */
+            /* ãªããªã£ãŸã‚¨ãƒ³ãƒˆãƒªã‚’å‰Šé™¤ */
             for(; ; i++)
             {
                 _stprintf(Str, _T("Pat%d"), i);
@@ -219,7 +219,7 @@ int SaveRegistory(void)
             CloseSubKey(hKey4);
         }
 
-        /* ŒÃ‚¢Œ`®‚ÌƒŒƒWƒXƒgƒŠ‚ğíœ */
+        /* å¤ã„å½¢å¼ã®ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‚’å‰Šé™¤ */
         DeleteValue(hKey3, _T("Jobs"));
         for(i = 0; ; i++)
         {
@@ -233,13 +233,13 @@ int SaveRegistory(void)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ‚©‚çŒÄo ----------------------------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‹ã‚‰å‘¼å‡º ----------------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *----------------------------------------------------------------------------*/
 
 int LoadRegistory(void)
@@ -382,7 +382,7 @@ int LoadRegistory(void)
         }
         else
         {
-            /* ŒÃ‚¢ƒŒƒWƒXƒgƒŠƒpƒ^[ƒ“ */
+            /* å¤ã„ãƒ¬ã‚¸ã‚¹ãƒˆãƒªãƒ‘ã‚¿ãƒ¼ãƒ³ */
 
             Count = 0;
             ReadIntValueFromReg(hKey3, _T("Jobs"), &Count);
@@ -419,14 +419,14 @@ int LoadRegistory(void)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ‚©‚çMediaPath‚ğ“Ç‚İ‚Ş -------------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‹ã‚‰MediaPathã‚’èª­ã¿è¾¼ã‚€ -------------------------------------
 *
 *   Parameter
-*       MediaPath : MediaPathŠi”[ƒoƒbƒtƒ@
-*       Max : Å‘åƒTƒCƒY
+*       MediaPath : MediaPathæ ¼ç´ãƒãƒƒãƒ•ã‚¡
+*       Max : æœ€å¤§ã‚µã‚¤ã‚º
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *----------------------------------------------------------------------------*/
 
 int GetMediaPath(LPTSTR MediaPath, int Max)
@@ -449,13 +449,13 @@ int GetMediaPath(LPTSTR MediaPath, int Max)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ‚Ìİ’è’l‚ğƒNƒŠƒA --------------------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã®è¨­å®šå€¤ã‚’ã‚¯ãƒªã‚¢ --------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void ClearRegistory(void)
@@ -493,13 +493,13 @@ void ClearRegistory(void)
 }
 
 
-/*----- İ’è‚ğƒtƒ@ƒCƒ‹‚É•Û‘¶ --------------------------------------------------
+/*----- è¨­å®šã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ --------------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 void SaveSettingsToFile(void)
@@ -531,13 +531,13 @@ void SaveSettingsToFile(void)
 }
 
 
-/*----- İ’è‚ğƒtƒ@ƒCƒ‹‚©‚ç•œŒ³ ------------------------------------------------
+/*----- è¨­å®šã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰å¾©å…ƒ ------------------------------------------------
 *
 *   Parameter
-*       ‚È‚µ
+*       ãªã—
 *
 *   Return Value
-*       int ƒ[ƒh‚µ‚½‚©‚Ç‚¤‚© (YES/NO)
+*       int ãƒ­ãƒ¼ãƒ‰ã—ãŸã‹ã©ã†ã‹ (YES/NO)
 *----------------------------------------------------------------------------*/
 
 int LoadSettingsFromFile(void)
@@ -561,7 +561,7 @@ int LoadSettingsFromFile(void)
             else
             {
                 Ret = YES;
-                /* ƒŒƒWƒXƒgƒŠƒGƒfƒBƒ^‚ªI—¹‚·‚é‚Ì‚ğ‘Ò‚Â */
+                /* ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‚¨ãƒ‡ã‚£ã‚¿ãŒçµ‚äº†ã™ã‚‹ã®ã‚’å¾…ã¤ */
 //              WaitForSingleObject(Info.hProcess, INFINITE);
             }
         }
@@ -579,20 +579,20 @@ int LoadSettingsFromFile(void)
 
 
 
-/*===== ƒŒƒWƒXƒgƒŠ‚ÆINIƒtƒ@ƒCƒ‹‚ÌƒAƒNƒZƒXˆ— ============*/
+/*===== ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã¨INIãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç† ============*/
 
 
-/*===== INIƒtƒ@ƒCƒ‹—p‚ÌƒŒƒWƒXƒgƒŠƒf[ƒ^ =====*/
+/*===== INIãƒ•ã‚¡ã‚¤ãƒ«ç”¨ã®ãƒ¬ã‚¸ã‚¹ãƒˆãƒªãƒ‡ãƒ¼ã‚¿ =====*/
 
 typedef struct regdatatbl {
-    char    KeyName[80+1];          /* ƒL[–¼ (ANSI) */
-    char    ValTbl[REG_SECT_MAX];   /* ’l‚Ìƒe[ƒuƒ‹ (ANSI) */
-    int     ValLen;                 /* ’lƒf[ƒ^‚ÌƒoƒCƒg” */
-    int     Mode;                   /* ƒL[‚Ìƒ‚[ƒh */
+    char    KeyName[80+1];          /* ã‚­ãƒ¼å (ANSI) */
+    char    ValTbl[REG_SECT_MAX];   /* å€¤ã®ãƒ†ãƒ¼ãƒ–ãƒ« (ANSI) */
+    int     ValLen;                 /* å€¤ãƒ‡ãƒ¼ã‚¿ã®ãƒã‚¤ãƒˆæ•° */
+    int     Mode;                   /* ã‚­ãƒ¼ã®ãƒ¢ãƒ¼ãƒ‰ */
     struct regdatatbl *Next;
 } REGDATATBL;
 
-/*===== ƒvƒƒgƒ^ƒCƒv =====*/
+/*===== ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ— =====*/
 
 static BOOL WriteOutRegToFile(REGDATATBL *Pos);
 static int ReadInReg(LPTSTR Name, REGDATATBL **Handle);
@@ -603,19 +603,19 @@ static int StrReadInAnsi(char *Src, int Max, char *Dst);
 static char *ScanValue(void *Handle, LPTSTR Name);
 
 
-/*===== ƒ[ƒJƒ‹‚Èƒ[ƒN =====*/
+/*===== ãƒ­ãƒ¼ã‚«ãƒ«ãªãƒ¯ãƒ¼ã‚¯ =====*/
 
 static int TmpRegType;
 
 
 
-/*----- ƒŒƒWƒXƒgƒŠ‚Ìƒ^ƒCƒv‚ğİ’è‚·‚é ------------------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã®ã‚¿ã‚¤ãƒ—ã‚’è¨­å®šã™ã‚‹ ------------------------------------------
 *
 *   Parameter
-*       int Type : ƒ^ƒCƒv (REGTYPE_xxx)
+*       int Type : ã‚¿ã‚¤ãƒ— (REGTYPE_xxx)
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *----------------------------------------------------------------------------*/
 
 static void SetRegType(int Type)
@@ -625,14 +625,14 @@ static void SetRegType(int Type)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ/INIƒtƒ@ƒCƒ‹‚ğƒI[ƒvƒ“‚·‚éi“Ç‚İ‚İj-----------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒª/INIãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚ªãƒ¼ãƒ—ãƒ³ã™ã‚‹ï¼ˆèª­ã¿è¾¼ã¿ï¼‰-----------------------
 *
 *   Parameter
-*       LPTSTR Name : ƒŒƒWƒXƒgƒŠ–¼
-*       void **Handle : ƒnƒ“ƒhƒ‹‚ğ•Ô‚·ƒ[ƒN
+*       LPTSTR Name : ãƒ¬ã‚¸ã‚¹ãƒˆãƒªå
+*       void **Handle : ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -658,14 +658,14 @@ static int OpenReg(LPTSTR Name, void **Handle)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ/INIƒtƒ@ƒCƒ‹‚ğì¬‚·‚éi‘‚«‚İj---------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒª/INIãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆã™ã‚‹ï¼ˆæ›¸ãè¾¼ã¿ï¼‰---------------------------
 *
 *   Parameter
-*       LPTSTR Name : ƒŒƒWƒXƒgƒŠ–¼
-*       void **Handle : ƒnƒ“ƒhƒ‹‚ğ•Ô‚·ƒ[ƒN
+*       LPTSTR Name : ãƒ¬ã‚¸ã‚¹ãƒˆãƒªå
+*       void **Handle : ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -699,13 +699,13 @@ static int CreateReg(LPTSTR Name, void **Handle)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠ/INIƒtƒ@ƒCƒ‹‚ğƒNƒ[ƒY‚·‚é ----------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒª/INIãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¯ãƒ­ãƒ¼ã‚ºã™ã‚‹ ----------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -719,7 +719,7 @@ static int CloseReg(void *Handle)
     {
         RegCloseKey(Handle);
 
-        /* INIƒtƒ@ƒCƒ‹‚ğíœ */
+        /* INIãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ */
         if((Strm = _tfopen(AskIniFilePath(), _T("rt"))) != NULL)
         {
             fclose(Strm);
@@ -732,11 +732,11 @@ static int CloseReg(void *Handle)
         {
             if(WriteOutRegToFile(Handle) == TRUE)
             {
-//              /* ƒŒƒWƒXƒgƒŠ‚ğƒNƒŠƒA */
+//              /* ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã‚’ã‚¯ãƒªã‚¢ */
 //              ClearRegistory();
             }
         }
-        /* ƒe[ƒuƒ‹‚ğíœ */
+        /* ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å‰Šé™¤ */
         Pos = Handle;
         while(Pos != NULL)
         {
@@ -749,13 +749,13 @@ static int CloseReg(void *Handle)
 }
 
 
-/*----- ƒŒƒWƒXƒgƒŠî•ñ‚ğINIƒtƒ@ƒCƒ‹‚É‘‚«‚Ş ---------------------------------
+/*----- ãƒ¬ã‚¸ã‚¹ãƒˆãƒªæƒ…å ±ã‚’INIãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã‚€ ---------------------------------
 *
 *   Parameter
-*       REGDATATBL *Pos : ƒŒƒWƒXƒgƒŠƒf[ƒ^
+*       REGDATATBL *Pos : ãƒ¬ã‚¸ã‚¹ãƒˆãƒªãƒ‡ãƒ¼ã‚¿
 *
 *   Return Value
-*       ‚È‚µ
+*       ãªã—
 *----------------------------------------------------------------------------*/
 
 static BOOL WriteOutRegToFile(REGDATATBL *Pos)
@@ -796,14 +796,14 @@ static BOOL WriteOutRegToFile(REGDATATBL *Pos)
 }
 
 
-/*----- INIƒtƒ@ƒCƒ‹‚©‚çƒŒƒWƒXƒgƒŠî•ñ‚ğ“Ç‚İ‚Ş -------------------------------
+/*----- INIãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ¬ã‚¸ã‚¹ãƒˆãƒªæƒ…å ±ã‚’èª­ã¿è¾¼ã‚€ -------------------------------
 *
 *   Parameter
-*       Name : –¼‘O
-*       Handle : ƒnƒ“ƒhƒ‹
+*       Name : åå‰
+*       Handle : ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -873,15 +873,15 @@ static int ReadInReg(LPTSTR Name, REGDATATBL **Handle)
 }
 
 
-/*----- ƒTƒuƒL[‚ğƒI[ƒvƒ“‚·‚é ------------------------------------------------
+/*----- ã‚µãƒ–ã‚­ãƒ¼ã‚’ã‚ªãƒ¼ãƒ—ãƒ³ã™ã‚‹ ------------------------------------------------
 *
 *   Parameter
-*       void *Parent : e‚Ìƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       void **Handle : ƒnƒ“ƒhƒ‹‚ğ•Ô‚·ƒ[ƒN
+*       void *Parent : è¦ªã®ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       void **Handle : ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -918,15 +918,15 @@ static int OpenSubKey(void *Parent, LPTSTR Name, void **Handle)
 }
 
 
-/*----- ƒTƒuƒL[‚ğì¬‚·‚é ----------------------------------------------------
+/*----- ã‚µãƒ–ã‚­ãƒ¼ã‚’ä½œæˆã™ã‚‹ ----------------------------------------------------
 *
 *   Parameter
-*       void *Parent : e‚Ìƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       void **Handle : ƒnƒ“ƒhƒ‹‚ğ•Ô‚·ƒ[ƒN
+*       void *Parent : è¦ªã®ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       void **Handle : ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -963,13 +963,13 @@ static int CreateSubKey(void *Parent, LPTSTR Name, void **Handle)
 }
 
 
-/*----- ƒTƒuƒL[‚ğƒNƒ[ƒY‚·‚é ------------------------------------------------
+/*----- ã‚µãƒ–ã‚­ãƒ¼ã‚’ã‚¯ãƒ­ãƒ¼ã‚ºã™ã‚‹ ------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -985,14 +985,14 @@ static int CloseSubKey(void *Handle)
 }
 
 
-/*----- ƒTƒuƒL[‚ğíœ‚·‚é ----------------------------------------------------
+/*----- ã‚µãƒ–ã‚­ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹ ----------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1014,14 +1014,14 @@ static int DeleteSubKey(void *Handle, LPTSTR Name)
 }
 
 
-/*----- ’l‚ğíœ‚·‚é ----------------------------------------------------------
+/*----- å€¤ã‚’å‰Šé™¤ã™ã‚‹ ----------------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1043,15 +1043,15 @@ static int DeleteValue(void *Handle, LPTSTR Name)
 }
 
 
-/*----- INT’l‚ğ“Ç‚İ‚Ş -------------------------------------------------------
+/*----- INTå€¤ã‚’èª­ã¿è¾¼ã‚€ -------------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       int *Value : INT’l‚ğ•Ô‚·ƒ[ƒN
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       int *Value : INTå€¤ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1080,15 +1080,15 @@ static int ReadIntValueFromReg(void *Handle, LPTSTR Name, int *Value)
 }
 
 
-/*----- INT’l‚ğ‘‚«‚Ş -------------------------------------------------------
+/*----- INTå€¤ã‚’æ›¸ãè¾¼ã‚€ -------------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       int Value : INT’l
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       int Value : INTå€¤
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1116,16 +1116,16 @@ static int WriteIntValueToReg(void *Handle, LPTSTR Name, int Value)
 }
 
 
-/*----- •¶š—ñ‚ğ“Ç‚İ‚Ş ------------------------------------------------------
+/*----- æ–‡å­—åˆ—ã‚’èª­ã¿è¾¼ã‚€ ------------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       LPTSTR Str : •¶š—ñ‚ğ•Ô‚·ƒ[ƒN
-*       DWORD Size : Å‘åƒTƒCƒY
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       LPTSTR Str : æ–‡å­—åˆ—ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
+*       DWORD Size : æœ€å¤§ã‚µã‚¤ã‚º
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1158,15 +1158,15 @@ static int ReadStringFromReg(void *Handle, LPTSTR Name, LPTSTR Str, DWORD Size)
 }
 
 
-/*----- •¶š—ñ‚ğ‘‚«‚Ş ------------------------------------------------------
+/*----- æ–‡å­—åˆ—ã‚’æ›¸ãè¾¼ã‚€ ------------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       LPTSTR Str :•¶š—ñ
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       LPTSTR Str :æ–‡å­—åˆ—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1192,16 +1192,16 @@ static int WriteStringToReg(void *Handle, LPTSTR Name, LPTSTR Str)
 }
 
 
-/*----- ƒ}ƒ‹ƒ`•¶š—ñ‚ğ“Ç‚İ‚Ş ------------------------------------------------
+/*----- ãƒãƒ«ãƒæ–‡å­—åˆ—ã‚’èª­ã¿è¾¼ã‚€ ------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       LPTSTR Str : •¶š—ñ‚ğ•Ô‚·ƒ[ƒN
-*       DWORD Size : Å‘åƒTƒCƒY
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       LPTSTR Str : æ–‡å­—åˆ—ã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
+*       DWORD Size : æœ€å¤§ã‚µã‚¤ã‚º
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1234,15 +1234,15 @@ static int ReadMultiStringFromReg(void *Handle, LPTSTR Name, LPTSTR Str, DWORD S
 }
 
 
-/*----- ƒ}ƒ‹ƒ`•¶š—ñ‚ğ‘‚«‚Ş ------------------------------------------------
+/*----- ãƒãƒ«ãƒæ–‡å­—åˆ—ã‚’æ›¸ãè¾¼ã‚€ ------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       LPTSTR Str : •¶š—ñ
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       LPTSTR Str : æ–‡å­—åˆ—
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1278,16 +1278,16 @@ static int WriteMultiStringToReg(void *Handle, LPTSTR Name, LPTSTR Str)
 }
 
 
-/*----- ƒoƒCƒiƒŠ‚ğ“Ç‚İ‚Ş-----------------------------------------------------
+/*----- ãƒã‚¤ãƒŠãƒªã‚’èª­ã¿è¾¼ã‚€-----------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       void *Bin : ƒoƒCƒiƒŠ‚ğ•Ô‚·ƒ[ƒN
-*       DWORD Size : Å‘åƒTƒCƒY
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       void *Bin : ãƒã‚¤ãƒŠãƒªã‚’è¿”ã™ãƒ¯ãƒ¼ã‚¯
+*       DWORD Size : æœ€å¤§ã‚µã‚¤ã‚º
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1314,16 +1314,16 @@ static int ReadBinaryFromReg(void *Handle, LPTSTR Name, void *Bin, DWORD Size)
 }
 
 
-/*----- ƒoƒCƒiƒŠ‚ğ‘‚«‚Ş ----------------------------------------------------
+/*----- ãƒã‚¤ãƒŠãƒªã‚’æ›¸ãè¾¼ã‚€ ----------------------------------------------------
 *
 *   Parameter
-*       void *Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
-*       void *Bin : ƒoƒCƒiƒŠ
-*       int Len : ’·‚³
+*       void *Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
+*       void *Bin : ãƒã‚¤ãƒŠãƒª
+*       int Len : é•·ã•
 *
 *   Return Value
-*       int ƒXƒe[ƒ^ƒX
+*       int ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
@@ -1373,15 +1373,15 @@ static int Unicode2AnsiCat(char *buf, LPTSTR str)
 }
 
 
-/*----- ƒf[ƒ^‚ğƒoƒbƒtƒ@‚É’Ç‰Á‘‚«‚İ‚·‚é ------------------------------------
+/*----- ãƒ‡ãƒ¼ã‚¿ã‚’ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ æ›¸ãè¾¼ã¿ã™ã‚‹ ------------------------------------
 *
 *   Parameter
-*       char *Src : •¶š—ñ
-*       int len : •¶š—ñ‚Ì’·‚³
-*       char *Dst : ‘‚«‚İ‚·‚éƒoƒbƒtƒ@
+*       char *Src : æ–‡å­—åˆ—
+*       int len : æ–‡å­—åˆ—ã®é•·ã•
+*       char *Dst : æ›¸ãè¾¼ã¿ã™ã‚‹ãƒãƒƒãƒ•ã‚¡
 *
 *   Return Value
-*       int ’Ç‰Á‚µ‚½ƒoƒCƒg”
+*       int è¿½åŠ ã—ãŸãƒã‚¤ãƒˆæ•°
 *----------------------------------------------------------------------------*/
 
 static int AnsiCat(char *Src, int Len, char *Dst)       /* ANSI */
@@ -1416,16 +1416,16 @@ static int AnsiCat(char *Src, int Len, char *Dst)       /* ANSI */
 }
 
 
-/*----- •¶š—ñ‚ğƒoƒbƒtƒ@‚É“Ç‚İ‚Ş (ANSI->Unicode•ÏŠ·) -------------------------
+/*----- æ–‡å­—åˆ—ã‚’ãƒãƒƒãƒ•ã‚¡ã«èª­ã¿è¾¼ã‚€ (ANSI->Unicodeå¤‰æ›) -------------------------
 *
 *   Parameter
-*       LPTSTR Src : •¶š—ñ
-*       int Max : ƒoƒbƒtƒ@‚ÌƒTƒCƒY
-*       LPTSTR Dst : ‘‚«‚İ‚·‚éƒoƒbƒtƒ@
-*       multi       ƒ}ƒ‹ƒ`•¶š—ñ‚©‚Ç‚¤‚©
+*       LPTSTR Src : æ–‡å­—åˆ—
+*       int Max : ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
+*       LPTSTR Dst : æ›¸ãè¾¼ã¿ã™ã‚‹ãƒãƒƒãƒ•ã‚¡
+*       multi       ãƒãƒ«ãƒæ–‡å­—åˆ—ã‹ã©ã†ã‹
 *
 *   Return Value
-*       int “Ç‚İ‚ñ‚¾ƒoƒCƒg”
+*       int èª­ã¿è¾¼ã‚“ã ãƒã‚¤ãƒˆæ•°
 *----------------------------------------------------------------------------*/
 static int StrReadIn(char *Src, int Max, LPTSTR Dst, BOOL multi)
 {
@@ -1503,15 +1503,15 @@ static int StrReadIn(char *Src, int Max, LPTSTR Dst, BOOL multi)
 }
 
 
-/*----- •¶š—ñ‚ğƒoƒbƒtƒ@‚É“Ç‚İ‚Ş (ANSI‚Ì‚Ü‚Ü) --------------------------------
+/*----- æ–‡å­—åˆ—ã‚’ãƒãƒƒãƒ•ã‚¡ã«èª­ã¿è¾¼ã‚€ (ANSIã®ã¾ã¾) --------------------------------
 *
 *   Parameter
-*       LPTSTR Src : •¶š—ñ
-*       int Max : ƒoƒbƒtƒ@‚ÌƒTƒCƒY
-*       LPTSTR Dst : ‘‚«‚İ‚·‚éƒoƒbƒtƒ@
+*       LPTSTR Src : æ–‡å­—åˆ—
+*       int Max : ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
+*       LPTSTR Dst : æ›¸ãè¾¼ã¿ã™ã‚‹ãƒãƒƒãƒ•ã‚¡
 *
 *   Return Value
-*       int “Ç‚İ‚ñ‚¾ƒoƒCƒg”
+*       int èª­ã¿è¾¼ã‚“ã ãƒã‚¤ãƒˆæ•°
 *----------------------------------------------------------------------------*/
 static int StrReadInAnsi(char *Src, int Max, char *Dst)
 {
@@ -1547,15 +1547,15 @@ static int StrReadInAnsi(char *Src, int Max, char *Dst)
 }
 
 
-/*----- ’l‚ğŒŸõ‚·‚é ----------------------------------------------------------
+/*----- å€¤ã‚’æ¤œç´¢ã™ã‚‹ ----------------------------------------------------------
 *
 *   Parameter
-*       LPTSTR Handle : ƒnƒ“ƒhƒ‹
-*       LPTSTR Name : –¼‘O
+*       LPTSTR Handle : ãƒãƒ³ãƒ‰ãƒ«
+*       LPTSTR Name : åå‰
 *
 *   Return Value
-*       LPTSTR ’lƒf[ƒ^‚Ìæ“ª
-*           NULL=w’è‚Ì–¼‘O‚Ì’l‚ªŒ©‚Â‚©‚ç‚È‚¢
+*       LPTSTR å€¤ãƒ‡ãƒ¼ã‚¿ã®å…ˆé ­
+*           NULL=æŒ‡å®šã®åå‰ã®å€¤ãŒè¦‹ã¤ã‹ã‚‰ãªã„
 *----------------------------------------------------------------------------*/
 static char *ScanValue(void *Handle, LPTSTR Name)
 {
