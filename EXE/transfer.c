@@ -4,7 +4,7 @@
 /                               ファイル転送
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2022 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -72,6 +72,7 @@ typedef struct {
     int     Tole;
     int     ForceCopy;
     int     Wait;
+    int     AllowDecrypted;
 }PROC_OPTIONS;
 
 
@@ -92,7 +93,7 @@ static int GoMakeDir(LPTSTR Path);
 static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options);
 static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options);
 static void CheckTimeTolerance(FILETIME *Src, FILETIME *Dst, int Tole);
-static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType);
+static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowDecrypted);
 static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult);
 static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -417,6 +418,7 @@ static int BackupProc(COPYPATLIST *Pat)
         }
         options.ForceCopy = Pat->Set.ForceCopy;
         options.Wait = Pat->Set.Wait;
+        options.AllowDecrypted = Pat->Set.AllowDecrypted;
 
         if(Pat->Set.NextDstNum >= StrMultiCount(Pat->Set.Dst))
         {
@@ -1445,7 +1447,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                     }
 
                     GoDelete1(Dst, NO, NULL);
-                    if(CopyFile1(Src, Dst, options->Wait, DrvType) != TRUE)
+                    if(CopyFile1(Src, Dst, options->Wait, DrvType, options->AllowDecrypted) != TRUE)
                     {
                         ErrorCount++;
                         if((Err = GetLastError()) == ERROR_DISK_FULL)
@@ -1546,13 +1548,14 @@ DWORD CALLBACK CopyProgressRoutine(
 *       LPTSTR Dst : コピー先
 *       int Wait : 転送時のウエイト時間
 *       UINT DrvType : ドライブのタイプ
+*       int AllowDecrypted : EFSによる暗号化不可でも成功させる
 *
 *   Return Value
 *       BOOL ステータス
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
+static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowDecrypted)
 {
 #if FILECOPY_METHOD==READFILE_WRITEFILE
     HANDLE hRead;
@@ -1771,6 +1774,7 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     FILETIME CreTime;
     FILETIME AccTime;
     FILETIME ModTime;
+    DWORD CopyFlags;
 
     BOOL sts = TRUE;
     LPTSTR lSrc = MakeLongPath(Src, NO);
@@ -1779,7 +1783,13 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType)
     info->Cancel = FALSE;
     info->Wait = Wait;
 
-    if(CopyFileEx(lSrc, lDst, CopyProgressRoutine, info, &info->Cancel, 0) == 0)
+    CopyFlags = 0;
+    if (AllowDecrypted)
+    {
+        CopyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION;
+    }
+
+    if(CopyFileEx(lSrc, lDst, CopyProgressRoutine, info, &info->Cancel, CopyFlags) == 0)
     {
         if(info->Cancel == FALSE)
         {

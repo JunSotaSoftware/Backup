@@ -4,7 +4,7 @@
 /                               レジストリ操作
 /
 /============================================================================
-/ Copyright (C) 1997-2018 Sota. All rights reserved.
+/ Copyright (C) 1997-2022 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -191,6 +191,7 @@ int SaveRegistory(void)
                         Tmp |= (Pat.IgnBigFile == YES)          ? OPT_IGN_BIG_FILE     : 0;
                         Tmp |= (Pat.DstDropbox == YES)          ? OPT_DST_DROPBOX      : 0;
                         Tmp |= (Pat.MoveInsteadDelete == YES)   ? OPT_MOVE_INSTEAD_DEL : 0;
+                        Tmp |= (Pat.AllowDecrypted == YES)      ? OPT_ALLOW_DECRYPTED  : 0;
                         WriteIntValueToReg(hKey5, _T("Flags"), Tmp);
                         WriteIntValueToReg(hKey5, _T("Wait"), Pat.Wait);
                         WriteStringToReg(hKey5, _T("Label"), Pat.VolLabel);
@@ -354,6 +355,7 @@ int LoadRegistory(void)
                     Pat.IgnBigFile        = (Tmp & OPT_IGN_BIG_FILE)     ? YES : NO;
                     Pat.DstDropbox        = (Tmp & OPT_DST_DROPBOX)      ? YES : NO;
                     Pat.MoveInsteadDelete = (Tmp & OPT_MOVE_INSTEAD_DEL) ? YES : NO;
+                    Pat.AllowDecrypted    = (Tmp & OPT_ALLOW_DECRYPTED)  ? YES : NO;
                     ReadIntValueFromReg(hKey5, _T("Wait"), &Pat.Wait);
                     ReadStringFromReg(hKey5, _T("Label"), Pat.VolLabel, MY_MAX_PATH+1);
                     ReadIntValueFromReg(hKey5, _T("Tole"), &Pat.Tolerance);

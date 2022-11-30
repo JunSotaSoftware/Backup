@@ -2,7 +2,7 @@
 /                           Ｂａｃｋｕｐの共通設定
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2022 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -50,8 +50,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.19")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x01130000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.20a")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01140100      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -107,10 +107,11 @@
 #define OPT_HIDE_AUTHDIALOG     0x04000000
 #define OPT_DST_DROPBOX         0x08000000
 #define OPT_MOVE_INSTEAD_DEL    0x10000000
-#define OPT_SUPPRESS_SLEEP_AC           0x020000000LL
-#define OPT_NO_SUPPRESS_SLEEP_AC        0x040000000LL
-#define OPT_SUPPRESS_SLEEP_BATTERY      0x080000000LL
-#define OPT_NO_SUPPRESS_SLEEP_BATTERY   0x100000000LL
+#define OPT_ALLOW_DECRYPTED     0x20000000
+#define OPT_SUPPRESS_SLEEP_AC           0x100000000LL
+#define OPT_NO_SUPPRESS_SLEEP_AC        0x200000000LL
+#define OPT_SUPPRESS_SLEEP_BATTERY      0x400000000LL
+#define OPT_NO_SUPPRESS_SLEEP_BATTERY   0x800000000LL
 
 /*===== トレイアイコン制御 =====*/
 
@@ -249,6 +250,7 @@ typedef struct {
     int NextDstNum;                 /* 次のバックアップ先番号 */
     int DstDropbox;                 /* バックアップ先はDropbox */
     int MoveInsteadDelete;          /* 削除の代わりにファイルを移動する */
+    int AllowDecrypted;             /* EFSによる暗号化不可でも成功させる */
     _TCHAR MoveToFolder[MY_MAX_PATH+1]; /* ファイル移動先のフォルダー */
     /* 以下は設定値ではない。内部処理で使用する。 */
     _TCHAR *NextDst;                /* 次のバックアップ先へのポインタ */

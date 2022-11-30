@@ -4,7 +4,7 @@
 /                           バックアップパターン設定
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2022 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -556,7 +556,7 @@ Desc    :   SHow tool menu
 Param   :   hdlg    [in] Window handle of the dialog box
             Conv    [in] CONVERT menu item on/off flag
             IdSort  [in] Control ID (sort)
-			IdConv  [in] Control ID (path convert)
+            IdConv  [in] Control ID (path convert)
 Return  :   none
 -------------------------------------------------------------------------------*/
 static void SrcToolMenu(HWND hDlg, BOOL Conv, DWORD IdSort, DWORD IdConv)
@@ -898,6 +898,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             SendDlgItemMessage(hDlg, PATSET_LABEL, WM_SETTEXT, 0, (LPARAM)TmpPat.VolLabel);
 
             SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_SETCHECK, TmpPat.DstDropbox, 0);
+            SendDlgItemMessage(hDlg, PATSET_DST_EFS, BM_SETCHECK, TmpPat.AllowDecrypted, 0);
 
             if(TmpPat.ChkVolLabel == NO)
             {
@@ -932,6 +933,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     TmpPat.ChkVolLabel = SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_GETCHECK, 0, 0);
                     SendDlgItemMessage(hDlg, PATSET_LABEL, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.VolLabel);
                     TmpPat.DstDropbox = SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_GETCHECK, 0, 0);
+                    TmpPat.AllowDecrypted = SendDlgItemMessage(hDlg, PATSET_DST_EFS, BM_GETCHECK, 0, 0);
                     break;
             }
             break;
@@ -1141,7 +1143,7 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
     int Cur;
     int Max;
     HWND hWndChild;
-	PATHCONVERTINFO PathInfo;
+    PATHCONVERTINFO PathInfo;
 
     switch (message)
     {
@@ -1260,13 +1262,13 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     SetDirButtonHide(hDlg, NOBACK_DIR_LIST, NOBACK_DIR_EDIT, NOBACK_DIR_UP, NOBACK_DIR_DOWN, NOBACK_DIR_DEL);
                     break;
 
-				case MENU_PATHCONVERT:
-					if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo) == YES)
-					{
-						DoPathConvert(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo, YES);
-						GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN + 1);
-					}
-					break;
+                case MENU_PATHCONVERT:
+                    if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo) == YES)
+                    {
+                        DoPathConvert(GetDlgItem(hDlg, NOBACK_DIR_LIST), &PathInfo, YES);
+                        GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN + 1);
+                    }
+                    break;
 
                 case NOBACK_DIR_LIST :
                     switch(GET_WM_COMMAND_CMD(wParam, lParam))
@@ -1358,13 +1360,13 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     SetDirButtonHide(hDlg, NOBACK_FILE_LIST, NOBACK_FILE_EDIT, NOBACK_FILE_UP, NOBACK_FILE_DOWN, NOBACK_FILE_DEL);
                     break;
 
-				case MENU_PATHCONVERT2:
-					if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo) == YES)
-					{
-						DoPathConvert(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo, YES);
-						GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN + 1);
-					}
-					break;
+                case MENU_PATHCONVERT2:
+                    if (PathConvertDialog(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo) == YES)
+                    {
+                        DoPathConvert(GetDlgItem(hDlg, NOBACK_FILE_LIST), &PathInfo, YES);
+                        GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN + 1);
+                    }
+                    break;
 
                 case NOBACK_FILE_LIST :
                     switch(GET_WM_COMMAND_CMD(wParam, lParam))
@@ -1607,19 +1609,19 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                 EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE), FALSE);
                 EnableWindow(GetDlgItem(hDlg, PATSET_TOLERANCE_SPN), FALSE);
             }
-			SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, TmpPat.MoveInsteadDelete, 0);
+            SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, TmpPat.MoveInsteadDelete, 0);
             SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-			SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)TmpPat.MoveToFolder);
-			if(TmpPat.UseTrashCan)
-			{
-				SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
-				EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
-				EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
-			}
-			else if(TmpPat.MoveInsteadDelete)
-			{
-				SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
-			}
+            SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)TmpPat.MoveToFolder);
+            if(TmpPat.UseTrashCan)
+            {
+                SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
+                EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
+                EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
+            }
+            else if(TmpPat.MoveInsteadDelete)
+            {
+                SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+            }
             return(TRUE);
 
         case WM_NOTIFY:
@@ -1641,8 +1643,8 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     TmpPat.IgnTime = SendDlgItemMessage(hDlg, PATSET_IGNTIME, BM_GETCHECK, 0, 0);
                     SendDlgItemMessage(hDlg, PATSET_TOLERANCE, WM_GETTEXT, 4, (LPARAM)Tmp);
                     TmpPat.Tolerance = _tstoi(Tmp);
-					TmpPat.MoveInsteadDelete = SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0);
-					SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.MoveToFolder);
+                    TmpPat.MoveInsteadDelete = SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0);
+                    SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)TmpPat.MoveToFolder);
                     break;
             }
             break;
@@ -1689,25 +1691,25 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                     }
                     break;
 
-				case PATSET_USE_TRASHCAN:
+                case PATSET_USE_TRASHCAN:
                     if(SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_GETCHECK, 0, 0) == 1)
-					{
-						SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
-						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
-						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
-					}
-					break;
+                    {
+                        SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_SETCHECK, 0, 0);
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
+                    }
+                    break;
 
-				case PATSET_DEL_MOVE_TO:
+                case PATSET_DEL_MOVE_TO:
                     if(SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_TO, BM_GETCHECK, 0, 0) == 1)
-					{
-						SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
-						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), TRUE);
-						EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), TRUE);
-					}
-					break;
+                    {
+                        SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), TRUE);
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), TRUE);
+                    }
+                    break;
 
-				case PATSET_DEL_MOVE_FOLDER_BR :
+                case PATSET_DEL_MOVE_FOLDER_BR :
                     SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
                     if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_130) == TRUE)
                         SendDlgItemMessage(hDlg, PATSET_DEL_MOVE_FOLDER, WM_SETTEXT, 0, (LPARAM)Tmp);
