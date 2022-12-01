@@ -4,7 +4,7 @@
 /							リストボックスティップス
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2022 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -159,12 +159,14 @@ void CheckTipsDisplay(LPARAM lParam)
 	MousePos.y = HIWORD(lParam);
 	row = CellRectFromPoint(hWndLbox, MousePos, &cellrect);
 
+#if 0  /* Windows 11ではマウスを動かしていなくてもWM_MOUSEMOVEが来る？ */
 	if(Status == PENDING)
 	{
 		/* 時間待ちの間にマウスが動かされたら解除 */
 		KillTimer(hWndLbox, TimerID);
 		Status = ERASED;
 	}
+#endif
 
 	if(Status == ERASED)
 	{
@@ -228,8 +230,12 @@ static void TipsShow(POINT Pos, LPTSTR lpszTitleText, TIPSTATUS Status)
 #else
 			rectDisplay.top = Pos.y + 21;
 #endif
+#if 0
 			rectDisplay.left = Pos.x;
-			rectDisplay.right = rectDisplay.left + 1024;
+#else
+            rectDisplay.left = Pos.x + GetSystemMetrics(SM_CXCURSOR);
+#endif
+            rectDisplay.right = rectDisplay.left + 1024;
 
 			DrawText(dc, lpszTitleText, -1, &rectDisplay, DT_CALCRECT);
 			rectDisplay.right += 2;
