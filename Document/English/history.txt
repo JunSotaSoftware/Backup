@@ -1,0 +1,280 @@
+Backup version history.
+
+Changes in Ver.1.20b
+--------------------
+-- Fixed a bug that Backup pattern comments cannot be displayed as chips 
+   in Windows 11.
+
+-- Fixed a problem in which "Backup source" was displayed on the screen for 
+   selecting a destination folder or a folder not to be backed up.
+
+Changes in Ver.1.20a
+--------------------
+-- Fixed a bug that referred to uninitialized variables.
+
+Changes in Ver.1.20
+--------------------
+-- The option to copy files without encryption has been added, even if the 
+   source files for backup are encrypted with EFS and the backup destination 
+   cannot be encrypted.
+
+Changes in Ver.1.19
+--------------------
+-- You can choose backup pattern list type, new or old.
+
+Changes in Ver.1.18a
+--------------------
+-- Backup Start Notification Dialog is broken when dialog size is changed.
+
+Changes in Ver.1.18
+--------------------
+-- Now you can disabling backup patterns.
+   (Thank you Tutiyama-san)
+
+-- You can choose action when backup finished with successful or backup is finished 
+   with fail each.
+   (Thank you Tutiyama-san)
+
+Changes in Ver.1.17
+--------------------
+-- Add setting for ignore invoke to Sleep while backupping.
+   (Thank you Tutiyama-san)
+
+-- Write backup time to log file.
+   (Thank you Tutiyama-san)
+
+Changes in Ver.1.16
+--------------------
+-- Now you can see log file after the exit from Backup and run Backup again.
+
+-- Add "Open logfile folder" menu item to Log menu. It opens log file folder
+   by Exploler.
+
+-- Add "Replace Pathname" menu item to the "Folders not Copied" and "Files 
+   not Cpoied" in Pattern setting dialog.
+
+-- Fix Backup runs incorrect when you specified folder name with tails which 
+   back slash like "C:\tmp\" as a backup source folder .
+
+Changes in Ver.1.15b
+--------------------
+-- Fix error is not reported when backup source is such as "D:\src\*.mp3" and 
+   "D:\src" folder is not existing.
+
+Changes in Ver.1.15a
+--------------------
+-- Fix error occured as "D: not found" when backup source is specified such as
+   "D:\;*.mp3".
+
+Changes in Ver.1.15
+--------------------
+-- Add 'Move file to following folder instead of delete' option to Pattern 
+   Setting  - Option page.
+
+   When Backup do delete a file, move file to specified folder instead of delete.
+   If backup destination is such as USB memory, you cannot use Trash Can.
+   In this case if you want to keep deleted file for way of precaution, you
+   can use this option.
+   You can specify any drive/folder without relation backup source drive and
+   backup destination drive.
+   But you must choice existing folder. So please select folder by '...' button.
+
+Changes in Ver.1.14
+--------------------
+-- Fix when backup destination is Dropbox folder, Backup deletes and re-copy
+   files on any situation related to Unicode normalization.
+   When backup destination is Dropbox folder, please check "Backup destination 
+   is Dropbox folder" check box on Backup pattern setting dialog.
+
+Changes in Ver.1.13a
+--------------------
+-- Fix file copy failed when backup source has files which saved by IE as 
+   "Webpage, complete".
+
+Changes in Ver.1.13
+--------------------
+-- Fix copied file's Creation Time and Last Accessed Time are different from 
+   backup source. (Modified Time is correct)
+
+-- Fix backup destination files are deleted when access failed to backup source
+   during each searching backup source, delete folders or delete files phase.
+   (Ex. Backup source is on network PC and the PC is shutting down during backup.)
+
+Changes in Ver.1.12
+--------------------
+-- Diaplay a dialog asking the user and password if network path is specified
+   and authentication is needed.
+   (Thank you, Tsuchiyama-san)
+   (Options - Settings - Option - Show Authentication Dialog for UNC Path)
+
+-- added Verbose log option for update file copy.
+   (Options - Settings - Log - Verbose log mode)
+
+-- Show "<< No pattern name >>" if pattern name is not specified.
+
+Changes in Ver.1.11
+--------------------
+-- Now you can specify multiple backup destination. When two or more folders
+   are specified Backup switches destination folder at each backup operation.
+
+-- Default folder of the log file is changed to user/AppData folder.
+
+-- Add --nonotify command line option. If specified Backup deletes files or
+   folders without notification dialog.
+
+Changes in Ver.1.10a
+--------------------
+-- Fixed error when file has alternate stream and backup destination file 
+   system does not supports alternate streams.
+
+Changes in Ver.1.10
+--------------------
+-- Now Backup program copies NTFS Alternate Data Stream.
+   Backup program detects changes in only Main Data Stream. If Alternate Data 
+   Stream is changed and Main Data Stream is not changed, Backup does not
+   copy these files.
+
+Changes in Ver.1.9
+--------------------
+-- Extend maximum length of the pathname.
+
+-- Erase icon on task tray when close a Backup program.
+
+Changes in Ver.1.8
+--------------------
+
+-- Add Exit button.
+
+-- Change Cancel button on the transfer window to Pause button and now you 
+   can restart backup again when you push the Restart button.
+
+-- Add "Ignore files which is bigger than specified size" option.
+
+-- Increase speed when you choose "Leave All" on the delete notification 
+   dialog.
+
+Changes in Ver.1.7
+--------------------
+
+-- Fixed File size calculation failed when backup source is not folder such
+   as 'C:\tmp\*.txt'
+
+-- Attribute of the folder which specified backup destination is no longer
+   changed when 'Backup to destination folder without create a top folder'
+   switch is specified.
+
+-- Fixed 'Save settings to file' and 'Load settings from file' function does
+   not work on Windows Vista.
+
+Changes in Ver.1.6
+--------------------
+
+- Fixed sort was incorrect on the Backup Source window.
+- Fixed application error by the Show Logfile menu when program cannot create
+  log file.
+- Added notify window when program cannot cretae log file.
+
+Changes in Ver.1.5
+--------------------
+- Now program can accesses multi language filename which uses unicode 
+  character.
+  (Windows 9x and Windows Me doesn't support unicode.)
+- Added option switch to write log file by the unicode character set on the 
+  log tab.
+- Added "Show error log on last backup" menu item.
+
+Changes in Ver.1.4
+--------------------
+- Fixed progress bar was incorrect when file size is bigger than 2GB.
+- Add option switch to confirm overwriting on the Option tab.
+- Add option switch to show comment in the dialog box on the Name tag.
+
+Changes in Ver.1.3
+--------------------
+- Add button to get volume label from backup disk on the Backup To tab.
+- Add '$L' macro to show volume label in the commnet.
+- Show volume label on the Confirm Backup dialog.
+- Refine operativeness.
+
+Changes in Ver.1.2
+--------------------
+- Add "Replace Pathname" function on the Backup Source tab.
+- Add "Ignore file time stamp" check box on the Advanced tab.
+
+Changes in Ver.1.1
+--------------------
+- Add "Backup to destination folder without create a top folder" option
+  on advanced tab.
+- Show detail message when error occured while backup.
+- Set attribute of folders when only attribute is different with source.
+- Fixed CPU usage becomes 100% until File Size dialog is closed.
+- Fixed menu of tray icon doesn't close by the ESC key.
+
+Changes in Ver.1.0
+--------------------
+- Fixed Delete buttons on Pattern Setting Dialog doesn't work.
+- Add "Leave All" button on the file delete notification dialog.
+- Fixed main window size becomes smaller whenever program start.
+- Add message of reason why file copy was failed.
+- Add Ignore File Attributes option on the pattern setting dialog.
+- Add option to play sound when backup is complete on the pattern 
+  setting dialog.
+- Move timer settings to the pattern setting dialog. You can set 
+  timer at each patterns.
+
+Changes in Ver.0.99b
+--------------------
+- Fixed GDI resource leak while repeating backup with icon tray.
+
+Changes in Ver.0.99a
+--------------------
+- Fixed rarely file not copyed when file name specified with the semicolon.
+
+Changes in Ver.0.99
+--------------------
+- Support standby mode and hibernate after the backup is complete.
+- Add settings to do not copy the system file and hidden file.
+- Fold long comments in comment window.
+- Fixed -c command line option is ignored.
+- Support wild card at -n command line option.
+- Support INI file selection by the -p command line option.
+
+Changes in Ver.0.98
+--------------------
+- Set time stamp on create folder to same time.
+- Add Log menu to view logfile on the viewer.
+  Viewer can be changed on Option Setting Dialog.
+- Backup Comfirmation Window is now resizable.
+- Support quit program and shutdown Windows after the backup is complete.
+
+Changes in Ver.0.97
+--------------------
+- Stop backup when the backup source drive or the folder not exist.
+- Support display comments in a window instead of the tip.
+- Fixed multiple pattern selection by mouse dragging.
+- Ignore backup pattern which both backup source and destination is blank.
+- Fixed only a first backup source is wrote into the logfile when the 
+  multiple folders specified,
+- Now support exit from the application by the ESC key.
+
+Changes in Ver.0.96a
+--------------------
+- Fixed application error.
+
+Changes in Ver.0.96
+--------------------
+- Increase pattern name maximum length.
+- Add comment to each pattern.
+- Add tolerance setting of the time stamp difference.
+- Now support "Koushin Fuutauk".
+
+Changes in Ver.0.95
+--------------------
+- Avoid unnecessary copy and change attribute operations when network drive.
+- Add Quick Backup. Now you can backup without create patterns.
+- Add command line option "-i" to minimize window.
+
+Changes in Ver.0.94
+--------------------
+- First English version.
+

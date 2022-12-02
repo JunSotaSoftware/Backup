@@ -1,0 +1,72 @@
+============================================================
+[Software Name]  Backup Ver.1.20b
+[Environment]    Windows 11, 10
+[Support]        http://www2.biglobe.ne.jp/~sota/index-e.html
+============================================================
+
+Changes in Ver.1.20b
+--------------------
+-- Fixed a bug that Backup pattern comments cannot be displayed 
+   as chips in Windows 11.
+
+-- Fixed a problem in which "Backup source" was displayed 
+   on the screen for selecting a destination folder or a 
+   folder not to be backed up.
+
+Changes in Ver.1.20a
+--------------------
+-- Fixed a bug that referred to uninitialized variables.
+
+Changes in Ver.1.20
+--------------------
+-- The option to copy files without encryption has been 
+   added, even if the source files for backup are encrypted 
+   with EFS and the backup destination cannot be encrypted.
+
+Outline
+-------
+This is a File Backup software.
+Backup is FREE software.
+
+Files
+-----
+Backup.exe -------- Executable file
+Backup.txt -------- This file
+history.txt ------- Version history
+
+Sorry, no help file available.
+
+Installation
+------------
+Double click Backup Package icon.
+
+Uninstall
+---------
+Use Add/Remove Program icon on the Control Panel.
+
+License
+-------------------
+
+Copyright(C) 1997-2022, Sota and cooperators. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions 
+are met:
+
+ 1. Redistributions of source code must retain the above copyright 
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright 
+    notice, this list of conditions and the following disclaimer in the 
+    documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR 
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, 
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF 
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
