@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,7 +19,6 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(65001)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -45,7 +46,6 @@ IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -158,16 +158,16 @@ BEGIN
     LTEXT           "Drive(&V):",stc4,7,104,92,9
 END
 
-about_dlg DIALOGEX 0, 0, 155, 76
+about_dlg DIALOGEX 0, 0, 183, 76
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Backup"
 FONT 9, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,52,57,50,14
-    ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.20a",-1,29,13,98,8
-    CTEXT           "Copyright(C) 1997-2022 Sota",-1,7,27,141,8
-    CTEXT           "Backup is Freeware.",-1,7,42,141,8
+    DEFPUSHBUTTON   "OK",IDOK,66,57,50,14
+    ICON            backup,-1,7,2,18,21
+    CTEXT           "Backup  Ver.1.20b",-1,42,13,98,8
+    CTEXT           "Copyright(C) 1997-2022 Sota && cooperators",-1,7,27,169,8
+    CTEXT           "Backup is Freeware.",-1,7,42,169,8
 END
 
 main_dlg DIALOGEX 0, 0, 227, 178
@@ -837,7 +837,7 @@ BEGIN
     about_dlg, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 148
+        RIGHTMARGIN, 176
         TOPMARGIN, 2
         BOTTOMMARGIN, 71
     END
@@ -1132,8 +1132,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,20,1,0
- PRODUCTVERSION 1,20,1,0
+ FILEVERSION 1,20,2,0
+ PRODUCTVERSION 1,20,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1151,12 +1151,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.20.1.0"
+            VALUE "FileVersion", "1.20.2.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2022 Sota"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2022 Sota & cooperators"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.20.1.0"
+            VALUE "ProductVersion", "1.20.2.0"
         END
     END
     BLOCK "VarFileInfo"
