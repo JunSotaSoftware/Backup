@@ -61,6 +61,11 @@ typedef struct {
 } PATHCONVERTINFO;
 
 
+typedef struct {
+    _TCHAR *Buffer;
+    _TCHAR* Message;
+} INPFILEPARAM;
+
 
 /*===== プロトタイプ =====*/
 
@@ -348,6 +353,7 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
     int Max;
     HWND hWndChild;
     PATHCONVERTINFO PathInfo;
+    INPFILEPARAM InpFileParam;
 
     switch (message)
     {
@@ -378,7 +384,9 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
             {
                 case PATSET_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    InpFileParam.Buffer = Tmp;
+                    InpFileParam.Message = MSGJPN_36;
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_SRCLIST, SRC_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_SRCLIST, TmpPat.Src, SRC_PATH_LEN+1);
@@ -391,7 +399,9 @@ static LRESULT CALLBACK SourceSettingProc(HWND hDlg, UINT message, WPARAM wParam
                     if((Cur = SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
                         SendDlgItemMessage(hDlg, PATSET_SRCLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        InpFileParam.Buffer = Tmp;
+                        InpFileParam.Message = MSGJPN_36;
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_folder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_SRCLIST, SRC_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_SRCLIST, TmpPat.Src, SRC_PATH_LEN+1);
@@ -790,23 +800,23 @@ static LRESULT CALLBACK SrcListWndProc(HWND hWnd, UINT message, WPARAM wParam, L
 
 static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static LPARAM Buf;
+    static INPFILEPARAM *InpFileParam;
     _TCHAR Tmp[MY_MAX_PATH+1];
     _TCHAR Tmp2[MY_MAX_PATH+1];
 
     switch (message)
     {
         case WM_INITDIALOG :
+            InpFileParam = (INPFILEPARAM*)lParam;
             SendDlgItemMessage(hDlg, INPFILE_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
-            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, lParam);
-            Buf = lParam;
+            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)InpFileParam->Buffer);
             return(TRUE);
 
         case WM_COMMAND :
             switch(GET_WM_COMMAND_ID(wParam, lParam))
             {
                 case IDOK :
-                    SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Buf);
+                    SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)InpFileParam->Buffer);
                     EndDialog(hDlg, YES);
                     break;
 
@@ -824,7 +834,7 @@ static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
                 case INPFILE_FOLDER_BR :
                     SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH+1, (LPARAM)Tmp);
-                    if(SelectDir(hDlg, Tmp, MY_MAX_PATH, MSGJPN_36) == TRUE)
+                    if(SelectDir(hDlg, Tmp, MY_MAX_PATH, InpFileParam->Message) == TRUE)
                         SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
                     break;
 
@@ -886,6 +896,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
     PATHCONVERTINFO PathInfo;
     HWND hCtrl;
     HDC hDC;
+    INPFILEPARAM InpFileParam;
 
     switch (message)
     {
@@ -943,7 +954,9 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
             {
                 case PATSET_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    InpFileParam.Buffer = Tmp;
+                    InpFileParam.Message = MSGJPN_33;
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -956,7 +969,9 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     if((Cur = SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
                         SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        InpFileParam.Buffer = Tmp;
+                        InpFileParam.Message = MSGJPN_33;
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -1144,6 +1159,7 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
     int Max;
     HWND hWndChild;
     PATHCONVERTINFO PathInfo;
+    INPFILEPARAM InpFileParam;
 
     switch (message)
     {
@@ -1185,7 +1201,9 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
             {
                 case NOBACK_DIR_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    InpFileParam.Buffer = Tmp;
+                    InpFileParam.Message = MSGJPN_141;
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, NOBACK_DIR_LIST, IGN_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN+1);
@@ -1197,7 +1215,9 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     if((Cur = SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
                         SendDlgItemMessage(hDlg, NOBACK_DIR_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        InpFileParam.Buffer = Tmp;
+                        InpFileParam.Message = MSGJPN_141;
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, NOBACK_DIR_LIST, IGN_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, NOBACK_DIR_LIST, TmpPat.IgnDir, IGN_PATH_LEN+1);
@@ -1283,7 +1303,9 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
 
                 case NOBACK_FILE_ADD :
                     _tcscpy(Tmp, _T(""));
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                    InpFileParam.Buffer = Tmp;
+                    InpFileParam.Message = MSGJPN_141;
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, NOBACK_FILE_LIST, IGN_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN+1);
@@ -1295,7 +1317,9 @@ static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wPara
                     if((Cur = SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETCURSEL, 0,  0)) != LB_ERR)
                     {
                         SendDlgItemMessage(hDlg, NOBACK_FILE_LIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)Tmp) == YES)
+                        InpFileParam.Buffer = Tmp;
+                        InpFileParam.Message = MSGJPN_141;
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfile_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, NOBACK_FILE_LIST, IGN_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, NOBACK_FILE_LIST, TmpPat.IgnFile, IGN_PATH_LEN+1);

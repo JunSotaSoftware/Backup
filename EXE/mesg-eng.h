@@ -164,3 +164,4 @@
 #define MSGJPN_138  _T("Skip (%s)")
 #define MSGJPN_139  _T("Skip. (Error:%d, Total Errors:%d) (Create:%d, Delete:%d, Copy:%d)")
 #define MSGJPN_140  _T("-- Disabled -- ")
+#define MSGJPN_141  _T("Folder not Copied")
