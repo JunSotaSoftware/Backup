@@ -563,6 +563,7 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
     RECT *Rect;
     LPMINMAXINFO lpmmi;
     POINT Point;
+    NONCLIENTMETRICS ncm;
 
     switch (message)
     {
@@ -685,8 +686,19 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
         case WM_GETMINMAXINFO :
             AsdMainDlgMinSize(&Point);
+/*
+* 開発環境（ターゲットサブシステム？）が変わると GetSystemMetrics(SM_CYSIZEFRAME) で以前とは異なる値が返ってくる。
+* SystemParametersInfo() を使用するように変更。サイズに+1や+3しているが、数値の根拠は不明なれどこれでうまくいくとの情報があったので採用した。
+*/
+#if 0
             Point.x += GetSystemMetrics(SM_CYSIZEFRAME) * 2;
-            Point.y += GetSystemMetrics(SM_CYMENU) + GetSystemMetrics(SM_CYSIZEFRAME) * 2 +  + GetSystemMetrics(SM_CYCAPTION);
+            Point.y += GetSystemMetrics(SM_CYMENU) + GetSystemMetrics(SM_CYSIZEFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+#else
+            ncm.cbSize = sizeof(NONCLIENTMETRICS);
+            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+            Point.x += (ncm.iBorderWidth + ncm.iPaddedBorderWidth + 3) * 2;
+            Point.y += ncm.iMenuHeight + 1 + ncm.iCaptionHeight + 1 + (ncm.iBorderWidth + ncm.iPaddedBorderWidth + 3) * 2;
+#endif
             lpmmi = (LPMINMAXINFO)lParam;
             lpmmi->ptMinTrackSize.x = Point.x;
             lpmmi->ptMinTrackSize.y = Point.y;
