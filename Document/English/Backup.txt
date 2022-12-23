@@ -1,8 +1,17 @@
 ============================================================
-[Software Name]  Backup Ver.1.20b
+[Software Name]  Backup Ver.1.20c
 [Environment]    Windows 11, 10
 [Support]        http://www2.biglobe.ne.jp/~sota/index-e.html
 ============================================================
+
+Changes in Ver.1.20c
+--------------------
+-- Ver.1.20b was identified as a threat by Windows Security, 
+   so the Windows SDK version was changed.
+@ (10.0.22000.0 -> 10.0.19041.0)
+
+-- Fixed a problem where the main window could be made smaller 
+   than the minimum size when the window size is reduced.
 
 Changes in Ver.1.20b
 --------------------
