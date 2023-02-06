@@ -726,6 +726,31 @@ BEGIN
     CONTROL         "",MAIN_SEPA,"Static",SS_OWNERDRAW,8,96,155,3
 END
 
+mtp_folder_select_dlg DIALOGEX 0, 0, 226, 171
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    LTEXT           "static",MTP_FOLDER_MSG,7,7,212,8
+    LTEXT           "static",MTP_FOLDER_DESC,7,22,212,8
+    CONTROL         "",MTP_FOLDER_TREE,"SysTreeView32",WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,37,212,104
+    DEFPUSHBUTTON   "OK",IDOK,112,150,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,169,150,50,14
+END
+
+inpfolder_with_mtp_dlg DIALOGEX 0, 0, 207, 76
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "フォルダの指定"
+FONT 9, "MS UI Gothic", 0, 0, 0x0
+BEGIN
+    LTEXT           "フォルダ名(&F)",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",INPFILE_FOLDER_BR,186,18,14,14
+    PUSHBUTTON      "MTP...",INPFILE_MTP_BR,171,33,29,14
+    DEFPUSHBUTTON   "OK",IDOK,40,55,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,115,55,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1098,6 +1123,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 170
     END
+
+    mtp_folder_select_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 219
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 164
+    END
+
+    inpfolder_with_mtp_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 69
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1114,6 +1155,8 @@ box_bmp                 BITMAP                  "bmp00001.bmp"
 current_bmp             BITMAP                  "box_bmp1.bmp"
 
 done_bmp                BITMAP                  "box_bmp2.bmp"
+
+device_bmp              BITMAP                  "C:\\Home\\Project\\GitHub\\Source\\Repos\\JunSotaSoftware\\Backup\\EXE\\Resource\\bitmap2.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1245,6 +1288,16 @@ BEGIN
 END
 
 patset_timer_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+mtp_folder_select_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+inpfolder_with_mtp_dlg AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

@@ -2,7 +2,7 @@
 /                           Ｂａｃｋｕｐの共通設定
 /
 /============================================================================
-/ Copyright (C) 1997-2022 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -27,6 +27,8 @@
 /============================================================================*/
 
 #define USE_SAME_AS_SUCCESS 1
+#define SHOW_CONSOLE 1
+#define MTP_SUPPORT 1
 
 #ifndef ENGLISH
 #include "mesg-jpn.h"
@@ -39,6 +41,7 @@
 
 #define FAIL        0
 #define SUCCESS     1
+#define SKIP        2
 
 #define NO          0
 #define YES         1
@@ -50,8 +53,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.20c")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x01140300      /* バージョン */
+#define PROGRAM_VERSION         _T("1.21")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01150000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2
@@ -75,6 +78,9 @@
 #define WM_ADD_FILELIST (WM_USER+9)
 #define WM_FORMAT_TEXT  (WM_USER+10)
 #define WM_SIZE_CHANGE  (WM_USER+11)
+#if MTP_SUPPORT
+#define WM_MTP_TREEVIEW_DCLICK    (WM_USER+13)  /* ホストをダブルクリックで選択した */
+#endif
 
 /*===== オプション =====*/
 
@@ -151,6 +157,12 @@
 #define TREE_FOLDER_SEL 3
 #define TREE_FILE_SEL   4
 #define TREE_ERROR      -1
+
+/*===== TreeViewのデータタイプ =====*/
+
+#define MTP_FOLDER      0
+#define MTP_FOLDER_SEL  1
+#define MTP_DEVICE      2
 
 /*===== 表示しているウインドウ =====*/
 
@@ -299,6 +311,78 @@ typedef struct {
 } OVERWRITENOTIFYDATA;
 
 
+#if MTP_SUPPORT
+
+/*===== MTPオブジェクト情報 =====*/
+typedef enum {
+    ObjectTypeFolder,
+    ObjectTypeFile,
+    ObjectTypeBoth,
+    ObjectTypeDevice,
+    ObjectTypeNone,
+} MTP_OBJECT_TYPE;
+
+typedef struct {
+    PWSTR ObjectID;
+    PWSTR ObjectName;
+    MTP_OBJECT_TYPE ObjectType;
+    FILETIME ObjectModifiedTime;
+    ULONGLONG ObjectSize;
+} MTP_OBJECT_INFO;
+
+/*===== MTPデバイスのフォルダツリー =====*/
+typedef enum {
+    ErrorInvalidUrl,
+    ErrorDeviceNotFound,
+    ErrorFolderNotFound,
+} MTP_MAKE_OBJECT_TREE_ERROR;
+
+typedef struct {
+    MTP_MAKE_OBJECT_TREE_ERROR ErrorId;
+    PWSTR ObjectName;
+} MTP_MAKE_OBJECT_TREE_ERROR_INFO;
+
+typedef struct _mtpfoldertree {
+    MTP_OBJECT_INFO Info;
+    BOOL ThisIsBackupRoot;
+    BOOL Deleted;
+    struct _mtpfoldertree* Child;
+    struct _mtpfoldertree* Sibling;
+} MTP_OBJECT_TREE;
+
+#endif
+
+typedef struct {
+    LPTSTR  IgnoreFiles;
+    LPTSTR  IgnoreDirs;
+    int     IgnSys;
+    int     IgnHid;
+    int     IgnBigSize;
+    int     IgnNoDel;
+    int     IgnAttr;
+    int     NewOnly;
+    int     Tole;
+    int     ForceCopy;
+    int     Wait;
+    int     AllowDecrypted;
+#if MTP_SUPPORT
+    MTP_OBJECT_TREE* MtpObjectTreeTop;
+#endif
+} PROC_OPTIONS;
+
+typedef struct {
+    int IsMtp;
+    union {
+        HANDLE hFindFirstFile;
+        MTP_OBJECT_TREE* tree;
+    };
+} FIND_FILE_HANDLE;
+
+/* transfer.c : DWORD CALLBACK CopyProgressRoutine() をコールバックするためのtypedef */
+typedef DWORD(CALLBACK* COPY_PROGRESS_ROUTINE)(LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER, DWORD, DWORD, HANDLE, HANDLE, LPVOID);
+
+
+
 /*===== プロトタイプ =====*/
 
 /* main.c */
@@ -314,7 +398,6 @@ char *AskIniFilePathAnsi(void);
 void SetTrayIcon(int Ope, int Type, LPTSTR AddMesg);
 void SetMenuHide(int Win);
 void DispErrorBox(LPTSTR szFormat,...);
-void DoPrintf(LPTSTR szFormat,...);
 void MakeInitialLogFilename(LPTSTR buf);
 
 /* maindlg.c */
@@ -359,15 +442,18 @@ void SetBackupRestart(void);
 void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi);
 
 BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization);
-HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization);
-DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization);
+FIND_FILE_HANDLE* FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization, PROC_OPTIONS* options);
+BOOL FindNextFile_My(FIND_FILE_HANDLE* hFindFile, LPWIN32_FIND_DATA lpFindFileData);
+BOOL FindClose_My(FIND_FILE_HANDLE* hFindFile);
+DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options);
 DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError);
-BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization);
-BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization);
+BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization, PROC_OPTIONS* options);
+BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization, PROC_OPTIONS* options);
 HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization);
-BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization);
-BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization);
-BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization);
+BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIONS* options);
+BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization, PROC_OPTIONS* options);
+BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options);
+
 
 /* Registory.c */
 
@@ -417,7 +503,6 @@ LPTSTR GetFileExt(LPTSTR Path);
 int StrMultiLen(LPTSTR Str);
 int StrMultiCount(LPTSTR Str);
 LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num);
-BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 int SelectDir(HWND hWnd, LPTSTR Buf, int MaxLen, LPTSTR Title);
 int SelectFile(HWND hWnd, LPTSTR Fname, LPTSTR Title, LPTSTR Filters, LPTSTR Ext, int Flags, int Save, LPTSTR Dir);
 void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int Num);
@@ -465,7 +550,55 @@ void CheckTipsDisplay(LPARAM lParam);
 
 void SaveUpdateBellInfo(void);
 
-
 /* shutdown.c */
 BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State);
 int DoCountDown(int State);
+
+#if MTP_SUPPORT
+/* .c と .cpp のあいだで相互コールする関数のプロトタイプ　*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* mtpsupport.cpp */
+int IsMtpDevice(PCWSTR url);
+
+/* mtpobjecttree.cpp */
+int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo);
+void DispMtpObjectTree(MTP_OBJECT_TREE* top, int level);
+void ReleaseMtpObjectTree(MTP_OBJECT_TREE* top);
+MTP_OBJECT_TREE* FindObjectFromTree(PCWSTR url, MTP_OBJECT_TREE* treeTop, MTP_OBJECT_TREE** parent);
+MTP_OBJECT_TREE* FindNextSiblingObjectFromTree(MTP_OBJECT_TREE* object);
+MTP_OBJECT_TREE* FindSpecifiedChildObjectFromTree(PCWSTR name, MTP_OBJECT_TREE* parent);
+int DeleteObjectFromTree(MTP_OBJECT_TREE* object, MTP_OBJECT_TREE* parent);
+int AddObjectToTree(MTP_OBJECT_INFO* object, MTP_OBJECT_TREE* parent);
+
+/* mtpfileoperation.cpp */
+int DeleteObjectFromMtpDevice(PWSTR deviceId, PWSTR objectId);
+int CreateFolderOnMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR folderName, PWSTR* objectId);
+int ChangeObjectTimeStampOnMtpDevice(PWSTR deviceId, PWSTR objectId, FILETIME* time);
+int TransferFileToMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR destinationFileName, PWSTR sourcePathName, PWSTR* objectId, ULONGLONG* fileSize, FILETIME* modifiedTime, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
+int ChangeObjectNameOnMtpDevice(PWSTR deviceId, PWSTR objectId, PWSTR name);
+
+/* mtpdirsel.cpp */
+int ShowMtpFolderSelectDialog(HINSTANCE hInst, HWND hWndParent, LPTSTR* url);
+
+/* main.c */
+void DoPrintf(LPTSTR szFormat, ...);
+
+/* misc.c */
+BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+/* transfer.c */
+DWORD CALLBACK CopyProgressRoutine(LARGE_INTEGER TotalFileSize, LARGE_INTEGER TotalBytesTransferred, LARGE_INTEGER StreamSize, LARGE_INTEGER StreamBytesTransferred, DWORD dwStreamNumber, DWORD dwCallbackReason, HANDLE hSourceFile, HANDLE hDestinationFile, LPVOID lpData);
+
+#ifdef __cplusplus
+}
+#endif
+
+#else
+void DoPrintf(LPTSTR szFormat, ...);
+BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+DWORD CALLBACK CopyProgressRoutine(LARGE_INTEGER TotalFileSize, LARGE_INTEGER TotalBytesTransferred, LARGE_INTEGER StreamSize, LARGE_INTEGER StreamBytesTransferred, DWORD dwStreamNumber, DWORD dwCallbackReason, HANDLE hSourceFile, HANDLE hDestinationFile, LPVOID lpData);
+#endif
+

@@ -2,7 +2,7 @@
 /                                   メッセージ
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -165,3 +165,12 @@
 #define MSGJPN_139  _T("Skip. (Error:%d, Total Errors:%d) (Create:%d, Delete:%d, Copy:%d)")
 #define MSGJPN_140  _T("-- Disabled -- ")
 #define MSGJPN_141  _T("Folder not Copied")
+#define MSGJPN_142  _T("MTP devices not connected on the system.")
+#define MSGJPN_143  _T("Choose MTP device's folder for destination.")
+#define MSGJPN_144  _T("Double click item to expand child items.")
+#define MSGJPN_145  _T("ERROR: MTP device (%s) not found.")
+#define MSGJPN_146  _T("ERROR: Folder (%s) not found on the MTP device.")
+#define MSGJPN_147  _T("ERROR: Specified dackup destination is invalid.")
+#define MSGJPN_148  _T("Getting folder tree from destination device.")
+#define MSGJPN_149  _T("WARNING: Cannot change folder name. Folder will remain under its previous name. (%s -> %s)")
+#define MSGJPN_150  _T("WARNING: Cannot change file name. Copy this file to destination.")

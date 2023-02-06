@@ -4,7 +4,7 @@
 /                               転送ダイアログ
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -655,31 +655,34 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
 {
     int Pos;
     va_list vaArgs;
-    _TCHAR szBuf[MY_MAX_PATH2 + 100];
+    int len;
+    _TCHAR* buffer;
 
-    va_start(vaArgs,szFormat);
-    if(_vstprintf(szBuf, szFormat, vaArgs)!=EOF)
+    va_start(vaArgs, szFormat);
+    len = _vsctprintf(szFormat, vaArgs) + 1 + 2;    /* +2はあとで "\\r\\n" を付ける分 */
+    buffer = (_TCHAR*)malloc(len * sizeof(_TCHAR));
+    if(_vstprintf(buffer, szFormat, vaArgs) != EOF)
     {
         /* debug window */
-        DoPrintf(_T("%s\n"), szBuf);
+        DoPrintf(_T("%s\n"), buffer);
 
         /* log file */
-        WriteMsgToLogfile(szBuf);
+        WriteMsgToLogfile(buffer);
 
         if(Type == TASKMSG_ERR)
         {
-            WriteMsgToErrorLogfile(szBuf);
+            WriteMsgToErrorLogfile(buffer);
         }
 
         /* ウインドウの横幅に合わせて整形 */
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)szBuf);
-        _tcscat(szBuf, _T("\r\n"));
+        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)buffer);
+        _tcscat(buffer, _T("\r\n"));
 
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
 
         /* テキストサイズのリミット値をチェック */
-        if((Pos + _tcslen(szBuf)) >= TASK_BUFSIZE)
+        if((Pos + _tcslen(buffer)) >= TASK_BUFSIZE)
         {
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEFROMCHAR, TASK_BUFSIZE/10, 0) + 1;
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos, 0);
@@ -690,9 +693,11 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
         }
         SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_SETSEL, Pos, Pos);
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)szBuf);
+        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)buffer);
     }
+    free(buffer);
     va_end(vaArgs);
+
     return;
 }
 

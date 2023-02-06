@@ -4,7 +4,7 @@
 /                           各種の汎用サブルーチン
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -171,6 +171,9 @@ int CountChar(LPTSTR Str, _TCHAR Ch)
 *
 *   Return Value
 *       なし
+*
+*   Note
+*       オリジナルの文字列 LPTSTR Str1 が変更されます。
 *----------------------------------------------------------------------------*/
 
 void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst)
@@ -958,7 +961,7 @@ void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
         if(Tmp != NULL)
         {
             DragQueryFile((HDROP)wParam, i, Tmp, MY_MAX_PATH);
-            Attr = GetFileAttributes_My(Tmp, NO);
+            Attr = GetFileAttributes_My(Tmp, NO, NULL);
             if((Attr == 0xFFFFFFFF) ||
                ((Attr & FILE_ATTRIBUTE_DIRECTORY) && (Type & SEND_FOLDER)) ||
                (!(Attr & FILE_ATTRIBUTE_DIRECTORY) && (Type & SEND_FILE)))

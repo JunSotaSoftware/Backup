@@ -4,7 +4,7 @@
 /                           バックアップパターン設定
 /
 /============================================================================
-/ Copyright (C) 1997-2022 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -81,6 +81,7 @@ static int CheckPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel);
 static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK SrcListWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK InpFolderWithMtpDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void SetAdvancedPage(HWND hDlgSrc, HWND hDlgAdv);
 static LRESULT CALLBACK DstWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -956,7 +957,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     _tcscpy(Tmp, _T(""));
                     InpFileParam.Buffer = Tmp;
                     InpFileParam.Message = MSGJPN_33;
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_with_mtp_dlg), hDlg, InpFolderWithMtpDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -971,7 +972,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                         SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
                         InpFileParam.Buffer = Tmp;
                         InpFileParam.Message = MSGJPN_33;
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_with_mtp_dlg), hDlg, InpFolderWithMtpDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
@@ -1136,6 +1137,70 @@ static LRESULT CALLBACK DstWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             return(CallWindowProc(DstProcPtr, hWnd, message, wParam, lParam));
     }
     return(0L);
+}
+
+
+/*----- フォルダ名入力ウインドウのメッセージ処理（MTPボタン付き） --------------------
+*
+*   Parameter
+*       HWND hWnd : ウインドウハンドル
+*       UINT message  : メッセージ番号
+*       WPARAM wParam : メッセージの WPARAM 引数
+*       LPARAM lParam : メッセージの LPARAM 引数
+*
+*   Return Value
+*       メッセージに対応する戻り値
+*----------------------------------------------------------------------------*/
+static LRESULT CALLBACK InpFolderWithMtpDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    static INPFILEPARAM* InpFileParam;
+    _TCHAR Tmp[MY_MAX_PATH + 1];
+    LPTSTR url;
+
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        InpFileParam = (INPFILEPARAM*)lParam;
+        SendDlgItemMessage(hDlg, INPFILE_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+        SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)InpFileParam->Buffer);
+        return(TRUE);
+
+    case WM_COMMAND:
+        switch (GET_WM_COMMAND_ID(wParam, lParam))
+        {
+        case IDOK:
+            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH + 1, (LPARAM)InpFileParam->Buffer);
+            EndDialog(hDlg, YES);
+            break;
+
+        case IDCANCEL:
+            EndDialog(hDlg, NO);
+            break;
+
+        case INPFILE_FOLDER_BR:
+            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH + 1, (LPARAM)Tmp);
+            if (SelectDir(hDlg, Tmp, MY_MAX_PATH, InpFileParam->Message) == TRUE)
+            {
+                SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+            }
+            break;
+
+        case INPFILE_MTP_BR:
+            if (ShowMtpFolderSelectDialog(GetBupInst(), hDlg, &url) == SUCCESS)
+            {
+                SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)url);
+                DoPrintf(_T("URL=%s\t\n"), url);
+                free(url);
+            }
+            break;
+
+        case IDHELP:
+            HtmlHelp(NULL, AskHelpFilePath(), HH_HELP_CONTEXT, IDH_HELP_TOPIC_0000011);
+            break;
+        }
+        return(TRUE);
+    }
+    return(FALSE);
 }
 
 

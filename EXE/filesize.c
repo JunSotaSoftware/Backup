@@ -4,7 +4,7 @@
 /                               ファイル容量検索
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -200,7 +200,7 @@ static LRESULT CALLBACK SizeDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
 -----------------------------------------------------------------------------*/
 static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 {
-    HANDLE              fHnd;
+    FIND_FILE_HANDLE*   fHnd;
     WIN32_FIND_DATA     FindBuf;
     _TCHAR              Src[MY_MAX_PATH2+1];
     _TCHAR              *Pos;
@@ -229,7 +229,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
         }
         else
         {
-             Type = GetFileAttributes_My(Src, NO);
+             Type = GetFileAttributes_My(Src, NO, NULL);
         }
     }
     else
@@ -239,7 +239,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
 #ifdef DEBUG_LOG
             DoPrintf(_T(" - B"));
 #endif
-            Type = GetFileAttributes_My(Src, NO);
+            Type = GetFileAttributes_My(Src, NO, NULL);
         }
         else
         {
@@ -258,7 +258,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
         SetYenTail(Src);
         Pos = _tcschr(Src, NUL);
         _tcscpy(Pos, _T("*"));
-        if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Src, &FindBuf, NO, NULL)) != INVALID_HANDLE_VALUE)
         {
             do
             {
@@ -305,8 +305,8 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
                     }
                 }
             }
-            while(FindNextFile(fHnd, &FindBuf) == TRUE);
-            FindClose(fHnd);
+            while(FindNextFile_My(fHnd, &FindBuf) == TRUE);
+            FindClose_My(fHnd);
         }
     }
     else
@@ -315,7 +315,7 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
         DoPrintf(_T(" - file\n"));
 #endif
         /*===== ファイル =====*/
-        if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Src, &FindBuf, NO, NULL)) != INVALID_HANDLE_VALUE)
         {
             do
             {
@@ -345,8 +345,8 @@ static void CheckSizeGo(HWND hDlg, LPTSTR Path, SIZE_COUNT_INFO *Info)
                     }
                 }
             }
-            while(FindNextFile(fHnd, &FindBuf) == TRUE);
-            FindClose(fHnd);
+            while(FindNextFile_My(fHnd, &FindBuf) == TRUE);
+            FindClose_My(fHnd);
         }
     }
 

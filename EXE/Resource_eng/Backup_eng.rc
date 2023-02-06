@@ -37,6 +37,14 @@ notify2_icon            ICON                    "ico00001.ico"
 
 IDR_RT_MANIFEST1        RT_MANIFEST             "backup.exe.manifest"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+device_bmp              BITMAP                  "bitmap2.bmp"
+
 #endif    // 日本語 (日本) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -81,6 +89,20 @@ backup_tiny_b           ICON                    "backup_b.ico"
 grip_icon               ICON                    "icon1.ico"
 
 notify_icon             ICON                    "icon2.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+box_bmp                 BITMAP                  "bmp00001.bmp"
+
+current_bmp             BITMAP                  "box_bmp1.bmp"
+
+done_bmp                BITMAP                  "box_bmp2.bmp"
+
+list_bmp                BITMAP                  "bitmap1.bmp"
 
 
 #ifdef APSTUDIO_INVOKED
@@ -761,6 +783,31 @@ BEGIN
     CONTROL         "",MAIN_LINE_2,"Static",SS_ETCHEDHORZ,0,151,226,1
 END
 
+mtp_folder_select_dlg DIALOGEX 0, 0, 229, 175
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "static",MTP_FOLDER_MSG,7,7,215,8
+    LTEXT           "static",MTP_FOLDER_DESC,7,22,212,8
+    CONTROL         "",MTP_FOLDER_TREE,"SysTreeView32",WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,41,215,104
+    DEFPUSHBUTTON   "OK",IDOK,113,154,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,172,154,50,14
+END
+
+inpfolder_with_mtp_dlg DIALOGEX 0, 0, 207, 75
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Folder"
+FONT 9, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Folder Name",-1,7,7,103,8
+    EDITTEXT        INPFILE_FNAME,7,18,178,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",INPFILE_FOLDER_BR,186,18,14,14
+    PUSHBUTTON      "MTP...",INPFILE_MTP_BR,171,33,29,14
+    DEFPUSHBUTTON   "OK",IDOK,40,54,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,115,54,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1122,6 +1169,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 171
     END
+
+    mtp_folder_select_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 222
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 168
+    END
+
+    inpfolder_with_mtp_dlg, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 68
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1164,20 +1227,6 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-box_bmp                 BITMAP                  "bmp00001.bmp"
-
-current_bmp             BITMAP                  "box_bmp1.bmp"
-
-done_bmp                BITMAP                  "box_bmp2.bmp"
-
-list_bmp                BITMAP                  "bitmap1.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1256,6 +1305,16 @@ BEGIN
 END
 
 patset_timer_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+mtp_folder_select_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+inpfolder_with_mtp_dlg AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
