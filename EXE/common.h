@@ -520,6 +520,7 @@ void ExecViewer(LPTSTR Fname, LPTSTR App);
 void CheckRange2(int *Cur, int Max, int Min);
 void FileTime2TimeString(FILETIME *Time, LPTSTR Buf);
 void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo);
+LPTSTR InsertNumberBeforeExtension(LPTSTR path, int number);
 
 /* wildcard.c */
 
@@ -579,6 +580,7 @@ int CreateFolderOnMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR folderNa
 int ChangeObjectTimeStampOnMtpDevice(PWSTR deviceId, PWSTR objectId, FILETIME* time);
 int TransferFileToMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR destinationFileName, PWSTR sourcePathName, PWSTR* objectId, ULONGLONG* fileSize, FILETIME* modifiedTime, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
 int ChangeObjectNameOnMtpDevice(PWSTR deviceId, PWSTR objectId, PWSTR name);
+int TransferFileFromMtpDevice(PWSTR deviceId, PWSTR objectId, PCWSTR destinationPathName, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
 
 /* mtpdirsel.cpp */
 int ShowMtpFolderSelectDialog(HINSTANCE hInst, HWND hWndParent, LPTSTR* url);

@@ -102,7 +102,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization);
 static LPTSTR MakeLongPathNFD(LPCTSTR path);
 static int CheckNormlization(LPCTSTR dest);
 static int FnameCompare(LPCTSTR src, LPCTSTR dst);
-static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, PROC_OPTIONS* options);
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, int ErrRep, PROC_OPTIONS* options);
 static BOOL ChangingCaseExistingFileName(LPCTSTR existingFileName, int normalization, PROC_OPTIONS* options);
 
 
@@ -1651,7 +1651,6 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* option
     if ((options != NULL) && (IsMtpDevice(Dst) == YES))
     {
         /* MTPの場合 */
-
         LPTSTR path;
         LPTSTR name;
         LPTSTR anchor;
@@ -2115,7 +2114,7 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult, PROC_OPTIONS* 
             {
                 if(MoveInsteadDelete)
                 {
-                    if(MoveFileToDeletionFolder(Fname, MoveToFolder, options) != 0)
+                    if(MoveFileToDeletionFolder(Fname, MoveToFolder, ErrRep, options) != 0)
                         Sts = FAIL;
                 }
                 else
@@ -3572,7 +3571,7 @@ BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normal
     return ret;
 }
 
-/*----- MoveFileのMAX_PATH以上への拡張 ------------------------------------------
+/*----- MoveFileのMAX_PATH以上への拡張（MTP対応） ---------------------------------
 *
 *   Parameter
 *       MoveFile関数と同じ
@@ -3583,20 +3582,64 @@ BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normal
 *       MoveFile関数と同じ
 *
 *   Note
-*       現状MTP対応無し
+*       現状では移動元ファイルのほうをMTP対応とする。
+*       ファイルを削除する代わりに特定のフォルダー（PC上）へファイルを移動して削除の代わりとする目的にのみ使用しているため
 *----------------------------------------------------------------------------*/
 BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization, PROC_OPTIONS* options)
 {
-    BOOL ret;
+    BOOL ret = FALSE;
     LPTSTR path1;
     LPTSTR path2;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    PWSTR deviceId;
+    PWSTR objectId;
+    COPYCALLBACKINFO* info;
 
-    path1 = MakeLongPath(lpExistingFileName, normalization);
-    path2 = MakeLongPath(lpNewFileName, normalization);
-    ret = MoveFile(path1, path2);
-    free(path1);
-    free(path2);
+    if ((options != NULL) && (IsMtpDevice(lpExistingFileName) == YES))
+    {
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpExistingFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
 
+            /* ツリーから移動（削除）するオブジェクトを消す */
+            if (DeleteObjectFromTree(found, parent) == SUCCESS)
+            {
+                info = malloc(sizeof(COPYCALLBACKINFO));
+                info->Cancel = FALSE;
+                info->Wait = options->Wait;
+
+                /* 移動実行 */
+                if (TransferFileFromMtpDevice(deviceId, objectId, lpNewFileName, CopyProgressRoutine, info) == SUCCESS)
+                {
+                    /* 移動に成功したら元のファイルは削除 */
+                    if (DeleteObjectFromMtpDevice(deviceId, objectId) == SUCCESS)
+                    {
+                        ret = TRUE;
+                    }
+                }
+                free(info);
+            }
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path1 = MakeLongPath(lpExistingFileName, normalization);
+        path2 = MakeLongPath(lpNewFileName, normalization);
+        ret = MoveFile(path1, path2);
+        free(path1);
+        free(path2);
+    }
     return ret;
 }
 
@@ -3918,38 +3961,57 @@ static int FnameCompare(LPCTSTR src, LPCTSTR dst)
 *   Parameter
 *       LPCTSTR path : 削除するファイル
 *       LPCTSTR moveTo : 移動先
+*       int ErrRep : エラー報告するかどうか (YES/NO)
 *       PROC_OPTIONS* options : 処理オプション
 *
 *   Return Value
 *       int ステータス (0=正常終了)
 *----------------------------------------------------------------------------*/
-static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, PROC_OPTIONS* options)
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, int ErrRep, PROC_OPTIONS* options)
 {
     int sts = 0;
-    _TCHAR destFolder[MY_MAX_PATH+1];
-    _TCHAR destFname[MY_MAX_PATH+1];
     FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     LPCTSTR fname;
     int num;
+    LPTSTR buffer;
+    LPTSTR original;
 
+    /* 移動先のファイル名（番号なし）をoriginalに作成 */
     fname = GetFileName(path);
-    _tcscpy(destFolder, moveTo);
-    SetYenTail(destFolder);
-    _stprintf(destFname, _T("%s%s"), destFolder, fname);
+    original = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(moveTo) + _tcslen(fname) + 1 + 1));
+    _tcscpy(original, moveTo);
+    SetYenTail(original);
+    _tcscat(original, fname);
+
+    /* bufferは移動先のファイル名（番号あり C:\trash\file(1).exe のような）を指す */
+    buffer = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(original) + 1));
+    _tcscpy(buffer, original);
+
     num = 1;
-    while((fHnd = FindFirstFile_My(destFname, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
+    while((fHnd = FindFirstFile_My(buffer, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
     {
+        /* 移動先に同じ名前のファイルがあったので括弧付きの番号を付ける */
         FindClose_My(fHnd);
-        _stprintf(destFname, _T("%s%s(%d)"), destFolder, fname, num);
+        free(buffer);
+        buffer = InsertNumberBeforeExtension(original, num);
         num++;
     }
-    SetTaskMsg(TASKMSG_ERR, MSGJPN_131, destFname);
-    if(MoveFile_My(path, destFname, NO, options) == 0)
+    if (ErrRep == YES)
     {
-        SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, destFname);
+        SetTaskMsg(TASKMSG_ERR, MSGJPN_131, buffer);
+    }
+    if(MoveFile_My(path, buffer, NO, options) == 0)
+    {
+        if (ErrRep == YES)
+        {
+            SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, buffer);
+        }
         sts = 1;
     }
+    free(buffer);
+    free(original);
+
     return sts;
 }
 

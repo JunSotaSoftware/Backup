@@ -526,7 +526,7 @@ int TransferFileToMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR destinat
                             }
                             else
                             {
-                                DoPrintf(_T("Error: Failed to transfer to device, hr = 0x%lx\r\n"), hr);
+                                DoPrintf(_T("Error: Failed to transfer file to device, hr = 0x%lx\r\n"), hr);
                             }
                         }
                         else
@@ -865,6 +865,141 @@ int ChangeObjectNameOnMtpDevice(PWSTR deviceId, PWSTR objectId, PWSTR name)
             else
             {
                 DoPrintf(_T("Error: Failed to get IPortableDeviceProperties interface, hr = 0x%lx\r\n"), hr);
+            }
+        }
+        else
+        {
+            DoPrintf(_T("Error: Failed to get IPortableDeviceContent interface, hr = 0x%lx\r\n"), hr);
+        }
+    }
+    SetWin32LastError(hr);
+    return status;
+}
+
+
+/*----- MTPデバイスからPCにファイルを転送する -----------------------------------
+*
+*   Parameter
+*       PWSTR deviceId : デバイスID
+*       PWSTR objectId : オブジェクトID
+*       PCWSTR destinationPathName : 転送先パス名（PC上）
+*       COPY_PROGRESS_ROUTINE progressCallback : 進捗状況を知らせるコールバック関数へのポインタ
+*       LPVOID data : コールバック関数に渡される引数
+*
+*   Return Value
+*       int ステータス
+*----------------------------------------------------------------------------*/
+int TransferFileFromMtpDevice(PWSTR deviceId, PWSTR objectId, PCWSTR destinationPathName, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data)
+{
+    int status = FAIL;
+    HRESULT hr = S_OK;
+    CComPtr<IPortableDevice> pIPortableDevice;
+    CComPtr<IPortableDeviceContent> pContent;
+    CComPtr<IPortableDeviceResources> pResources;
+    CComPtr<IStream> pObjectDataStream;
+    CComPtr<IStream> pFinalFileStream;
+    DWORD cbOptimalTransferSize = 0;
+    CComPtr<IPortableDeviceProperties> pProperties;
+    CComPtr<IPortableDeviceKeyCollection> pPropertiesToRead;
+    CComPtr<IPortableDeviceValues> pObjectProperties;
+    ULONGLONG fileSize;
+
+    /* MTPデバイスをオープン */
+    if (OpenMtpDevice(deviceId, &pIPortableDevice) == SUCCESS)
+    {
+        /* IPortableDeviceContentインターフェースを取得 */
+        hr = pIPortableDevice->Content(&pContent);
+        if (SUCCEEDED(hr))
+        {
+            /* IPortableDeviceResourcesインターフェースを取得 */
+            hr = pContent->Transfer(&pResources);
+            if (SUCCEEDED(hr))
+            {
+                /* 転送元のストリームとバッファサイズを取得 */
+                hr = pResources->GetStream(objectId, WPD_RESOURCE_DEFAULT, STGM_READ, &cbOptimalTransferSize, &pObjectDataStream);
+                if (SUCCEEDED(hr))
+                {
+                    /* IPortableDevicePropertiesインターフェースを取得 */
+                    hr = pContent->Properties(&pProperties);
+                    if (SUCCEEDED(hr))
+                    {
+                        /* IPortableDeviceKeyCollectionインターフェースを作成 */
+                        hr = CoCreateInstance(CLSID_PortableDeviceKeyCollection, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pPropertiesToRead));
+                        if (SUCCEEDED(hr))
+                        {
+                            if (pPropertiesToRead != NULL)
+                            {
+                                /* オブジェクトのサイズを取得するように指示 */
+                                hr = pPropertiesToRead->Add(WPD_OBJECT_SIZE);
+                                if (SUCCEEDED(hr))
+                                {
+                                    /* オブジェクトのプロパティを読み込む */
+                                    hr = pProperties->GetValues(objectId, pPropertiesToRead, &pObjectProperties);
+                                    if (SUCCEEDED(hr))
+                                    {
+                                        /* オブジェクトのサイズを取得 */
+                                        hr = pObjectProperties->GetUnsignedLargeIntegerValue(WPD_OBJECT_SIZE, &fileSize);
+                                        if (SUCCEEDED(hr))
+                                        {
+                                            /* 出力先ストリームを作成 */
+                                            hr = SHCreateStreamOnFile(destinationPathName, STGM_CREATE | STGM_WRITE, &pFinalFileStream);
+                                            if (SUCCEEDED(hr))
+                                            {
+                                                /* ストリームをコピー */
+                                                hr = StreamCopy(pFinalFileStream, pObjectDataStream, cbOptimalTransferSize, fileSize, progressCallback, data);
+                                                if (SUCCEEDED(hr))
+                                                {
+                                                    status = SUCCESS;
+                                                }
+                                                else
+                                                {
+                                                    DoPrintf(_T("Error: Failed to transfer file from device, hr = 0x%lx\r\n"), hr);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                DoPrintf(_T("Error: Failed to create a file named (%ws) to transfer object, hr = 0x%lx\r\n"), destinationPathName, hr);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DoPrintf(_T("Error: Failed to get object size, hr = 0x%lx\r\n"), hr);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        DoPrintf(_T("Error: Failed to GetValue from IPortableDeviceProperties interface, hr = 0x%lx\r\n"), hr);
+                                    }
+                                }
+                                else
+                                {
+                                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_SIZE to IPortableDeviceKeyCollection infetface, hr = 0x%lx\r\n"), hr);
+                                }
+                            }
+                            else
+                            {
+                                hr = E_UNEXPECTED;
+                                DoPrintf(_T("Error: Failed to create property information because we were returned a NULL PortableDeviceKeyCollection interface pointer, hr = 0x%lx\r\n"), hr);
+                            }
+                        }
+                        else
+                        {
+                            DoPrintf(_T("Error: Failed to create IPortableDeviceKeyCollection interface, hr = 0x%lx\r\n"), hr);
+                        }
+                    }
+                    else
+                    {
+                        DoPrintf(_T("Error: Failed to get IPortableDeviceProperties interface, hr = 0x%lx\r\n"), hr);
+                    }
+                }
+                else
+                {
+                    DoPrintf(_T("Error: Failed to get IStream (representing object data on the device) from IPortableDeviceResources, hr = 0x%lx\r\n"), hr);
+                }
+            }
+            else
+            {
+                DoPrintf(_T("Error: Failed to get IPortableDeviceResources interface, hr = 0x%lx\r\n"), hr);
             }
         }
         else

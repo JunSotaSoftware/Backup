@@ -1146,3 +1146,38 @@ void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo)
     }
     free(buffer);
 }
+
+
+/*----- ファイル名の拡張子の前に括弧付きの番号を挿入する ---------------------------
+*
+*   Parameter
+*       LPTSTR Path : パス名
+*       int number : 番号
+*
+*   Return Value
+*       LPTSTR 番号の付いたファイル名（使い終わったら free() で開放すること
+*----------------------------------------------------------------------------*/
+LPTSTR InsertNumberBeforeExtension(LPTSTR path, int number)
+{
+    LPTSTR extension;
+    int fnameLength;
+    LPTSTR fname;
+    int totalLength;
+    LPTSTR buffer;
+
+    extension = _tcsrchr(path, _T('.'));
+    if (extension == NULL)
+    {
+        extension = _tcschr(path, NUL);
+    }
+    fnameLength = extension - path;
+    fname = (LPTSTR)malloc(sizeof(_TCHAR) * (fnameLength + 1));
+    ZeroMemory(fname, sizeof(_TCHAR) * (fnameLength + 1));
+    _tcsncpy(fname, path, fnameLength);
+    totalLength = _sctprintf(_T("%s(%d)%s"), fname, number, extension) + 1;
+    buffer = (LPTSTR)malloc(sizeof(_TCHAR) * totalLength);
+    _stprintf(buffer, _T("%s(%d)%s"), fname, number, extension);
+    free(fname);
+    return buffer;
+}
+
