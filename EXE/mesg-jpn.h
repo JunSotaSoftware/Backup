@@ -171,6 +171,6 @@
 #define MSGJPN_145  _T("ERROR: MTPデバイス（%s）が見つかりません")
 #define MSGJPN_146  _T("ERROR: MTPデバイス上にフォルダ（%s）が見つかりません")
 #define MSGJPN_147  _T("ERROR: バックアップ先の指定が間違っています")
-#define MSGJPN_148  _T("バックアップ先のフォルダーツリーを取得しています")
+#define MSGJPN_148  _T("バックアップ先のファイル構造を取得しています")
 #define MSGJPN_149  _T("WARNING: 名前の変更が出来ませんでした。元の名前のまま残ります。(%s → %s)")
 #define MSGJPN_150  _T("WARNING: 名前の変更が出来ませんでした。複写し直します。")

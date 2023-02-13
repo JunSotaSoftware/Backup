@@ -171,6 +171,6 @@
 #define MSGJPN_145  _T("ERROR: MTP device (%s) not found.")
 #define MSGJPN_146  _T("ERROR: Folder (%s) not found on the MTP device.")
 #define MSGJPN_147  _T("ERROR: Specified dackup destination is invalid.")
-#define MSGJPN_148  _T("Getting folder tree from destination device.")
+#define MSGJPN_148  _T("Getting file structure from destination device.")
 #define MSGJPN_149  _T("WARNING: Cannot change folder name. Folder will remain under its previous name. (%s -> %s)")
 #define MSGJPN_150  _T("WARNING: Cannot change file name. Copy this file to destination.")
