@@ -808,6 +808,17 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,115,54,50,14
 END
 
+mtp_searching_progress DIALOGEX 0, 0, 191, 93
+STYLE DS_SETFONT | WS_POPUP | WS_BORDER
+EXSTYLE WS_EX_TOPMOST
+FONT 9, "MS Sans Serif", 400, 0, 0x0
+BEGIN
+    CTEXT           "Now getting folder structure on MTP device.\n\nThis may take some minute.",IDC_STATIC,7,7,177,26
+    CTEXT           "static",PROCESSING_FILE,7,41,177,8
+    CTEXT           "static",PROCESSING_COUNT,7,55,177,8
+    PUSHBUTTON      "Abort",PROCESSING_CANCEL,134,72,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1185,6 +1196,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 68
     END
+
+    mtp_searching_progress, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1195,8 +1214,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,20,3,0
- PRODUCTVERSION 1,20,3,0
+ FILEVERSION 1,21,0,0
+ PRODUCTVERSION 1,21,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1214,12 +1233,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.20.3.0"
+            VALUE "FileVersion", "1.21.0.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2022 Sota & cooperators"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2023 Sota & cooperators"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup application"
-            VALUE "ProductVersion", "1.20.3.0"
+            VALUE "ProductVersion", "1.21.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1315,6 +1334,11 @@ BEGIN
 END
 
 inpfolder_with_mtp_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+mtp_searching_progress AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

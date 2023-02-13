@@ -42,6 +42,7 @@
 #define FAIL        0
 #define SUCCESS     1
 #define SKIP        2
+#define CANCELLED   3
 
 #define NO          0
 #define YES         1
@@ -80,6 +81,8 @@
 #define WM_SIZE_CHANGE  (WM_USER+11)
 #if MTP_SUPPORT
 #define WM_MTP_TREEVIEW_DCLICK    (WM_USER+13)  /* ホストをダブルクリックで選択した */
+#define WM_MAKE_PROCESSING_WINDOW   (WM_USER+14)    /* MTPオブジェクトツリー処理中ウインドウを作成 */
+#define WM_DESTROY_PROCESSING_WINDOW    (WM_USER+15)    /* MTPオブジェクトツリー処理中ウインドウを消去 */
 #endif
 
 /*===== オプション =====*/
@@ -166,8 +169,9 @@
 
 /*===== 表示しているウインドウ =====*/
 
-#define WIN_MAIN        0       /* メインウインドウ */
-#define WIN_TRANS       1       /* 転送中ウインドウ */
+#define WIN_MAIN            0       /* メインウインドウ */
+#define WIN_TRANS           1       /* 転送中ウインドウ */
+#define WIN_MTP_PROCESSING  2       /* MTPファイル構造取得中ウインドウ */
 
 /*===== FSの種類 =====*/
 
@@ -344,7 +348,6 @@ typedef struct {
 
 typedef struct _mtpfoldertree {
     MTP_OBJECT_INFO Info;
-    BOOL ThisIsBackupRoot;
     BOOL Deleted;
     struct _mtpfoldertree* Child;
     struct _mtpfoldertree* Sibling;
@@ -381,6 +384,8 @@ typedef struct {
 /* transfer.c : DWORD CALLBACK CopyProgressRoutine() をコールバックするためのtypedef */
 typedef DWORD(CALLBACK* COPY_PROGRESS_ROUTINE)(LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER, DWORD, DWORD, HANDLE, HANDLE, LPVOID);
 
+/* trandlg.c : BOOL MtpTreeProcessingRoutine() をコールバックするためのtypedef */
+typedef BOOL(CALLBACK* MTP_TREE_PROCESSING_ROUTINE)(PWSTR);
 
 
 /*===== プロトタイプ =====*/
@@ -430,6 +435,9 @@ void SetPatName(LPTSTR Name);
 void SetTaskMsg(int Type, LPTSTR szFormat,...);
 void SetFileProgress(LONGLONG Total, LONGLONG Done);
 void SaveTransDlgSize(void);
+void MakeMtpProcessingWindow(void);
+void DestroyMtpProcessingWindow(void);
+HWND GetProcessingDlgHwnd(void);
 
 /* Transfer.c */
 
@@ -565,7 +573,7 @@ extern "C" {
 int IsMtpDevice(PCWSTR url);
 
 /* mtpobjecttree.cpp */
-int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo);
+int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo, MTP_TREE_PROCESSING_ROUTINE processingCallback);
 void DispMtpObjectTree(MTP_OBJECT_TREE* top, int level);
 void ReleaseMtpObjectTree(MTP_OBJECT_TREE* top);
 MTP_OBJECT_TREE* FindObjectFromTree(PCWSTR url, MTP_OBJECT_TREE* treeTop, MTP_OBJECT_TREE** parent);
@@ -593,6 +601,9 @@ BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 /* transfer.c */
 DWORD CALLBACK CopyProgressRoutine(LARGE_INTEGER TotalFileSize, LARGE_INTEGER TotalBytesTransferred, LARGE_INTEGER StreamSize, LARGE_INTEGER StreamBytesTransferred, DWORD dwStreamNumber, DWORD dwCallbackReason, HANDLE hSourceFile, HANDLE hDestinationFile, LPVOID lpData);
+
+/* transdlg.c */
+BOOL CALLBACK MtpTreeProcessingRoutine(LPTSTR filename);
 
 #ifdef __cplusplus
 }

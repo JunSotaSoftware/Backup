@@ -751,6 +751,17 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,115,55,50,14
 END
 
+mtp_searching_progress DIALOGEX 0, 0, 191, 93
+STYLE DS_SETFONT | WS_POPUP | WS_BORDER
+EXSTYLE WS_EX_TOPMOST
+FONT 9, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    CTEXT           "バックアップ先のファイル構造を取得しています。\n\nこれは時間がかかることがあります。",IDC_STATIC,7,7,177,26
+    CTEXT           "スタティック",PROCESSING_FILE,7,41,177,8
+    CTEXT           "スタティック",PROCESSING_COUNT,7,55,177,8
+    PUSHBUTTON      "中止",PROCESSING_CANCEL,134,72,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1139,6 +1150,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 69
     END
+
+    mtp_searching_progress, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1165,8 +1184,8 @@ device_bmp              BITMAP                  "C:\\Home\\Project\\GitHub\\Sour
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,20,3,0
- PRODUCTVERSION 1,20,3,0
+ FILEVERSION 1,21,0,0
+ PRODUCTVERSION 1,21,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1184,12 +1203,12 @@ BEGIN
             VALUE "Comments", "http://www2.biglobe.ne.jp/~sota/"
             VALUE "CompanyName", " "
             VALUE "FileDescription", "Backup"
-            VALUE "FileVersion", "1.20.3.0"
+            VALUE "FileVersion", "1.21.0.0"
             VALUE "InternalName", "Backup"
-            VALUE "LegalCopyright", "Copyright (C) 1997-2022 Sota & ご協力いただいた方々"
+            VALUE "LegalCopyright", "Copyright (C) 1997-2023 Sota & ご協力いただいた方々"
             VALUE "OriginalFilename", "Backup.exe"
             VALUE "ProductName", "Backup アプリケーション"
-            VALUE "ProductVersion", "1.20.3.0"
+            VALUE "ProductVersion", "1.21.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1298,6 +1317,11 @@ BEGIN
 END
 
 inpfolder_with_mtp_dlg AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+mtp_searching_progress AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

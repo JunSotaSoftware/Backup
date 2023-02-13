@@ -60,6 +60,7 @@
 #define done_bmp                        151
 #define mtp_folder_select_dlg           165
 #define device_bmp                      168
+#define mtp_searching_progress          171
 #define MAIN_SRC                        1000
 #define NOBACK_DIR                      1001
 #define TRANS_DIRLIST                   1002
@@ -115,8 +116,8 @@
 #define IDC_BUTTON1                     1048
 #define LOG_FNAME_INIT                  1048
 #define PATSET_DEL_MOVE_FOLDER_BR       1048
-#define IMPFILE_MTP_BR                  1048
 #define INPFILE_MTP_BR                  1048
+#define PROCESSING_CANCEL               1048
 #define TRANS_LOGWRITE                  1049
 #define BMAIN_EDIT                      1050
 #define PATSET_ADD                      1051
@@ -340,6 +341,8 @@
 #define MISC_LIST_OLD_TYPE              1250
 #define MTP_FOLDER_TREE                 1251
 #define MTP_FOLDER_DESC                 1252
+#define PROCESSING_FILE                 1253
+#define PROCESSING_COUNT                1254
 #define FILEOPENORD                     1536
 #define main_dlg_old                    1537
 #define main_comment_dlg1               1538
@@ -371,9 +374,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        171
+#define _APS_NEXT_RESOURCE_VALUE        173
 #define _APS_NEXT_COMMAND_VALUE         40021
-#define _APS_NEXT_CONTROL_VALUE         1253
+#define _APS_NEXT_CONTROL_VALUE         1255
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

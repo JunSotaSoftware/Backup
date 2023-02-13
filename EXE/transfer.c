@@ -440,18 +440,19 @@ static int BackupProc(COPYPATLIST *Pat)
         if (IsMtpDevice(Pat->Set.NextDst) == YES)
         {
             SetTaskMsg(TASKMSG_NOR, MSGJPN_148);
+            MakeMtpProcessingWindow();
 
             NormalizationType = NORMALIZATION_TYPE_NONE;
             DestDriveType = DRIVE_UNKNOWN;
 
             /* MTPデバイスのフォルダツリーを検索 */
             MTP_MAKE_OBJECT_TREE_ERROR_INFO ErrorInfo;
-            if (MakeMtpObjectTree(Pat->Set.NextDst, ObjectTypeBoth, &options.MtpObjectTreeTop, &ErrorInfo) == SUCCESS)
+            Sts = MakeMtpObjectTree(Pat->Set.NextDst, ObjectTypeBoth, &options.MtpObjectTreeTop, &ErrorInfo, MtpTreeProcessingRoutine);
+            if (Sts == SUCCESS)
             {
                 ReplaceAll(Pat->Set.NextDst, _tcslen(Pat->Set.NextDst), __T('/'), _T('\\'));
-                Sts = SUCCESS;
             }
-            else
+            else if (Sts == FAIL)
             {
                 ErrorCount++;
                 if (ErrorInfo.ErrorId == ErrorDeviceNotFound)
@@ -468,8 +469,8 @@ static int BackupProc(COPYPATLIST *Pat)
                 {
                     SetTaskMsg(TASKMSG_ERR, MSGJPN_147);
                 }
-                Sts = FAIL;
             }
+            DestroyMtpProcessingWindow();
         }
 #endif
 
@@ -550,11 +551,12 @@ static int BackupProc(COPYPATLIST *Pat)
             SelectPass(2);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_64);
             Sts = RemoveDisappearedDir(Pat->Set.Src, Pat->Set.NextDst, &options);
-
+#if 0
             /* debug */
             DoPrintf(_T("-----RMDIR--------------------\r\n"));
             DispMtpObjectTree(options.MtpObjectTreeTop, 0);
             DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if((Sts == SUCCESS) && (Pat->Set.DelFile == YES))
@@ -562,11 +564,12 @@ static int BackupProc(COPYPATLIST *Pat)
             SelectPass(3);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_65);
             Sts = RemoveDisappearedFile(Pat->Set.NextDst, &options);
-
+#if 0
             /* debug */
             DoPrintf(_T("-----RMFILE-------------------\r\n"));
             DispMtpObjectTree(options.MtpObjectTreeTop, 0);
             DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
@@ -574,11 +577,12 @@ static int BackupProc(COPYPATLIST *Pat)
             SelectPass(4);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_66);
             Sts = MakeAllDirTree(Pat->Set.NextDst, &options);
-
+#if 0
             /* debug */
             DoPrintf(_T("-----MKDIR--------------------\r\n"));
             DispMtpObjectTree(options.MtpObjectTreeTop, 0);
             DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
@@ -586,11 +590,12 @@ static int BackupProc(COPYPATLIST *Pat)
             SelectPass(5);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_67);
             Sts = CopyUpdateFile(Pat->Set.NextDst, DestDriveType, &options);
-
+#if 0
             /* debug */
             DoPrintf(_T("-----Copy---------------------\r\n"));
             DispMtpObjectTree(options.MtpObjectTreeTop, 0);
             DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
@@ -3999,7 +4004,7 @@ static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, int ErrRep, PROC
     }
     if (ErrRep == YES)
     {
-        SetTaskMsg(TASKMSG_ERR, MSGJPN_131, buffer);
+        SetTaskMsg(TASKMSG_NOR, MSGJPN_131, buffer);
     }
     if(MoveFile_My(path, buffer, NO, options) == 0)
     {

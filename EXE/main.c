@@ -137,6 +137,7 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
     MSG Msg;
     int Ret;
     LPTSTR  cmdLine;
+    HWND hWndProcessing = NULL;
 
     Ret = FALSE;
     hInstBup = hInstance;
@@ -148,8 +149,12 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
             if((IsDialogMessage(GetMainDlgHwnd(), &Msg) == FALSE) &&
                (IsDialogMessage(GetTransDlgHwnd(), &Msg) == FALSE))
             {
-                TranslateMessage(&Msg);
-                DispatchMessage(&Msg);
+                hWndProcessing = GetProcessingDlgHwnd();
+                if ((hWndProcessing == NULL) || (IsDialogMessage(hWndProcessing, &Msg) == FALSE))
+                {
+                    TranslateMessage(&Msg);
+                    DispatchMessage(&Msg);
+                }
             }
         }
         Ret = Msg.wParam;
@@ -1078,14 +1083,22 @@ void SetMenuHide(int Win)
 {
     int Flg;
     int Flg2;
+    int Flg3;
     HMENU hMenu;
 
     Flg = MF_ENABLED;
     Flg2 = MF_ENABLED;
+    Flg3 = MF_ENABLED;
     if(Win == WIN_TRANS)
     {
         Flg = MF_GRAYED;
     }
+    else if (Win == WIN_MTP_PROCESSING)
+    {
+        Flg = MF_GRAYED;
+        Flg3 = MF_GRAYED;
+    }
+
     if(LogSwitch == LOG_SW_OFF)
     {
         Flg2 = MF_GRAYED;
@@ -1095,8 +1108,17 @@ void SetMenuHide(int Win)
     EnableMenuItem(hMenu, MENU_BACKUP, Flg);
     EnableMenuItem(hMenu, MENU_QUICK_BACKUP, Flg);
     EnableMenuItem(hMenu, MENU_SETENV, Flg);
+    EnableMenuItem(hMenu, MENU_REGSAVE, Flg);
+    EnableMenuItem(hMenu, MENU_REGLOAD, Flg);
+    EnableMenuItem(hMenu, MENU_REGINIT, Flg);
 
     EnableMenuItem(hMenu, MENU_DISPLOG, Flg2);
+
+    EnableMenuItem(hMenu, MENU_FILE_EXIT, Flg3);
+
+    hMenu = GetSystemMenu(hWndBup, FALSE);
+    EnableMenuItem(hMenu, SC_CLOSE, Flg3);
+
     return;
 }
 

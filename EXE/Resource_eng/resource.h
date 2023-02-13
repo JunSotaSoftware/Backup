@@ -60,6 +60,7 @@
 #define done_bmp                        151
 #define device_bmp                      165
 #define mtp_folder_select_dlg           165
+#define mtp_searching_progress          171
 #define MAIN_SRC                        1000
 #define NOBACK_DIR                      1001
 #define TRANS_DIRLIST                   1002
@@ -116,6 +117,7 @@
 #define LOG_FNAME_INIT                  1048
 #define PATSET_DEL_MOVE_FOLDER_BR       1048
 #define INPFILE_MTP_BR                  1048
+#define PROCESSING_CANCEL               1048
 #define TRANS_LOGWRITE                  1049
 #define BMAIN_EDIT                      1050
 #define PATSET_ADD                      1051
@@ -340,11 +342,12 @@
 #define MTP_FOLDER_TREE                 1251
 #define MTP_FOLDER_DESC                 1252
 #define MTP_FOLDER_MSG                  1253
+#define PROCESSING_FILE                 1253
+#define PROCESSING_COUNT                1254
 #define FILEOPENORD                     1536
 #define main_comment_dlg_old            1537
 #define main_dlg1                       1538
 #define main_dlg_old                    1538
-#define inpfolder__with_mtp_dlg         1539
 #define inpfolder_with_mtp_dlg          1539
 #define MENU_EXIT                       40001
 #define MENU_FILE_EXIT                  40002
