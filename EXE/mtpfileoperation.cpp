@@ -3,6 +3,12 @@
 /                                   Backup
 /                           MTPデバイスのファイル操作
 /
+/
+/ WPD API sample code is comes from Microsoft.
+/ Original sample code is located at:
+/  https://learn.microsoft.com/en-us/samples/microsoft/windows-classic-samples/wpd-sample/
+/ Copyright (c) Microsoft Corporation. All rights reserved.
+/
 /============================================================================
 / Copyright (C) 2022-2023 Sota. All rights reserved.
 /
@@ -143,6 +149,7 @@ static HRESULT DeleteObjectFromMtpDeviceInner(IPortableDeviceContent* pContent, 
         }
         else
         {
+            hr = E_UNEXPECTED;
             DoPrintf(_T("Error: Failed to delete an object from the device because we were returned a NULL IPortableDevicePropVariantCollection interface pointer, hr = 0x%lx\r\n"), hr);
         }
     }
@@ -200,6 +207,7 @@ int CreateFolderOnMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR folderNa
                     }
                     else
                     {
+                        hr = E_UNEXPECTED;
                         DoPrintf(_T("Error: newObjectId is NULL, hr = 0x%lx\r\n"), hr);
                     }
                 }
@@ -715,7 +723,11 @@ static HRESULT StreamCopy(IStream* pDestStream, IStream* pSourceStream, DWORD cb
     hDestinationFile = NULL;
 
     /* 進捗コールバック関数をコール */
-    progressReturn = (*callbackFunc)(TotalFileSize, TotalBytesTransferred, StreamSize, StreamBytesTransferred, dwStreamNumber, dwCallbackReason, hSourceFile, hDestinationFile, data);
+    progressReturn = PROGRESS_CONTINUE;
+    if (callbackFunc != NULL)
+    {
+        progressReturn = (*callbackFunc)(TotalFileSize, TotalBytesTransferred, StreamSize, StreamBytesTransferred, dwStreamNumber, dwCallbackReason, hSourceFile, hDestinationFile, data);
+    }
     dwCallbackReason = CALLBACK_CHUNK_FINISHED;     /* 2回目以降 */
 
     if (progressReturn == PROGRESS_CONTINUE)
@@ -735,7 +747,11 @@ static HRESULT StreamCopy(IStream* pDestStream, IStream* pSourceStream, DWORD cb
                         TotalBytesTransferred.QuadPart += cbBytesWritten;
 
                         /* 進捗コールバック関数をコール */
-                        progressReturn = (*callbackFunc)(TotalFileSize, TotalBytesTransferred, StreamSize, StreamBytesTransferred, dwStreamNumber, dwCallbackReason, hSourceFile, hDestinationFile, data);
+                        progressReturn = PROGRESS_CONTINUE;
+                        if (callbackFunc != NULL)
+                        {
+                            progressReturn = (*callbackFunc)(TotalFileSize, TotalBytesTransferred, StreamSize, StreamBytesTransferred, dwStreamNumber, dwCallbackReason, hSourceFile, hDestinationFile, data);
+                        }
                         if (progressReturn == PROGRESS_CANCEL)
                         {
                             hr = HRESULT_FROM_WIN32(ERROR_CANCELLED);

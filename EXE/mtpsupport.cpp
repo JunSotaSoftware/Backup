@@ -3,6 +3,12 @@
 /                                   Backup
 /                                   MTPサポート
 /
+/
+/ WPD API sample code is comes from Microsoft.
+/ Original sample code is located at:
+/  https://learn.microsoft.com/en-us/samples/microsoft/windows-classic-samples/wpd-sample/
+/ Copyright (c) Microsoft Corporation. All rights reserved.
+/
 /============================================================================
 / Copyright (C) 2022-2023 Sota. All rights reserved.
 /
@@ -275,33 +281,41 @@ static void GetClientInformation(IPortableDeviceValues** ppClientInformation)
     if (SUCCEEDED(hr))
     {
         hr = (*ppClientInformation)->SetStringValue(WPD_CLIENT_NAME, CLIENT_NAME);
-        if (FAILED(hr))
+        if (SUCCEEDED(hr))
+        {
+            hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_MAJOR_VERSION, CLIENT_MAJOR_VER);
+            if (SUCCEEDED(hr))
+            {
+                hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_MINOR_VERSION, CLIENT_MINOR_VER);
+                if (SUCCEEDED(hr))
+                {
+                    hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_REVISION, CLIENT_REVISION);
+                    if (SUCCEEDED(hr))
+                    {
+                        hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, SECURITY_IMPERSONATION);
+                        if (FAILED(hr))
+                        {
+                            DoPrintf(_T("Error: Failed to set WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, hr = 0x%lx\r\n"), hr);
+                        }
+                    }
+                    else
+                    {
+                        DoPrintf(_T("Error: Failed to set WPD_CLIENT_REVISION, hr = 0x%lx\r\n"), hr);
+                    }
+                }
+                else
+                {
+                    DoPrintf(_T("Error: Failed to set WPD_CLIENT_MINOR_VERSION, hr = 0x%lx\r\n"), hr);
+                }
+            }
+            else
+            {
+                DoPrintf(_T("Error: Failed to set WPD_CLIENT_MAJOR_VERSION, hr = 0x%lx\r\n"), hr);
+            }
+        }
+        else
         {
             DoPrintf(_T("Error: Failed to set WPD_CLIENT_NAME, hr = 0x%lx\r\n"), hr);
-        }
-
-        hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_MAJOR_VERSION, CLIENT_MAJOR_VER);
-        if (FAILED(hr))
-        {
-            DoPrintf(_T("Error: Failed to set WPD_CLIENT_MAJOR_VERSION, hr = 0x%lx\r\n"), hr);
-        }
-
-        hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_MINOR_VERSION, CLIENT_MINOR_VER);
-        if (FAILED(hr))
-        {
-            DoPrintf(_T("Error: Failed to set WPD_CLIENT_MINOR_VERSION, hr = 0x%lx\r\n"), hr);
-        }
-
-        hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_REVISION, CLIENT_REVISION);
-        if (FAILED(hr))
-        {
-            DoPrintf(_T("Error: Failed to set WPD_CLIENT_REVISION, hr = 0x%lx\r\n"), hr);
-        }
-
-        hr = (*ppClientInformation)->SetUnsignedIntegerValue(WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, SECURITY_IMPERSONATION);
-        if (FAILED(hr))
-        {
-            DoPrintf(_T("Error: Failed to set WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, hr = 0x%lx\r\n"), hr);
         }
     }
     else
@@ -323,7 +337,8 @@ static void GetClientInformation(IPortableDeviceValues** ppClientInformation)
 *       MTP_OBJECT_LIST** objectList : オブジェクトリストを返す変数へのポインタ
 *
 *   Return Value
-*       int ステータス
+*       int ステータス (SUCCESS/FAIL)
+*           リストの個数が0の場合でもSUCCESSである。その場合objectListにはNULLが入る。
 *----------------------------------------------------------------------------*/
 int EnumerateMtpObject(PWSTR deviceId, PWSTR objectId, MTP_OBJECT_TYPE objectType, int sort, MTP_OBJECT_LIST** objectList)
 {
@@ -459,95 +474,111 @@ static int ReadMtpContentsInfo(IPortableDeviceContent* pContent, PWSTR objectId,
             {
                 /* 名前を取得する */
                 hr = pPropertiesToRead->Add(WPD_OBJECT_NAME);
-                if (FAILED(hr))
-                {
-                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_NAME to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
-                }
-                /* タイプを取得する */
-                hr = pPropertiesToRead->Add(WPD_OBJECT_CONTENT_TYPE);
-                if (FAILED(hr))
-                {
-                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_CONTENT_TYPE to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
-                }
-                /* タイムスタンプを取得する */
-                hr = pPropertiesToRead->Add(WPD_OBJECT_DATE_MODIFIED);
-                if (FAILED(hr))
-                {
-                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_DATE_MODIFIED to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
-                }
-                /* サイズを取得する */
-                hr = pPropertiesToRead->Add(WPD_OBJECT_SIZE);
-                if (FAILED(hr))
-                {
-                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_SIZE to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
-                }
-
-                /* コンテント情報を取得 */
-                hr = pProperties->GetValues(objectId, pPropertiesToRead, &pObjectProperties);
                 if (SUCCEEDED(hr))
                 {
-                    /* 名前を抽出 */
-                    hr = pObjectProperties->GetStringValue(WPD_OBJECT_NAME, &pszValue);
+                    /* タイプを取得する */
+                    hr = pPropertiesToRead->Add(WPD_OBJECT_CONTENT_TYPE);
                     if (SUCCEEDED(hr))
                     {
-                        /* タイプを抽出 */
-                        hr = pObjectProperties->GetGuidValue(WPD_OBJECT_CONTENT_TYPE, &guidValue);
+                        /* タイムスタンプを取得する */
+                        hr = pPropertiesToRead->Add(WPD_OBJECT_DATE_MODIFIED);
                         if (SUCCEEDED(hr))
                         {
-                            status = SKIP;
-                            GUID folderType = { 0x27E2E392, 0xA111, 0x48E0, 0xAB, 0x0C, 0xE1, 0x77, 0x05, 0xA0, 0x5F, 0x85 };
-                            GUID functionalType = { 0x99ED0160, 0x17FF, 0x4C44, 0x9D, 0x98, 0x1D, 0x7A, 0x6F, 0x94, 0x19, 0x21 };
-                            if (IsEqualGUID(guidValue, functionalType))
+                            /* サイズを取得する */
+                            hr = pPropertiesToRead->Add(WPD_OBJECT_SIZE);
+                            if (SUCCEEDED(hr))
                             {
-                                if ((objectType == ObjectTypeFolder) || (objectType == ObjectTypeBoth))
+                                /* コンテント情報を取得 */
+                                hr = pProperties->GetValues(objectId, pPropertiesToRead, &pObjectProperties);
+                                if (SUCCEEDED(hr))
                                 {
-                                    objectInfo->ObjectID = objectId;
-                                    objectInfo->ObjectName = pszValue;
-                                    objectInfo->ObjectType = ObjectTypeFolder;
-                                    status = SUCCESS;
-                                }
-                            }
-                            else if (IsEqualGUID(guidValue, folderType))
-                            {
-                                if ((objectType == ObjectTypeFolder) || (objectType == ObjectTypeBoth))
-                                {
-                                    status = ReadMtpContentsDateAndSize(pObjectProperties, objectInfo);
-                                    if (status == SUCCESS)
+                                    /* 名前を抽出 */
+                                    hr = pObjectProperties->GetStringValue(WPD_OBJECT_NAME, &pszValue);
+                                    if (SUCCEEDED(hr))
                                     {
-                                        objectInfo->ObjectID = objectId;
-                                        objectInfo->ObjectName = pszValue;
-                                        objectInfo->ObjectType = ObjectTypeFolder;
+                                        /* タイプを抽出 */
+                                        hr = pObjectProperties->GetGuidValue(WPD_OBJECT_CONTENT_TYPE, &guidValue);
+                                        if (SUCCEEDED(hr))
+                                        {
+                                            status = SKIP;
+                                            GUID folderType = { 0x27E2E392, 0xA111, 0x48E0, 0xAB, 0x0C, 0xE1, 0x77, 0x05, 0xA0, 0x5F, 0x85 };
+                                            GUID functionalType = { 0x99ED0160, 0x17FF, 0x4C44, 0x9D, 0x98, 0x1D, 0x7A, 0x6F, 0x94, 0x19, 0x21 };
+                                            if (IsEqualGUID(guidValue, functionalType))
+                                            {
+                                                if ((objectType == ObjectTypeFolder) || (objectType == ObjectTypeBoth))
+                                                {
+                                                    objectInfo->ObjectID = objectId;
+                                                    objectInfo->ObjectName = pszValue;
+                                                    objectInfo->ObjectType = ObjectTypeFolder;
+                                                    status = SUCCESS;
+                                                }
+                                            }
+                                            else if (IsEqualGUID(guidValue, folderType))
+                                            {
+                                                if ((objectType == ObjectTypeFolder) || (objectType == ObjectTypeBoth))
+                                                {
+                                                    status = ReadMtpContentsDateAndSize(pObjectProperties, objectInfo);
+                                                    if (status == SUCCESS)
+                                                    {
+                                                        objectInfo->ObjectID = objectId;
+                                                        objectInfo->ObjectName = pszValue;
+                                                        objectInfo->ObjectType = ObjectTypeFolder;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if ((objectType == ObjectTypeFile) || (objectType == ObjectTypeBoth))
+                                                {
+                                                    status = ReadMtpContentsDateAndSize(pObjectProperties, objectInfo);
+                                                    if (status == SUCCESS)
+                                                    {
+                                                        objectInfo->ObjectID = objectId;
+                                                        objectInfo->ObjectName = pszValue;
+                                                        objectInfo->ObjectType = ObjectTypeFile;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DoPrintf(_T("Error: Failed to GetGuidValue, hr = 0x%lx\r\n"), hr);
+                                        }
                                     }
+                                    else
+                                    {
+                                        DoPrintf(_T("Error: Failed to GetStringValue, hr = 0x%lx\r\n"), hr);
+                                    }
+                                }
+                                else
+                                {
+                                    DoPrintf(_T("Error: Failed to GetValue, hr = 0x%lx\r\n"), hr);
                                 }
                             }
                             else
                             {
-                                if ((objectType == ObjectTypeFile) || (objectType == ObjectTypeBoth))
-                                {
-                                    status = ReadMtpContentsDateAndSize(pObjectProperties, objectInfo);
-                                    if (status == SUCCESS)
-                                    {
-                                        objectInfo->ObjectID = objectId;
-                                        objectInfo->ObjectName = pszValue;
-                                        objectInfo->ObjectType = ObjectTypeFile;
-                                    }
-                                }
+                                DoPrintf(_T("Error: Failed to add WPD_OBJECT_SIZE to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
                             }
                         }
                         else
                         {
-                            DoPrintf(_T("Error: Failed to GetGuidValue, hr = 0x%lx\r\n"), hr);
+                            DoPrintf(_T("Error: Failed to add WPD_OBJECT_DATE_MODIFIED to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
                         }
                     }
                     else
                     {
-                        DoPrintf(_T("Error: Failed to GetStringValue, hr = 0x%lx\r\n"), hr);
+                        DoPrintf(_T("Error: Failed to add WPD_OBJECT_CONTENT_TYPE to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
                     }
                 }
                 else
                 {
-                    DoPrintf(_T("Error: Failed to GetValue, hr = 0x%lx\r\n"), hr);
+                    DoPrintf(_T("Error: Failed to add WPD_OBJECT_NAME to IPortableDeviceKeyCollection, hr = 0x%lx\r\n"), hr);
                 }
+            }
+            else
+            {
+                hr = E_UNEXPECTED;
+                DoPrintf(_T("Error: Failed to create property information because we were returned a NULL PortableDeviceKeyCollection interface pointer, hr = 0x%lx\r\n"), hr);
             }
         }
         else
