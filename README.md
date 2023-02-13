@@ -12,6 +12,8 @@ http://www2.biglobe.ne.jp/sota/backup.html
 
 x64 版は、コンパイル時の警告対処等が残っている為、未完成です。
 
+MTP対応は2023/2/13現在バックアップ先にのみMTPデバイスが指定可能です。
+
 ## Codeclimate のビルド
 
 https://codeclimate.com/github/JunSotaSoftware/Backup/builds
