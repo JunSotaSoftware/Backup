@@ -47,7 +47,7 @@
 
 /* プロトタイプ */
 static PWSTR SplitUrl(PCWSTR url, int part);
-static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor);
+static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback);
 
 
 /*----- MTPデバイスのオブジェクトのツリーを作成 ------------------------------------
@@ -57,9 +57,10 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
 *       MTP_OBJECT_TYPE objectType : ツリーに含めるオブジェクトのタイプ
 *       MTP_OBJECT_TREE** top : ツリー構造体を返す変数へのポインタ
 *       MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo : エラー情報
-*
+*       MTP_TREE_PROCESSING_ROUTINE processingCallback : 進捗通知コールバックルーチンへのポインタ
+* 
 *   Return Value
-*       int ステータス
+*       int ステータス (SUCCESS/FAIL/CANCELLED)
 *
 *   Note
 *       ステータス==FAILの時、ErrorInfo->ObjectName はfree()で削除すること
@@ -71,7 +72,7 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
 *                                                      +-> child2
 *                                                      +-> child3 ---> grandchild4
 *----------------------------------------------------------------------------*/
-int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo)
+int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo, MTP_TREE_PROCESSING_ROUTINE processingCallback)
 {
     int status = FAIL;
     MTP_DEVICE_LIST* deviceList = NULL;
@@ -104,7 +105,6 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
                 treeTop = new MTP_OBJECT_TREE;
                 treeTop->Child = NULL;
                 treeTop->Sibling = NULL;
-                treeTop->ThisIsBackupRoot = FALSE;
                 treeTop->Deleted = FALSE;
                 treeTop->Info.ObjectID = new WCHAR[wcslen(deviceList->Info[deviceNumber].DeviceID) + 1];
                 treeTop->Info.ObjectName = new WCHAR[wcslen(deviceList->Info[deviceNumber].DeviceDescription) + 1];
@@ -123,11 +123,12 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
                     filter = SplitUrl(url, i);
                     if (filter != NULL)
                     {
-                        if (RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, filter, objectType, treeCur) == SUCCESS)
+                        status = RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, filter, objectType, treeCur, processingCallback);
+                        if (status == SUCCESS)
                         {
                             treeCur = treeCur->Child;
                         }
-                        else
+                        else if (status == FAIL)
                         {
                             /* URLで指定されたオブジェクトが見つからなかった */
                             ErrorInfo->ErrorId = ErrorFolderNotFound;
@@ -136,7 +137,10 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
                             {
                                 wcscpy(ErrorInfo->ObjectName, filter);
                             }
-                            status = FAIL;
+                            break;
+                        }
+                        else
+                        {
                             break;
                         }
                         delete[] filter;
@@ -145,14 +149,15 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
 
                 if (status == SUCCESS)
                 {
-                    treeCur->ThisIsBackupRoot = TRUE;
-                    RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, NULL, objectType, treeCur);
+                    /* URLで指定されている部分以下は全てを列挙する */
+                    status = RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, NULL, objectType, treeCur, processingCallback);
                     *top = treeTop;
-
+#if 0
                     /* debug */
                     DoPrintf(_T("------------------------------\r\n"));
                     DispMtpObjectTree(treeTop, 0);
                     DoPrintf(_T("------------------------------\r\n"));
+#endif
                 }
             }
         }
@@ -178,7 +183,7 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
     /* クリーンアップ */
     delete[] deviceName;
     ReleaseMtpDevices(deviceList);
-    if (status == FAIL)
+    if (status != SUCCESS)
     {
         ReleaseMtpObjectTree(treeTop);
         *top = NULL;
@@ -195,11 +200,12 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
 *       PWSTR filter : リストに追加する子オブジェクトの名前（NULL=指定無し）
 *       MTP_OBJECT_TYPE objectType : 列挙するオブジェクトのタイプ
 *       MTP_OBJECT_TREE* anchor : リストの追加位置（親）
-*
+*       MTP_TREE_PROCESSING_ROUTINE processingCallback : 進捗通知コールバックルーチンへのポインタ
+* 
 *   Return Value
-*       int ステータス
+*       int ステータス (SUCCESS/FAIL/CANCELLED)
 *----------------------------------------------------------------------------*/
-static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor)
+static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback)
 {
     int status = FAIL;
     MTP_OBJECT_LIST* listTop = NULL;
@@ -207,6 +213,7 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
     MTP_OBJECT_TREE* newObject;
     MTP_OBJECT_TREE* prevObject;
     BOOL add;
+    BOOL cancel = FALSE;
 
     PWSTR parentId = anchor->Info.ObjectID;
     if (anchor->Info.ObjectType == ObjectTypeDevice)
@@ -216,8 +223,9 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
 
     if (EnumerateMtpObject(deviceId, parentId, objectType, NO, &listTop) == SUCCESS)
     {
+        status = SUCCESS;
         listCur = listTop;
-        while (listCur != NULL)
+        while ((status != CANCELLED) && (listCur != NULL))
         {
             add = TRUE;
             if (filter != NULL)
@@ -231,47 +239,61 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
 
             if (add)
             {
-                /* ツリーにオブジェクトの情報を追加 */
-                status = SUCCESS;
-                newObject = new MTP_OBJECT_TREE;
-                newObject->Child = NULL;
-                newObject->Sibling = NULL;
-                newObject->ThisIsBackupRoot = FALSE;
-                newObject->Deleted = FALSE;
-                newObject->Info.ObjectID = new WCHAR[wcslen(listCur->Info.ObjectID) + 1];
-                newObject->Info.ObjectName = new WCHAR[wcslen(listCur->Info.ObjectName) + 1];
-                wcscpy(newObject->Info.ObjectID, listCur->Info.ObjectID);
-                wcscpy(newObject->Info.ObjectName, listCur->Info.ObjectName);
-                newObject->Info.ObjectType = listCur->Info.ObjectType;
-                newObject->Info.ObjectModifiedTime = listCur->Info.ObjectModifiedTime;
-                newObject->Info.ObjectSize = listCur->Info.ObjectSize;
-
-//                DoPrintf(_T("MakeTree: %s\r\n"), newObject->Info.ObjectName);
-
-                if (anchor->Child == NULL)
+                /* 進捗を知らせるコールバック関数をコール */
+                cancel = FALSE;
+                if (processingCallback != NULL)
                 {
-                    /* 最初のオブジェクトは親の子に */
-                    anchor->Child = newObject;
-                    prevObject = newObject;
+                    cancel = (*processingCallback)(listCur->Info.ObjectName);
+                }
+
+                if (cancel)
+                {
+                    status = CANCELLED;
                 }
                 else
                 {
-                    /* 2つ目以降のオブジェクトは最初のオブジェクトの兄弟に */
-                    prevObject->Sibling = newObject;
-                    prevObject = newObject;
-                }
+                    /* ツリーにオブジェクトの情報を追加 */
+                    newObject = new MTP_OBJECT_TREE;
+                    newObject->Child = NULL;
+                    newObject->Sibling = NULL;
+                    newObject->Deleted = FALSE;
+                    newObject->Info.ObjectID = new WCHAR[wcslen(listCur->Info.ObjectID) + 1];
+                    newObject->Info.ObjectName = new WCHAR[wcslen(listCur->Info.ObjectName) + 1];
+                    wcscpy(newObject->Info.ObjectID, listCur->Info.ObjectID);
+                    wcscpy(newObject->Info.ObjectName, listCur->Info.ObjectName);
+                    newObject->Info.ObjectType = listCur->Info.ObjectType;
+                    newObject->Info.ObjectModifiedTime = listCur->Info.ObjectModifiedTime;
+                    newObject->Info.ObjectSize = listCur->Info.ObjectSize;
 
-                /* filter指定がない時は今見つかったオブジェクトの子も検索 */
-                if (filter == NULL)
-                {
-                    if (newObject->Info.ObjectType == ObjectTypeFolder)
+                    if (anchor->Child == NULL)
                     {
-                        RecursiveMakeMtpObjectTree(deviceId, filter, objectType, newObject);
+                        /* 最初のオブジェクトは親の子に */
+                        anchor->Child = newObject;
+                        prevObject = newObject;
                     }
-                }
-                else    /* filter指定の時は指定されたもの一つ追加したら終わり */
-                {
-                    break;
+                    else
+                    {
+                        /* 2つ目以降のオブジェクトは最初のオブジェクトの兄弟に */
+                        prevObject->Sibling = newObject;
+                        prevObject = newObject;
+                    }
+
+                    /* filter指定がない時は今見つかったオブジェクトの子も検索 */
+                    if (filter == NULL)
+                    {
+                        if (newObject->Info.ObjectType == ObjectTypeFolder)
+                        {
+                            status = RecursiveMakeMtpObjectTree(deviceId, filter, objectType, newObject, processingCallback);
+                            if (status != SUCCESS)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else    /* filter指定の時は指定されたもの一つ追加したら終わり */
+                    {
+                        break;
+                    }
                 }
             }
             listCur = listCur->Next;
@@ -649,7 +671,6 @@ int AddObjectToTree(MTP_OBJECT_INFO* object, MTP_OBJECT_TREE* parent)
     newObject = new MTP_OBJECT_TREE;
     newObject->Child = NULL;
     newObject->Sibling = NULL;
-    newObject->ThisIsBackupRoot = FALSE;
     newObject->Deleted = FALSE;
     newObject->Info.ObjectID = new WCHAR[wcslen(object->ObjectID) + 1];
     newObject->Info.ObjectName = new WCHAR[wcslen(object->ObjectName) + 1];
