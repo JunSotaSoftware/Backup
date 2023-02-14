@@ -217,9 +217,8 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
     AllocConsole();
 #endif
 
-#if MTP_SUPPORT
+    /* MTP対応 */
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
-#endif
 
     /* メインウインドウを作成 */
     wClass.cbSize        = sizeof(WNDCLASSEX);
@@ -769,9 +768,8 @@ static void ExitProc(HWND hWnd)
     DeleteErrorLogFilename();
     HtmlHelp(NULL, NULL, HH_UNINITIALIZE, (DWORD_PTR)&dwCookie);
 
-#if MTP_SUPPORT
+    /* MTP対応 */
     CoUninitialize();
-#endif
 
     return;
 }

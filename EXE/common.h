@@ -28,7 +28,6 @@
 
 #define USE_SAME_AS_SUCCESS 1
 #define SHOW_CONSOLE 1
-#define MTP_SUPPORT 1
 
 #ifndef ENGLISH
 #include "mesg-jpn.h"
@@ -79,11 +78,9 @@
 #define WM_ADD_FILELIST (WM_USER+9)
 #define WM_FORMAT_TEXT  (WM_USER+10)
 #define WM_SIZE_CHANGE  (WM_USER+11)
-#if MTP_SUPPORT
 #define WM_MTP_TREEVIEW_DCLICK    (WM_USER+13)  /* ホストをダブルクリックで選択した */
 #define WM_MAKE_PROCESSING_WINDOW   (WM_USER+14)    /* MTPオブジェクトツリー処理中ウインドウを作成 */
 #define WM_DESTROY_PROCESSING_WINDOW    (WM_USER+15)    /* MTPオブジェクトツリー処理中ウインドウを消去 */
-#endif
 
 /*===== オプション =====*/
 
@@ -315,8 +312,6 @@ typedef struct {
 } OVERWRITENOTIFYDATA;
 
 
-#if MTP_SUPPORT
-
 /*===== MTPオブジェクト情報 =====*/
 typedef enum {
     ObjectTypeFolder,
@@ -353,7 +348,6 @@ typedef struct _mtpfoldertree {
     struct _mtpfoldertree* Sibling;
 } MTP_OBJECT_TREE;
 
-#endif
 
 typedef struct {
     LPTSTR  IgnoreFiles;
@@ -368,9 +362,7 @@ typedef struct {
     int     ForceCopy;
     int     Wait;
     int     AllowDecrypted;
-#if MTP_SUPPORT
     MTP_OBJECT_TREE* MtpObjectTreeTop;
-#endif
 } PROC_OPTIONS;
 
 typedef struct {
@@ -563,7 +555,6 @@ void SaveUpdateBellInfo(void);
 BOOL ChangeSystemPowerMode(AUTOCLOSE_ACTION State);
 int DoCountDown(int State);
 
-#if MTP_SUPPORT
 /* .c と .cpp のあいだで相互コールする関数のプロトタイプ　*/
 #ifdef __cplusplus
 extern "C" {
@@ -607,11 +598,5 @@ BOOL CALLBACK MtpTreeProcessingRoutine(LPTSTR filename);
 
 #ifdef __cplusplus
 }
-#endif
-
-#else
-void DoPrintf(LPTSTR szFormat, ...);
-BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-DWORD CALLBACK CopyProgressRoutine(LARGE_INTEGER TotalFileSize, LARGE_INTEGER TotalBytesTransferred, LARGE_INTEGER StreamSize, LARGE_INTEGER StreamBytesTransferred, DWORD dwStreamNumber, DWORD dwCallbackReason, HANDLE hSourceFile, HANDLE hDestinationFile, LPVOID lpData);
 #endif
 

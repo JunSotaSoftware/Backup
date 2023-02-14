@@ -434,7 +434,6 @@ static int BackupProc(COPYPATLIST *Pat)
             continue;
         }
 
-#if MTP_SUPPORT
         /* バックアップ先がMTPデバイスかチェック */
         options.MtpObjectTreeTop = NULL;
         if (IsMtpDevice(Pat->Set.NextDst) == YES)
@@ -472,13 +471,10 @@ static int BackupProc(COPYPATLIST *Pat)
             }
             DestroyMtpProcessingWindow();
         }
-#endif
 
-#if MTP_SUPPORT
         /* MTPデバイスの時はバックアップ先チェックは上部のフォルダツリー検索で実行済み */
         if (options.MtpObjectTreeTop == NULL)
         {
-#endif
             if (Sts == SUCCESS)
             {
                 /* バックアップ先の正規化のタイプをチェック */
@@ -522,7 +518,6 @@ static int BackupProc(COPYPATLIST *Pat)
                     }
                 }
             }
-#if MTP_SUPPORT
         }
         else
         {
@@ -537,7 +532,6 @@ static int BackupProc(COPYPATLIST *Pat)
                 }
             }
         }
-#endif
 
         if(Sts == SUCCESS)
         {
@@ -628,9 +622,7 @@ static int BackupProc(COPYPATLIST *Pat)
         CloseLogfile();
         CloseErrorLogfile();
 
-#if MTP_SUPPORT
         ReleaseMtpObjectTree(options.MtpObjectTreeTop);
-#endif
 
         if(IgnoreErr == YES)
             Sts = SUCCESS;
@@ -1153,8 +1145,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr, PROC_OPT
                         Attr = GetFileAttributes_My(Tmp, YES, options);
                         Attr2 = GetFileAttributes_My(Org, NO, options);
 
-                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
-                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
+                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
                         if(Attr != Attr2)
                         {
                             GoAttr = 1;
@@ -2006,7 +1998,6 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* option
 }
 
 
-#if (FILECOPY_METHOD==COPYFILEEX) || (MTP_SUPPORT==1)
 /*----- CopyFileEx関数のコールバック ------------------------------------------
 *
 *   Parameter
@@ -2049,7 +2040,6 @@ DWORD CALLBACK CopyProgressRoutine(
     }
     return ret;
 }
-#endif
 
 
 /*----- １つのファイル／ディレクトリの削除 ------------------------------------
