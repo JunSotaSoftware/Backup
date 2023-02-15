@@ -32,3 +32,7 @@
 #define	IDH_HELP_TOPIC_0000034	34	/* 除外２ */
 #define	IDH_HELP_TOPIC_0000035	35	/* 改版履歴 */
 #define	IDH_HELP_TOPIC_0000036	36	/* 改版履歴 */
+#define	IDH_HELP_TOPIC_0000037	37	/* MTPとは */
+#define	IDH_HELP_TOPIC_0000038	38	/* MTPの利用 */
+#define	IDH_HELP_TOPIC_0000039	39	/* バックアップ先の指定方法 */
+#define	IDH_HELP_TOPIC_0000040	40	/* 選ぶことが出来ない項目 */
