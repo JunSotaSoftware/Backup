@@ -27,7 +27,7 @@
 /============================================================================*/
 
 #define USE_SAME_AS_SUCCESS 1
-#define SHOW_CONSOLE 1
+#define SHOW_CONSOLE 0
 
 #ifndef ENGLISH
 #include "mesg-jpn.h"
