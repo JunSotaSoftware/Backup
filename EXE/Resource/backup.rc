@@ -140,8 +140,8 @@ FONT 9, "MS UI Gothic", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,78,57,50,14
     ICON            backup,-1,7,2,20,20
-    CTEXT           "Backup  Ver.1.20c",-1,55,13,98,8
-    CTEXT           "Copyright(C) 1997-2022 Sota && ご協力いただいた方々",-1,7,27,194,8
+    CTEXT           "Backup  Ver.1.21",-1,55,13,98,8
+    CTEXT           "Copyright(C) 1997-2023 Sota && ご協力いただいた方々",-1,7,27,194,8
     CTEXT           "BackupはFreewareです",-1,7,42,194,8
 END
 

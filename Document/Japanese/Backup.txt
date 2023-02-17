@@ -1,35 +1,15 @@
 ============================================================
-【ソフト名】　バックアップツール Backup Ver.1.20c
+【ソフト名】　バックアップツール Backup Ver.1.21
 【動作確認環境】　Windows 11, 10
                 （Windows 8.1は環境がないため未確認）
 【サポート】　http://www2.biglobe.ne.jp/~sota/
 ============================================================
 
-●Ver 1.20cの変更点
 
-・Ver.1.20bがWindowsセキュリティで脅威判定されるので、Windows SDKバージョンを
-　変更しました。
-　(10.0.22000.0 → 10.0.19041.0)
-・メインウインドウのサイズを小さくすると、最小サイズよりも小さく出来てしまうのを
-　修正しました。
+●Ver.1.21
 
-●Ver 1.20bの変更点
-
-・Windows 11ではバックアップパターンのコメントのチップ表示が出来ないのを
-　修正しました。
-・バックアップ先フォルダやバックアップしないフォルダを選択する画面で、
-　画面にバックアップ元と表示されるのを修正しました。
-
-●Ver 1.20aの変更点
-
-・未初期化の変数を参照する不具合を修正しました。
-
-●Ver 1.20の変更点
-
-・バックアップ元のファイルがEFSで暗号化してあり、バックアップ先が暗号化
-　できない場合にも、暗号化無しでファイルをコピーできるオプションを追加
-　しました。
-　（パターン設定－バックアップ先ーEFSによる暗号化不可でも成功させる）
+・バックアップ先にMTPデバイス（USB接続されたスマートフォン）を指定できる
+　ようにしました。
 
 ●概要
 
@@ -39,7 +19,7 @@
 
 ●動作確認環境について
 
-　Backup Ver.1.20b は以下のOSで動作を確認しています。
+　Backup Ver.1.21 は以下のOSで動作を確認しています。
 
 　動作確認OS
 　　－Windows 11(64bit)
@@ -75,7 +55,7 @@
 本ソフトウエアおよびそのソースコードは、修正BSDライセンスに従うものと
 します。
 
-Copyright(C) 1997-2022, Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2023, Sota and cooperators. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions 
@@ -100,7 +80,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 *** 以下は日本語訳(参考) ***
 
-Copyright(C) 1997-2022 Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2023 Sota and cooperators. All rights reserved.
 
 ソースコード形式でもバイナリ形式でも、変更の有無に関わらず、以下の条件を
 満たす場合に、再配布および使用を許可します。

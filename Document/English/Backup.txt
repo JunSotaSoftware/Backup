@@ -1,36 +1,13 @@
 ============================================================
-[Software Name]  Backup Ver.1.20c
+[Software Name]  Backup Ver.1.21
 [Environment]    Windows 11, 10
 [Support]        http://www2.biglobe.ne.jp/~sota/index-e.html
 ============================================================
 
-Changes in Ver.1.20c
+Changes in Ver.1.21
 --------------------
--- Ver.1.20b was identified as a threat by Windows Security, 
-   so the Windows SDK version was changed.
-@ (10.0.22000.0 -> 10.0.19041.0)
-
--- Fixed a problem where the main window could be made smaller 
-   than the minimum size when the window size is reduced.
-
-Changes in Ver.1.20b
---------------------
--- Fixed a bug that Backup pattern comments cannot be displayed 
-   as chips in Windows 11.
-
--- Fixed a problem in which "Backup source" was displayed 
-   on the screen for selecting a destination folder or a 
-   folder not to be backed up.
-
-Changes in Ver.1.20a
---------------------
--- Fixed a bug that referred to uninitialized variables.
-
-Changes in Ver.1.20
---------------------
--- The option to copy files without encryption has been 
-   added, even if the source files for backup are encrypted 
-   with EFS and the backup destination cannot be encrypted.
+-- MTP devices (USB-connected smartphones) can now be specified as 
+   backup destination.
 
 Outline
 -------
@@ -56,7 +33,7 @@ Use Add/Remove Program icon on the Control Panel.
 License
 -------------------
 
-Copyright(C) 1997-2022, Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2023, Sota and cooperators. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions 

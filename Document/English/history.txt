@@ -1,5 +1,10 @@
 Backup version history.
 
+Changes in Ver.1.21
+--------------------
+-- MTP devices (USB-connected smartphones) can now be specified as backup 
+   destination.
+
 Changes in Ver.1.20c
 --------------------
 -- Ver.1.20b was identified as a threat by Windows Security, so the 
