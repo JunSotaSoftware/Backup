@@ -254,6 +254,9 @@ void SetBackupRestart(void)
 
 static void BackupThread(void *Dummy)
 {
+    /* MTP対応 */
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
     while(WaitForSingleObject(hRunMutex, 200) == WAIT_TIMEOUT)
     {
         if(CopyPatList != NULL)
@@ -269,6 +272,10 @@ static void BackupThread(void *Dummy)
             CopyPatList = NULL;
         }
     }
+
+    /* MTP対応 */
+    CoUninitialize();
+
     _endthread();
 }
 
