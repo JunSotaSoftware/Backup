@@ -229,12 +229,12 @@ void ReleaseMtpDevices(MTP_DEVICE_LIST* deviceList)
 *
 *   Parameter
 *       PWSTR deviceId : デバイスID
-*       IPortableDevice** ppDevice : インターフェースを返す変数へのポインタ
+*       IPortableDevice** ppIPortableDevice : インターフェースを返す変数へのポインタ
 *
 *   Return Value
 *       int ステータス
 *----------------------------------------------------------------------------*/
-int OpenMtpDevice(PWSTR deviceId, IPortableDevice** ppDevice)
+int OpenMtpDevice(PWSTR deviceId, IPortableDevice** ppIPortableDevice)
 {
     int status = FAIL;
     HRESULT hr;
@@ -243,18 +243,18 @@ int OpenMtpDevice(PWSTR deviceId, IPortableDevice** ppDevice)
     /* クライアント情報を作成する */
     GetClientInformation(&pClientInformation);
 
-    hr = CoCreateInstance(CLSID_PortableDeviceFTM, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppDevice));
+    hr = CoCreateInstance(CLSID_PortableDeviceFTM, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppIPortableDevice));
     if (SUCCEEDED(hr))
     {
-        hr = (*ppDevice)->Open(deviceId, pClientInformation);
+        hr = (*ppIPortableDevice)->Open(deviceId, pClientInformation);
         if (SUCCEEDED(hr))
         {
             status = SUCCESS;
         }
         else
         {
-            (*ppDevice)->Release();
-            *ppDevice = NULL;
+            (*ppIPortableDevice)->Release();
+            *ppIPortableDevice = NULL;
             DoPrintf(_T("Error: Failed to create PortableDeviceManager instance, hr = 0x%lx\r\n"), hr);
         }
     }
@@ -330,7 +330,7 @@ static void GetClientInformation(IPortableDeviceValues** ppClientInformation)
 /*----- MTPオブジェクトリスト情報を作成する --------------------------------------
 *
 *   Parameter
-*       PWSTR deviceId : デバイスID
+*       IPortableDevice* pIPortableDevice : デバイスへのインターフェース
 *       PWSTR objectId : 親オブジェクトのオブジェクトID
 *       MTP_OBJECT_TYPE objectType : リストアップするオブジェクトのタイプ (ObjectTypeFolder/ObjectTypeFile/ObjectTypeBoth)
 *       int sort : ソートするかどうか (YES/NO)
@@ -340,7 +340,7 @@ static void GetClientInformation(IPortableDeviceValues** ppClientInformation)
 *       int ステータス (SUCCESS/FAIL)
 *           リストの個数が0の場合でもSUCCESSである。その場合objectListにはNULLが入る。
 *----------------------------------------------------------------------------*/
-int EnumerateMtpObject(PWSTR deviceId, PWSTR objectId, MTP_OBJECT_TYPE objectType, int sort, MTP_OBJECT_LIST** objectList)
+int EnumerateMtpObject(IPortableDevice* pIPortableDevice, PWSTR objectId, MTP_OBJECT_TYPE objectType, int sort, MTP_OBJECT_LIST** objectList)
 {
     int status = FAIL;
     int statusTmp;
@@ -352,82 +352,77 @@ int EnumerateMtpObject(PWSTR deviceId, PWSTR objectId, MTP_OBJECT_TYPE objectTyp
     MTP_OBJECT_LIST* objectListTmp = NULL;
     MTP_OBJECT_INFO info;
     CComPtr<IPortableDeviceContent> pContent;
-    CComPtr<IPortableDevice> pIPortableDevice;
     CComPtr<IEnumPortableDeviceObjectIDs> pEnumObjectIDs;
 
-    /* MTPデバイスをオープン */
-    if (OpenMtpDevice(deviceId, &pIPortableDevice) == SUCCESS)
+    /* IPortableDeviceContentインターフェースを取得 */
+    hr = pIPortableDevice->Content(&pContent);
+    if (SUCCEEDED(hr))
     {
-        /* IPortableDeviceContentインターフェースを取得 */
-        hr = pIPortableDevice->Content(&pContent);
+        /* IEnumPortableDeviceObjectIDsインターフェースをEnumObjectsをコールすることで取得 */
+        hr = pContent->EnumObjects(0, objectId, NULL, &pEnumObjectIDs);
         if (SUCCEEDED(hr))
         {
-            /* IEnumPortableDeviceObjectIDsインターフェースをEnumObjectsをコールすることで取得 */
-            hr = pContent->EnumObjects(0, objectId, NULL, &pEnumObjectIDs);
-            if (SUCCEEDED(hr))
+            status = SUCCESS;
+            /*
+            * IEnumPortableDeviceObjectIDs->Next() は指定した数(MTP_MAX_FOLDER_INFO)個の情報を返した時は S_OK を、
+            * 指定した数より少ない数の情報を返した時は S_FALSE を返す。
+            * S_FALSE の時でも cFetched が1以上なら情報を返している。ただし、次は Next() を呼ばない。
+            */
+            while (hr == S_OK)
             {
-                status = SUCCESS;
-                /*
-                * IEnumPortableDeviceObjectIDs->Next() は指定した数(MTP_MAX_FOLDER_INFO)個の情報を返した時は S_OK を、
-                * 指定した数より少ない数の情報を返した時は S_FALSE を返す。
-                * S_FALSE の時でも cFetched が1以上なら情報を返している。ただし、次は Next() を呼ばない。
-                */
-                while (hr == S_OK)
+                /* 項目を列挙する */
+                cFetched = 0;
+                hr = pEnumObjectIDs->Next(MTP_MAX_OBJECT_INFO, szObjectIDArray, &cFetched);
+                if (SUCCEEDED(hr))  /* S_FALSE でも SUCCEEDED(hr) はTRUEとなる */
                 {
-                    /* 項目を列挙する */
-                    cFetched = 0;
-                    hr = pEnumObjectIDs->Next(MTP_MAX_OBJECT_INFO, szObjectIDArray, &cFetched);
-                    if (SUCCEEDED(hr))  /* S_FALSE でも SUCCEEDED(hr) はTRUEとなる */
+                    for (i = 0; i < cFetched; i++)
                     {
-                        for (i = 0; i < cFetched; i++)
+                        /* コンテンツ情報を作成して格納する */
+                        statusTmp = ReadMtpContentsInfo(pContent, szObjectIDArray[i], objectType, &info);
+                        if (statusTmp == SUCCESS)
                         {
-                            /* コンテンツ情報を作成して格納する */
-                            statusTmp = ReadMtpContentsInfo(pContent, szObjectIDArray[i], objectType, &info);
-                            if (statusTmp == SUCCESS)
-                            {
-                                objectListTmp = new MTP_OBJECT_LIST;
-                                objectListTmp->Next = objectListTop;
-                                objectListTop = objectListTmp;
+                            objectListTmp = new MTP_OBJECT_LIST;
+                            objectListTmp->Next = objectListTop;
+                            objectListTop = objectListTmp;
 
-                                objectListTmp->Info.ObjectID = info.ObjectID;
-                                objectListTmp->Info.ObjectName = info.ObjectName;
-                                objectListTmp->Info.ObjectType = info.ObjectType;
-                                objectListTmp->Info.ObjectModifiedTime = info.ObjectModifiedTime;
-                                objectListTmp->Info.ObjectSize = info.ObjectSize;
-                            }
-                            else if (statusTmp != SKIP)
-                            {
-                                status = FAIL;
-                                hr = S_FALSE;
-                                break;
-                            }
+                            objectListTmp->Info.ObjectID = info.ObjectID;
+                            objectListTmp->Info.ObjectName = info.ObjectName;
+                            objectListTmp->Info.ObjectType = info.ObjectType;
+                            objectListTmp->Info.ObjectModifiedTime = info.ObjectModifiedTime;
+                            objectListTmp->Info.ObjectSize = info.ObjectSize;
+                        }
+                        else if (statusTmp != SKIP)
+                        {
+                            status = FAIL;
+                            hr = S_FALSE;
+                            break;
                         }
                     }
                 }
+            }
 
-                if (status == SUCCESS)
+            if (status == SUCCESS)
+            {
+                if (sort == YES)
                 {
-                    if (sort == YES)
-                    {
-                        InsertSort(&objectListTop);
-                    }
+                    InsertSort(&objectListTop);
                 }
-                else
-                {
-                    ReleaseMtpObject(objectListTop);
-                    objectListTop = NULL;
-                }
-                *objectList = objectListTop;
             }
             else
             {
-                DoPrintf(_T("Error: Failed to enumuration object, hr = 0x%lx\r\n"), hr);
+                ReleaseMtpObject(objectListTop);
+                objectListTop = NULL;
             }
+            *objectList = objectListTop;
         }
         else
         {
-            DoPrintf(_T("Error: Failed to get IPortableDeviceContent interface, hr = 0x%lx\r\n"), hr);
+            DoPrintf(_T("Error: Failed to enumuration object, hr = 0x%lx\r\n"), hr);
         }
+    }
+    else
+    {
+        DoPrintf(_T("Error: Failed to get IPortableDeviceContent interface, hr = 0x%lx\r\n"), hr);
     }
     SetWin32LastError(hr);
     return status;

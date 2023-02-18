@@ -292,6 +292,7 @@ static void SetFoldersToTreeView(HWND hDlg, HTREEITEM hItem, MTP_DEVICE_LIST* de
     MTP_FOLDER_TREEVIEW_PARAM* folderInfoParamParent;
     MTP_OBJECT_LIST* objectListCur;
     MTP_OBJECT_LIST* objectListTop;
+    CComPtr<IPortableDevice> pIPortableDevice;
 
     /* TreeViewの項目の上でダブルクリックされた → 子アイテム作成済みかチェック */
     TvItem.mask = TVIF_CHILDREN | TVIF_HANDLE | TVIF_PARAM;
@@ -301,51 +302,55 @@ static void SetFoldersToTreeView(HWND hDlg, HTREEITEM hItem, MTP_DEVICE_LIST* de
     {
         folderInfoParamParent = (MTP_FOLDER_TREEVIEW_PARAM*)TvItem.lParam;
 
-        /* 子アイテム未作成 → フォルダを検索してTreeViewに追加 */
-        if (EnumerateMtpObject(deviceList->Info[folderInfoParamParent->DeviceNumber].DeviceID, folderInfoParamParent->ObjectId, ObjectTypeFolder, YES, &objectListTop) == SUCCESS)
+        /* MTPデバイスをオープン */
+        if (OpenMtpDevice(deviceList->Info[folderInfoParamParent->DeviceNumber].DeviceID, &pIPortableDevice) == SUCCESS)
         {
-            if (objectListTop != NULL)
+            /* 子アイテム未作成 → フォルダを検索してTreeViewに追加 */
+            if (EnumerateMtpObject(pIPortableDevice, folderInfoParamParent->ObjectId, ObjectTypeFolder, YES, &objectListTop) == SUCCESS)
             {
-                /* ちらつくので再描画禁止 */
-                SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, WM_SETREDRAW, (WPARAM)FALSE, 0);
-
-                childs = 0;
-                objectListCur = objectListTop;
-                while (objectListCur != NULL)
+                if (objectListTop != NULL)
                 {
-                    folderInfoParam = new MTP_FOLDER_TREEVIEW_PARAM;
-                    folderInfoParam->ObjectId = new WCHAR[wcslen(objectListCur->Info.ObjectID) + 1];
-                    wcscpy(folderInfoParam->ObjectId, objectListCur->Info.ObjectID);
-                    folderInfoParam->DeviceNumber = folderInfoParamParent->DeviceNumber;
+                    /* ちらつくので再描画禁止 */
+                    SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, WM_SETREDRAW, (WPARAM)FALSE, 0);
 
-                    TvIns.hParent = hItem;
-                    TvIns.hInsertAfter = TVI_LAST;
-                    TvIns.item.mask = TVIF_CHILDREN | TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
-                    TvIns.item.cChildren = 0;
-                    TvIns.item.pszText = objectListCur->Info.ObjectName;
-                    TvIns.item.iImage = MTP_FOLDER;
-                    TvIns.item.iSelectedImage = MTP_FOLDER_SEL;
-                    TvIns.item.lParam = (LPARAM)folderInfoParam;
-                    SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_INSERTITEM, 0, (LPARAM)&TvIns);
+                    childs = 0;
+                    objectListCur = objectListTop;
+                    while (objectListCur != NULL)
+                    {
+                        folderInfoParam = new MTP_FOLDER_TREEVIEW_PARAM;
+                        folderInfoParam->ObjectId = new WCHAR[wcslen(objectListCur->Info.ObjectID) + 1];
+                        wcscpy(folderInfoParam->ObjectId, objectListCur->Info.ObjectID);
+                        folderInfoParam->DeviceNumber = folderInfoParamParent->DeviceNumber;
 
-                    childs++;
-                    objectListCur = objectListCur->Next;
+                        TvIns.hParent = hItem;
+                        TvIns.hInsertAfter = TVI_LAST;
+                        TvIns.item.mask = TVIF_CHILDREN | TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+                        TvIns.item.cChildren = 0;
+                        TvIns.item.pszText = objectListCur->Info.ObjectName;
+                        TvIns.item.iImage = MTP_FOLDER;
+                        TvIns.item.iSelectedImage = MTP_FOLDER_SEL;
+                        TvIns.item.lParam = (LPARAM)folderInfoParam;
+                        SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_INSERTITEM, 0, (LPARAM)&TvIns);
+
+                        childs++;
+                        objectListCur = objectListCur->Next;
+                    }
+
+                    if (childs > 0)
+                    {
+                        TvItem.cChildren = 1;
+                        SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_SETITEM, 0, (LPARAM)&TvItem);
+
+                        /* アイテムを開く */
+                        SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
+                    }
+
+                    /* 再描画 */
+                    SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, WM_SETREDRAW, (WPARAM)TRUE, 0);
+
+                    /* フォルダ情報を削除 */
+                    ReleaseMtpObject(objectListTop);
                 }
-
-                if (childs > 0)
-                {
-                    TvItem.cChildren = 1;
-                    SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_SETITEM, 0, (LPARAM)&TvItem);
-
-                    /* アイテムを開く */
-                    SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
-                }
-
-                /* 再描画 */
-                SendDlgItemMessage(hDlg, MTP_FOLDER_TREE, WM_SETREDRAW, (WPARAM)TRUE, 0);
-
-                /* フォルダ情報を削除 */
-                ReleaseMtpObject(objectListTop);
             }
         }
     }

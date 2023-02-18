@@ -77,8 +77,6 @@ static _TCHAR HelpPath[MY_MAX_PATH+1];
 static _TCHAR IniPath[MY_MAX_PATH+1];
 static int TmpTrayIcon;
 
-extern int ErrorCount;
-
 static const int IconData[] = {
     /* 静止時用 */
     backup,
@@ -118,6 +116,7 @@ _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1] = { _T("") };
 _TCHAR LastErrorLogFname[MY_MAX_PATH+1] = { _T("") };
 int ListWindowType = 0;
 
+int ErrorCount = 0;
 
 
 /*----- メインルーチン --------------------------------------------------------

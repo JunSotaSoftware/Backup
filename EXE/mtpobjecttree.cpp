@@ -47,7 +47,7 @@
 
 /* プロトタイプ */
 static PWSTR SplitUrl(PCWSTR url, int part);
-static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback);
+static int RecursiveMakeMtpObjectTree(IPortableDevice* pIPortableDevice, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback);
 
 
 /*----- MTPデバイスのオブジェクトのツリーを作成 ------------------------------------
@@ -81,6 +81,7 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
     MTP_OBJECT_TREE* treeTop = NULL;
     MTP_OBJECT_TREE* treeCur;
     PWSTR filter = L"";
+    CComPtr<IPortableDevice> pIPortableDevice;
 
     deviceName = SplitUrl(url, 0);
     if (deviceName != NULL)
@@ -116,48 +117,62 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
                 treeTop->Info.ObjectSize = 0;
                 treeCur = treeTop;
 
-                /* URLで指定されているオブジェクトを子に追加 */
-                status = SUCCESS;
-                for (DWORD i = 1; filter != NULL; i++)
-                {
-                    filter = SplitUrl(url, i);
-                    if (filter != NULL)
-                    {
-                        status = RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, filter, objectType, treeCur, processingCallback);
-                        if (status == SUCCESS)
-                        {
-                            treeCur = treeCur->Child;
-                        }
-                        else if (status == FAIL)
-                        {
-                            /* URLで指定されたオブジェクトが見つからなかった */
-                            ErrorInfo->ErrorId = ErrorFolderNotFound;
-                            ErrorInfo->ObjectName = (PWSTR)malloc(sizeof(WCHAR) * (wcslen(filter) + 1));
-                            if (ErrorInfo->ObjectName != NULL)
-                            {
-                                wcscpy(ErrorInfo->ObjectName, filter);
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                        delete[] filter;
-                    }
-                }
-
+                /* デバイスをオープン */
+                status = OpenMtpDevice(treeTop->Info.ObjectID, &pIPortableDevice);
                 if (status == SUCCESS)
                 {
-                    /* URLで指定されている部分以下は全てを列挙する */
-                    status = RecursiveMakeMtpObjectTree(treeTop->Info.ObjectID, NULL, objectType, treeCur, processingCallback);
-                    *top = treeTop;
+                    /* URLで指定されているオブジェクトを子に追加 */
+                    for (DWORD i = 1; filter != NULL; i++)
+                    {
+                        filter = SplitUrl(url, i);
+                        if (filter != NULL)
+                        {
+                            status = RecursiveMakeMtpObjectTree(pIPortableDevice, filter, objectType, treeCur, processingCallback);
+                            if (status == SUCCESS)
+                            {
+                                treeCur = treeCur->Child;
+                            }
+                            else if (status == FAIL)
+                            {
+                                /* URLで指定されたオブジェクトが見つからなかった */
+                                ErrorInfo->ErrorId = ErrorFolderNotFound;
+                                ErrorInfo->ObjectName = (PWSTR)malloc(sizeof(WCHAR) * (wcslen(filter) + 1));
+                                if (ErrorInfo->ObjectName != NULL)
+                                {
+                                    wcscpy(ErrorInfo->ObjectName, filter);
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            delete[] filter;
+                        }
+                    }
+
+                    if (status == SUCCESS)
+                    {
+                        /* URLで指定されている部分以下は全てを列挙する */
+                        status = RecursiveMakeMtpObjectTree(pIPortableDevice, NULL, objectType, treeCur, processingCallback);
+                        *top = treeTop;
 #if 0
-                    /* debug */
-                    DoPrintf(_T("------------------------------\r\n"));
-                    DispMtpObjectTree(treeTop, 0);
-                    DoPrintf(_T("------------------------------\r\n"));
+                        /* debug */
+                        DoPrintf(_T("------------------------------\r\n"));
+                        DispMtpObjectTree(treeTop, 0);
+                        DoPrintf(_T("------------------------------\r\n"));
 #endif
+                    }
+                }
+                else
+                {
+                    /* 指定されたデバイスがオープンできなかった */
+                    ErrorInfo->ErrorId = ErrorCannotOpenDevice;
+                    ErrorInfo->ObjectName = (PWSTR)malloc(sizeof(WCHAR) * (wcslen(deviceName) + 1));
+                    if (ErrorInfo->ObjectName != NULL)
+                    {
+                        wcscpy(ErrorInfo->ObjectName, deviceName);
+                    }
                 }
             }
         }
@@ -196,7 +211,7 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
 /*----- 兄弟オブジェクトと子オブジェクトを再帰的に列挙 ----------------------------
 *
 *   Parameter
-*       PWSTR deviceId : デバイスのID
+*       IPortableDevice* pIPortableDevice : デバイスへのインターフェース
 *       PWSTR filter : リストに追加する子オブジェクトの名前（NULL=指定無し）
 *       MTP_OBJECT_TYPE objectType : 列挙するオブジェクトのタイプ
 *       MTP_OBJECT_TREE* anchor : リストの追加位置（親）
@@ -205,7 +220,7 @@ int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** t
 *   Return Value
 *       int ステータス (SUCCESS/FAIL/CANCELLED)
 *----------------------------------------------------------------------------*/
-static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback)
+static int RecursiveMakeMtpObjectTree(IPortableDevice* pIPortableDevice, PWSTR filter, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE* anchor, MTP_TREE_PROCESSING_ROUTINE processingCallback)
 {
     int status = FAIL;
     MTP_OBJECT_LIST* listTop = NULL;
@@ -221,7 +236,7 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
         parentId = WPD_DEVICE_OBJECT_ID;
     }
 
-    if (EnumerateMtpObject(deviceId, parentId, objectType, NO, &listTop) == SUCCESS)
+    if (EnumerateMtpObject(pIPortableDevice, parentId, objectType, NO, &listTop) == SUCCESS)
     {
         status = SUCCESS;
         listCur = listTop;
@@ -283,7 +298,7 @@ static int RecursiveMakeMtpObjectTree(PWSTR deviceId, PWSTR filter, MTP_OBJECT_T
                     {
                         if (newObject->Info.ObjectType == ObjectTypeFolder)
                         {
-                            status = RecursiveMakeMtpObjectTree(deviceId, filter, objectType, newObject, processingCallback);
+                            status = RecursiveMakeMtpObjectTree(pIPortableDevice, filter, objectType, newObject, processingCallback);
                             if (status != SUCCESS)
                             {
                                 break;

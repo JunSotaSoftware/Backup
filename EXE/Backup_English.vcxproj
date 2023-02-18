@@ -278,7 +278,7 @@
     <ClCompile Include="registory.c" />
     <ClCompile Include="shutdown.c" />
     <ClCompile Include="transdlg.c" />
-    <ClCompile Include="transfer.c" />
+    <ClCompile Include="transfer.cpp" />
     <ClCompile Include="updatebell.c" />
     <ClCompile Include="wildcard.c" />
   </ItemGroup>

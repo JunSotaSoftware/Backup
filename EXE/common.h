@@ -27,7 +27,7 @@
 /============================================================================*/
 
 #define USE_SAME_AS_SUCCESS 1
-#define SHOW_CONSOLE 0
+#define SHOW_CONSOLE 1
 
 #ifndef ENGLISH
 #include "mesg-jpn.h"
@@ -334,6 +334,7 @@ typedef enum {
     ErrorInvalidUrl,
     ErrorDeviceNotFound,
     ErrorFolderNotFound,
+    ErrorCannotOpenDevice,
 } MTP_MAKE_OBJECT_TREE_ERROR;
 
 typedef struct {
@@ -385,8 +386,6 @@ typedef BOOL(CALLBACK* MTP_TREE_PROCESSING_ROUTINE)(PWSTR);
 /* main.c */
 
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int cmdShow);
-HWND GetMainHwnd(void);
-HINSTANCE GetBupInst(void);
 AUTOCLOSE_ACTION AskAutoClose(void);
 int AskNoNotify(void);
 LPTSTR AskHelpFilePath(void);
@@ -411,49 +410,16 @@ int NotifyBackup(HWND hWnd, COPYPATLIST *Pat);
 void SaveMainDlgSize(void);
 void AsdMainDlgMinSize(POINT *Point);
 LPTSTR GetPatComment(int Num);
-void IncrementDstNum(int PatNum);
 
 /* TransDlg.c */
 
 int MakeTransferDialog(void);
 void DeleteTransferDialogResources(void);
-HWND GetTransDlgHwnd(void);
 int StartBackup(COPYPATLIST *Pat);
 DWORD ShowWNetUseConnection(HWND hWnd, LPTSTR lpRemoteName);
 int ShowAuthDialogForUNCPaths(HWND hWnd, COPYPATLIST *Pat);
 int MyPathIsUNCServerShare(_TCHAR *str);
-void SelectPass(int Pass);
-void SetPatName(LPTSTR Name);
-void SetTaskMsg(int Type, LPTSTR szFormat,...);
-void SetFileProgress(LONGLONG Total, LONGLONG Done);
 void SaveTransDlgSize(void);
-void MakeMtpProcessingWindow(void);
-void DestroyMtpProcessingWindow(void);
-HWND GetProcessingDlgHwnd(void);
-
-/* Transfer.c */
-
-int MakeBackupThread(void);
-void CloseBackupThread(void);
-void SetBackupPat(COPYPATLIST *Pat);
-void SetBackupAbort(void);
-void SetBackupPause(void);
-void SetBackupRestart(void);
-void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi);
-
-BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization);
-FIND_FILE_HANDLE* FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization, PROC_OPTIONS* options);
-BOOL FindNextFile_My(FIND_FILE_HANDLE* hFindFile, LPWIN32_FIND_DATA lpFindFileData);
-BOOL FindClose_My(FIND_FILE_HANDLE* hFindFile);
-DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options);
-DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError);
-BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization, PROC_OPTIONS* options);
-BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization, PROC_OPTIONS* options);
-HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization);
-BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIONS* options);
-BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization, PROC_OPTIONS* options);
-BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options);
-
 
 /* Registory.c */
 
@@ -466,15 +432,9 @@ int GetMediaPath(LPTSTR MediaPath, int Max);
 
 /* Logfile.c */
 
-int OpenLogfile(void);
-int CloseLogfile(void);
 int DeleteLogFilename(void);
 int WriteMsgToLogfile(LPTSTR Msg);
-void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath);
-void WriteEndTimeToLogfile(void);
 void DispLogWithViewer(void);
-int OpenErrorLogfile(void);
-int CloseErrorLogfile(void);
 int DeleteErrorLogFilename(void);
 int WriteMsgToErrorLogfile(LPTSTR Msg);
 void DispErrorLogWithViewer(void);
@@ -490,41 +450,26 @@ int DispHostSetDlg(HWND hWnd, COPYPAT *Pat);
 
 /* misc.c */
 
-void SetYenTail(LPTSTR Str);
 void SetCharTail(LPTSTR Str, LPTSTR Ch);
-void RemoveYenTail(LPTSTR Str);
-void RemoveReturnCode(LPTSTR Str);
-int CountChar(LPTSTR Str, _TCHAR Ch);
-void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst);
 int ReplaceAllStr(LPTSTR Str, LPTSTR Find, LPTSTR Repl, int Scan);
 void GetSamePartOfString(LPTSTR Str1, LPTSTR Str2);
-LPTSTR GetFileName(LPTSTR Path);
 LPTSTR GetFileExt(LPTSTR Path);
 int StrMultiLen(LPTSTR Str);
-int StrMultiCount(LPTSTR Str);
-LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num);
 int SelectDir(HWND hWnd, LPTSTR Buf, int MaxLen, LPTSTR Title);
 int SelectFile(HWND hWnd, LPTSTR Fname, LPTSTR Title, LPTSTR Filters, LPTSTR Ext, int Flags, int Save, LPTSTR Dir);
 void SetRadioButtonByValue(HWND hDlg, int Value, const RADIOBUTTON *Buttons, int Num);
 int AskRadioButtonValue(HWND hDlg, const RADIOBUTTON *Buttons, int Num);
-void MakeSizeString(double Size, LPTSTR Buf);
-void BackgrndMessageProc(void);
 void SortListBoxItem(HWND hWnd);
 void GetRootPath(LPTSTR Path, LPTSTR Buf);
 int GetDriveFormat(LPTSTR Path);
-BOOL GetVolumeLabel(LPTSTR Path, LPTSTR Buf, int Size);
 UINT GetDriveTypeFromPath(LPTSTR Path);
-int MoveFileToTrashCan(LPTSTR Path);
 void SendDropFilesToControl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int Type);
 void ExecViewer(LPTSTR Fname, LPTSTR App);
 void CheckRange2(int *Cur, int Max, int Min);
-void FileTime2TimeString(FILETIME *Time, LPTSTR Buf);
 void DuplicateComboBox(HWND hDlg, int idCopyFrom, int idCopyTo);
-LPTSTR InsertNumberBeforeExtension(LPTSTR path, int number);
 
 /* wildcard.c */
 
-int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array);
 int CheckFname(LPTSTR str, LPTSTR regexp);
 
 /* filesize.c */
@@ -563,38 +508,72 @@ extern "C" {
 /* mtpsupport.cpp */
 int IsMtpDevice(PCWSTR url);
 
-/* mtpobjecttree.cpp */
-int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo, MTP_TREE_PROCESSING_ROUTINE processingCallback);
-void DispMtpObjectTree(MTP_OBJECT_TREE* top, int level);
-void ReleaseMtpObjectTree(MTP_OBJECT_TREE* top);
-MTP_OBJECT_TREE* FindObjectFromTree(PCWSTR url, MTP_OBJECT_TREE* treeTop, MTP_OBJECT_TREE** parent);
-MTP_OBJECT_TREE* FindNextSiblingObjectFromTree(MTP_OBJECT_TREE* object);
-MTP_OBJECT_TREE* FindSpecifiedChildObjectFromTree(PCWSTR name, MTP_OBJECT_TREE* parent);
-int DeleteObjectFromTree(MTP_OBJECT_TREE* object, MTP_OBJECT_TREE* parent);
-int AddObjectToTree(MTP_OBJECT_INFO* object, MTP_OBJECT_TREE* parent);
-
-/* mtpfileoperation.cpp */
-int DeleteObjectFromMtpDevice(PWSTR deviceId, PWSTR objectId);
-int CreateFolderOnMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR folderName, PWSTR* objectId);
-int ChangeObjectTimeStampOnMtpDevice(PWSTR deviceId, PWSTR objectId, FILETIME* time);
-int TransferFileToMtpDevice(PWSTR deviceId, PWSTR parentObjectId, PWSTR destinationFileName, PWSTR sourcePathName, PWSTR* objectId, ULONGLONG* fileSize, FILETIME* modifiedTime, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
-int ChangeObjectNameOnMtpDevice(PWSTR deviceId, PWSTR objectId, PWSTR name);
-int TransferFileFromMtpDevice(PWSTR deviceId, PWSTR objectId, PCWSTR destinationPathName, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
-
 /* mtpdirsel.cpp */
 int ShowMtpFolderSelectDialog(HINSTANCE hInst, HWND hWndParent, LPTSTR* url);
 
+/* Transfer.cpp */
+int MakeBackupThread(void);
+void CloseBackupThread(void);
+void SetBackupPat(COPYPATLIST* Pat);
+void SetBackupAbort(void);
+void SetBackupPause(void);
+void SetBackupRestart(void);
+void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi);
+FIND_FILE_HANDLE* FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization, PROC_OPTIONS* options);
+BOOL FindNextFile_My(FIND_FILE_HANDLE* hFindFile, LPWIN32_FIND_DATA lpFindFileData);
+BOOL FindClose_My(FIND_FILE_HANDLE* hFindFile);
+DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options);
+DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD* pLastError);
+
 /* main.c */
+HWND GetMainHwnd(void);
+HINSTANCE GetBupInst(void);
 void DoPrintf(LPTSTR szFormat, ...);
+
+/* maindlg.c */
+void IncrementDstNum(int PatNum);
+
+/* transdlg.c */
+HWND GetTransDlgHwnd(void);
+void SelectPass(int Pass);
+void SetPatName(LPTSTR Name);
+void SetTaskMsg(int Type, LPTSTR szFormat, ...);
+void SetFileProgress(LONGLONG Total, LONGLONG Done);
+void MakeMtpProcessingWindow(void);
+void DestroyMtpProcessingWindow(void);
+HWND GetProcessingDlgHwnd(void);
+BOOL CALLBACK MtpTreeProcessingRoutine(LPTSTR filename);
+
+/* logfile.c */
+int OpenLogfile(void);
+int CloseLogfile(void);
+void WriteTitleToLogfile(LPTSTR Name, LPTSTR SrcPath, LPTSTR DstPath);
+void WriteEndTimeToLogfile(void);
+int OpenErrorLogfile(void);
+int CloseErrorLogfile(void);
 
 /* misc.c */
 BOOL CALLBACK ExeEscDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SetYenTail(LPTSTR Str);
+void RemoveYenTail(LPTSTR Str);
+void RemoveReturnCode(LPTSTR Str);
+int CountChar(LPTSTR Str, _TCHAR Ch);
+void ReplaceAll(LPTSTR Str, int Len, _TCHAR Src, _TCHAR Dst);
+LPTSTR GetFileName(LPTSTR Path);
+int StrMultiCount(LPTSTR Str);
+LPTSTR GetSpecifiedStringFromMultiString(LPTSTR Str, int Num);
+void MakeSizeString(double Size, LPTSTR Buf);
+void BackgrndMessageProc(void);
+BOOL GetVolumeLabel(LPTSTR Path, LPTSTR Buf, int Size);
+int MoveFileToTrashCan(LPTSTR Path);
+void FileTime2TimeString(FILETIME* Time, LPTSTR Buf);
+LPTSTR InsertNumberBeforeExtension(LPTSTR path, int number);
 
 /* transfer.c */
 DWORD CALLBACK CopyProgressRoutine(LARGE_INTEGER TotalFileSize, LARGE_INTEGER TotalBytesTransferred, LARGE_INTEGER StreamSize, LARGE_INTEGER StreamBytesTransferred, DWORD dwStreamNumber, DWORD dwCallbackReason, HANDLE hSourceFile, HANDLE hDestinationFile, LPVOID lpData);
 
-/* transdlg.c */
-BOOL CALLBACK MtpTreeProcessingRoutine(LPTSTR filename);
+/* wildcard.c */
+int CheckFnameWithArray(LPTSTR Fname, LPTSTR Array);
 
 #ifdef __cplusplus
 }

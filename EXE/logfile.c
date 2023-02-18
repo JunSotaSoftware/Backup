@@ -92,7 +92,7 @@ int OpenLogfile(void)
     _tcscpy(LastWroteLogFname, RealLogFname);
 
     if((LogSwitch == LOG_SW_NEW) && (DeleteLog == NO))
-        DeleteFile_My(RealLogFname, NO, NULL);
+        DeleteFile(RealLogFname);
     DeleteLog = YES;
 
     LogStrm = NULL;
@@ -268,7 +268,7 @@ static void CheckLogFileSize(void)
             }
 
             _stprintf(Tmp, _T("%s.%d"), RealLogFname, Max+1);
-            MoveFile_My(RealLogFname, Tmp, NO, NULL);
+            MoveFile(RealLogFname, Tmp);
 
             OpenLogfile();
         }
@@ -457,7 +457,7 @@ int OpenErrorLogfile(void)
         {
             if (_tcslen(LastErrorLogFname) > 0)
             {
-                DeleteFile_My(LastErrorLogFname, NO, NULL);
+                DeleteFile(LastErrorLogFname);
             }
             _tcscpy(LastErrorLogFname, ErrorLogFname);
         }

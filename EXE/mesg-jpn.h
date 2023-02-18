@@ -174,3 +174,4 @@
 #define MSGJPN_148  _T("バックアップ先のファイル構造を取得しています")
 #define MSGJPN_149  _T("WARNING: 名前の変更が出来ませんでした。元の名前のまま残ります。(%s → %s)")
 #define MSGJPN_150  _T("WARNING: 名前の変更が出来ませんでした。複写し直します。")
+#define MSGJPN_151  _T("ERROR: MTPデバイス（%s）がオープンできません")

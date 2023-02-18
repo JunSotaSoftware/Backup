@@ -58,8 +58,26 @@ typedef struct _mtpobjectlist {
 DWORD CountMtpDevices(void);
 int EnumerateMtpDevices(MTP_DEVICE_LIST** deviceList);
 void ReleaseMtpDevices(MTP_DEVICE_LIST* deviceList);
-int EnumerateMtpObject(PWSTR deviceId, PWSTR objectId, MTP_OBJECT_TYPE objectType, int sort, MTP_OBJECT_LIST** objectList);
+int OpenMtpDevice(PWSTR deviceId, IPortableDevice** ppIPortableDevice);
+int EnumerateMtpObject(IPortableDevice* pIPortableDevice, PWSTR objectId, MTP_OBJECT_TYPE objectType, int sort, MTP_OBJECT_LIST** objectList);
 void ReleaseMtpObject(MTP_OBJECT_LIST* folderList);
-int OpenMtpDevice(PWSTR deviceId, IPortableDevice** ppDevice);
 void SetWin32LastError(HRESULT hr);
+
+/* mtpobjecttree.cpp */
+int MakeMtpObjectTree(PWSTR url, MTP_OBJECT_TYPE objectType, MTP_OBJECT_TREE** top, MTP_MAKE_OBJECT_TREE_ERROR_INFO* ErrorInfo, MTP_TREE_PROCESSING_ROUTINE processingCallback);
+void DispMtpObjectTree(MTP_OBJECT_TREE* top, int level);
+void ReleaseMtpObjectTree(MTP_OBJECT_TREE* top);
+MTP_OBJECT_TREE* FindObjectFromTree(PCWSTR url, MTP_OBJECT_TREE* treeTop, MTP_OBJECT_TREE** parent);
+MTP_OBJECT_TREE* FindNextSiblingObjectFromTree(MTP_OBJECT_TREE* object);
+MTP_OBJECT_TREE* FindSpecifiedChildObjectFromTree(PCWSTR name, MTP_OBJECT_TREE* parent);
+int DeleteObjectFromTree(MTP_OBJECT_TREE* object, MTP_OBJECT_TREE* parent);
+int AddObjectToTree(MTP_OBJECT_INFO* object, MTP_OBJECT_TREE* parent);
+
+/* mtpfileoperation.cpp */
+int DeleteObjectFromMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId);
+int CreateFolderOnMtpDevice(IPortableDevice* pIPortableDevice, PWSTR parentObjectId, PWSTR folderName, PWSTR* objectId);
+int ChangeObjectTimeStampOnMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId, FILETIME* time);
+int TransferFileToMtpDevice(IPortableDevice* pIPortableDevice, PWSTR parentObjectId, PWSTR destinationFileName, PWSTR sourcePathName, PWSTR* objectId, ULONGLONG* fileSize, FILETIME* modifiedTime, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
+int ChangeObjectNameOnMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId, PWSTR name);
+int TransferFileFromMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId, PCWSTR destinationPathName, COPY_PROGRESS_ROUTINE progressCallback, LPVOID data);
 

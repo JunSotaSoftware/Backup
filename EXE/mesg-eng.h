@@ -174,3 +174,4 @@
 #define MSGJPN_148  _T("Getting file structure from destination device.")
 #define MSGJPN_149  _T("WARNING: Cannot change folder name. Folder will remain under its previous name. (%s -> %s)")
 #define MSGJPN_150  _T("WARNING: Cannot change file name. Copy this file to destination.")
+#define MSGJPN_151  _T("ERROR: Cannot open MTP device (%s)")
