@@ -3738,7 +3738,6 @@ static BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIO
     {
         /* MTPの場合 */
         /* ツリーを検索 */
-        /*DEBUG*/DoPrintf(_T("RemoveDirectory_My 1"));
         found = FindObjectFromTree(lpPathName, options->MtpObjectTreeTop, &parent);
         if (found != NULL)
         {
@@ -3746,18 +3745,14 @@ static BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIO
             deviceId = options->MtpObjectTreeTop->Info.ObjectID;
             objectId = found->Info.ObjectID;
 
-            /*DEBUG*/DoPrintf(_T("RemoveDirectory_My 2"));
             /* ツリーから削除するオブジェクトを消す */
             if (DeleteObjectFromTree(found, parent) == SUCCESS)
             {
-                /*DEBUG*/DoPrintf(_T("RemoveDirectory_My 3"));
                 /* 削除実行 */
                 if (DeleteObjectFromMtpDevice(pIPortableDevice, objectId) == SUCCESS)
                 {
                     ret = TRUE;
                 }
-                /*DEBUG*/DoPrintf(_T("RemoveDirectory_My 4"));
-
             }
         }
         else
@@ -3890,7 +3885,6 @@ static BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* o
     {
         /* MTPの場合 */
         /* ツリーを検索 */
-        /*DEBUG*/DoPrintf(_T("DeleteFile_My 1"));
         found = FindObjectFromTree(lpFileName, options->MtpObjectTreeTop, &parent);
         if (found != NULL)
         {
@@ -3899,16 +3893,13 @@ static BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* o
             objectId = found->Info.ObjectID;
 
             /* ツリーから削除するオブジェクトを消す */
-            /*DEBUG*/DoPrintf(_T("DeleteFile_My 2"));
             if (DeleteObjectFromTree(found, parent) == SUCCESS)
             {
                 /* 削除実行 */
-                /*DEBUG*/DoPrintf(_T("DeleteFile_My 3"));
                 if (DeleteObjectFromMtpDevice(pIPortableDevice, objectId) == SUCCESS)
                 {
                     ret = TRUE;
                 }
-                /*DEBUG*/DoPrintf(_T("DeleteFile_My 4"));
             }
         }
         else

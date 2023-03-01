@@ -69,13 +69,10 @@ int DeleteObjectFromMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId)
     CComPtr<IPortableDeviceContent> pContent;
     HRESULT hr = S_OK;
 
-    /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDevice 1"));
-
     /* IPortableDeviceContentインターフェースを取得 */
     hr = pIPortableDevice->Content(&pContent);
     if (SUCCEEDED(hr))
     {
-        /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDevice 2"));
         /* 削除する */
         hr = DeleteObjectFromMtpDeviceInner(pContent, objectId);
         if (SUCCEEDED(hr))
@@ -86,7 +83,6 @@ int DeleteObjectFromMtpDevice(IPortableDevice* pIPortableDevice, PWSTR objectId)
         {
             DoPrintf(_T("Error: Delete object failed, hr = 0x%lx\r\n"), hr);
         }
-        /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDevice 3"));
     }
     else
     {
@@ -111,15 +107,12 @@ static HRESULT DeleteObjectFromMtpDeviceInner(IPortableDeviceContent* pContent, 
     CComPtr<IPortableDevicePropVariantCollection> pObjectsToDelete;
     HRESULT hr = S_OK;
 
-    /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 1"));
-
     /* IPortableDevicePropVariantCollectionインターフェースを作成 */
     hr = CoCreateInstance(CLSID_PortableDevicePropVariantCollection, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pObjectsToDelete));
     if (SUCCEEDED(hr))
     {
         if (pObjectsToDelete != NULL)
         {
-            /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 2"));
             /* 削除するオブジェクトのIDをセット */
             PROPVARIANT pv = { 0 };
             PropVariantInit(&pv);
@@ -127,18 +120,15 @@ static HRESULT DeleteObjectFromMtpDeviceInner(IPortableDeviceContent* pContent, 
             pv.pwszVal = AtlAllocTaskWideString(objectId);
             if (pv.pwszVal != NULL)
             {
-                /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 3"));
                 hr = pObjectsToDelete->Add(&pv);
                 if (SUCCEEDED(hr))
                 {
                     /* 削除実行 */
-                    /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 4"));
                     hr = pContent->Delete(PORTABLE_DEVICE_DELETE_NO_RECURSION, pObjectsToDelete, NULL);
                     if (FAILED(hr))
                     {
                         DoPrintf(_T("Error: Failed to delete object from device, hr = 0x%lx\r\n"), hr);
                     }
-                    /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 5"));
                 }
                 else
                 {
@@ -162,7 +152,6 @@ static HRESULT DeleteObjectFromMtpDeviceInner(IPortableDeviceContent* pContent, 
     {
         DoPrintf(_T("Error: Failed to create IPortableDevicePropVariantCollection interface, hr = 0x%lx\r\n"), hr);
     }
-    /*DEBUG*/DoPrintf(_T("DeleteObjectFromMtpDeviceInner 6"));
     return hr;
 }
 
