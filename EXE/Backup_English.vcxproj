@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0F812B51-CD4D-4440-8F0A-2230D51A4F70}</ProjectGuid>
     <RootNamespace>Backup_English</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -135,7 +135,7 @@
       <Culture>0x0411</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;htmlhelp.lib;Mpr.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;htmlhelp.lib;Mpr.lib;Shlwapi.lib;PortableDeviceGuids.lib;Propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)_English\Backup.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -201,17 +201,19 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <AdditionalOptions>/source-charset:utf-8 /execution-charset:shift_jis %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat />
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0411</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;htmlhelp.lib;Mpr.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;htmlhelp.lib;Mpr.lib;Shlwapi.lib;PortableDeviceGuids.lib;Propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)_English\Backup.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)_English\Backup.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <BuildLog>
       <Path>$(Platform)\$(Configuration)_English\$(MSBuildProjectName).log</Path>
@@ -266,18 +268,23 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="maindlg.c" />
     <ClCompile Include="misc.c" />
+    <ClCompile Include="mtpdirsel.cpp" />
+    <ClCompile Include="mtpfileoperation.cpp" />
+    <ClCompile Include="mtpobjecttree.cpp" />
+    <ClCompile Include="mtpsupport.cpp" />
     <ClCompile Include="option.c" />
     <ClCompile Include="patman.c" />
     <ClCompile Include="quickdlg.c" />
     <ClCompile Include="registory.c" />
     <ClCompile Include="shutdown.c" />
     <ClCompile Include="transdlg.c" />
-    <ClCompile Include="transfer.c" />
+    <ClCompile Include="transfer.cpp" />
     <ClCompile Include="updatebell.c" />
     <ClCompile Include="wildcard.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="mtp_common.h" />
     <ClInclude Include="Resource_eng\resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +311,10 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Resource_eng\backup.exe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bitmap2.bmp" />
+    <Image Include="Resource_eng\bitmap2.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

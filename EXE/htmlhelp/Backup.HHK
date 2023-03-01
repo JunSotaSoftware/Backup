@@ -174,5 +174,25 @@
 		<param name="Name" value="改版履歴">
 		<param name="Local" value="HTML\H0000036.HTM">
 		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="MTPとは">
+		<param name="Name" value="MTPとは">
+		<param name="Local" value="HTML\H0000037.HTM">
+		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="MTPの利用">
+		<param name="Name" value="MTPの利用">
+		<param name="Local" value="HTML\H0000038.HTM">
+		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="バックアップ先の指定方法">
+		<param name="Name" value="バックアップ先の指定方法">
+		<param name="Local" value="HTML\H0000039.HTM">
+		</OBJECT>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="選ぶことが出来ない項目">
+		<param name="Name" value="選ぶことが出来ない項目">
+		<param name="Local" value="HTML\H0000040.HTM">
+		</OBJECT>
 </UL>
 </BODY></HTML>

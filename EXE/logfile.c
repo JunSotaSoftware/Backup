@@ -4,7 +4,7 @@
 /                               ログファイル
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -92,7 +92,7 @@ int OpenLogfile(void)
     _tcscpy(LastWroteLogFname, RealLogFname);
 
     if((LogSwitch == LOG_SW_NEW) && (DeleteLog == NO))
-        DeleteFile_My(RealLogFname, NO);
+        DeleteFile(RealLogFname);
     DeleteLog = YES;
 
     LogStrm = NULL;
@@ -137,7 +137,7 @@ static void MakeLogDir(LPTSTR Path)
 {
     LPTSTR Pos;
     _TCHAR Tmp[MY_MAX_PATH+1];
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
 
     if((_tcslen(Path) > 3) &&
@@ -156,13 +156,13 @@ static void MakeLogDir(LPTSTR Path)
         {
             _tcsncpy(Tmp, Path, Pos - Path);
             Tmp[Pos - Path] = NUL;
-            if((fHnd = FindFirstFile(Tmp, &FindBuf)) == INVALID_HANDLE_VALUE)
+            if((fHnd = FindFirstFile_My(Tmp, &FindBuf, NO, NULL)) == INVALID_HANDLE_VALUE)
             {
                 CreateDirectory(Tmp, NULL);
             }
             else
             {
-                FindClose(fHnd);
+                FindClose_My(fHnd);
             }
         }
     }
@@ -246,7 +246,7 @@ static void CheckLogFileSize(void)
 {
     _TCHAR Tmp[MY_MAX_PATH+1+15];
     WIN32_FIND_DATA FindBuf;
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     int Max;
 
     if((LogSwitch == LOG_SW_APPEND) && (LogLimit > 0))
@@ -257,18 +257,18 @@ static void CheckLogFileSize(void)
 
             Max = 0;
             _stprintf(Tmp, _T("%s.*"), RealLogFname);
-            if((fHnd = FindFirstFile_My(Tmp, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+            if((fHnd = FindFirstFile_My(Tmp, &FindBuf, NO, NULL)) != INVALID_HANDLE_VALUE)
             {
                 do
                 {
                     Max = max(Max, _tstoi(GetFileExt(FindBuf.cFileName)));
                 }
-                while(FindNextFile(fHnd, &FindBuf) == TRUE);
-                FindClose(fHnd);
+                while(FindNextFile_My(fHnd, &FindBuf) == TRUE);
+                FindClose_My(fHnd);
             }
 
             _stprintf(Tmp, _T("%s.%d"), RealLogFname, Max+1);
-            MoveFile_My(RealLogFname, Tmp, NO);
+            MoveFile(RealLogFname, Tmp);
 
             OpenLogfile();
         }
@@ -457,7 +457,7 @@ int OpenErrorLogfile(void)
         {
             if (_tcslen(LastErrorLogFname) > 0)
             {
-                DeleteFile_My(LastErrorLogFname, NO);
+                DeleteFile(LastErrorLogFname);
             }
             _tcscpy(LastErrorLogFname, ErrorLogFname);
         }

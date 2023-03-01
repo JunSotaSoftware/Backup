@@ -2,7 +2,7 @@
 /                                   メッセージ
 /
 /============================================================================
-/ Copyright (C) 1997-2017 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -165,3 +165,13 @@
 #define MSGJPN_139  _T("スキップ (エラー %d, 総エラー %d) (作成 %d, 削除 %d, 複写 %d)")
 #define MSGJPN_140  _T("-- 無効 -- ")
 #define MSGJPN_141  _T("バックアップしないフォルダ")
+#define MSGJPN_142  _T("MTPデバイスが接続されていません")
+#define MSGJPN_143  _T("バックアップ先としてMTPデバイスのフォルダを指定してください")
+#define MSGJPN_144  _T("項目をダブルクリックすると子項目(あれば)が展開されます")
+#define MSGJPN_145  _T("ERROR: MTPデバイス（%s）が見つかりません")
+#define MSGJPN_146  _T("ERROR: MTPデバイス上にフォルダ（%s）が見つかりません")
+#define MSGJPN_147  _T("ERROR: バックアップ先の指定が間違っています")
+#define MSGJPN_148  _T("バックアップ先のファイル構造を取得しています")
+#define MSGJPN_149  _T("WARNING: 名前の変更が出来ませんでした。元の名前のまま残ります。(%s → %s)")
+#define MSGJPN_150  _T("WARNING: 名前の変更が出来ませんでした。複写し直します。")
+#define MSGJPN_151  _T("ERROR: MTPデバイス（%s）がオープンできません")

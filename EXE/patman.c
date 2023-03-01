@@ -4,7 +4,7 @@
 /                           バックアップパターン設定
 /
 /============================================================================
-/ Copyright (C) 1997-2022 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -81,8 +81,10 @@ static int CheckPathConvert(HWND hListBox, PATHCONVERTINFO *PathInfo, int Sel);
 static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK SrcListWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK InpFileDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK InpFolderWithMtpDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void SetAdvancedPage(HWND hDlgSrc, HWND hDlgAdv);
 static LRESULT CALLBACK DstWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+static void EnableDisableDestinationItems(HWND hDlg, LPTSTR destinationList);
 static LRESULT CALLBACK IgnoreSetting1Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK IgnoreSetting2Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK DirListWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -95,6 +97,7 @@ static void DisplayFileSizeDlg(HWND hDlg);
 static int SetStrToListBox(LPTSTR Str, HWND hDlg, int CtrlList, int BufSize, int Pos);
 static void SetMultiTextToList(HWND hDlg, int CtrlList, LPTSTR Text);
 static void GetMultiTextFromList(HWND hDlg, int CtrlList, LPTSTR Buf, int BufSize);
+static int IsMtpDeviceMultiText(LPTSTR text);
 
 /*===== ローカルなワーク ======*/
 
@@ -916,6 +919,8 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                 EnableWindow(GetDlgItem(hDlg, PATSET_LABEL), FALSE);
                 EnableWindow(GetDlgItem(hDlg, PATSET_LABEL_GET), FALSE);
             }
+            EnableDisableDestinationItems(hDlg, TmpPat.Dst);
+
             hWndDstPage = hDlg;
 
             hWndChild = GetDlgItem(hDlg, PATSET_DSTLIST);
@@ -956,11 +961,12 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     _tcscpy(Tmp, _T(""));
                     InpFileParam.Buffer = Tmp;
                     InpFileParam.Message = MSGJPN_33;
-                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
+                    if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_with_mtp_dlg), hDlg, InpFolderWithMtpDlgProc, (LPARAM)&InpFileParam) == YES)
                     {
                         SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, -1);
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
                         SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
+                        EnableDisableDestinationItems(hDlg, TmpPat.Dst);
                         TmpPat.NextDstNum = 0;
                     }
                     break;
@@ -971,11 +977,12 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                         SendDlgItemMessage(hDlg, PATSET_DSTLIST, LB_GETTEXT, Cur, (LPARAM)Tmp);
                         InpFileParam.Buffer = Tmp;
                         InpFileParam.Message = MSGJPN_33;
-                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_dlg), hDlg, InpFileDlgProc, (LPARAM)&InpFileParam) == YES)
+                        if(DialogBoxParam(GetBupInst(), MAKEINTRESOURCE(inpfolder_with_mtp_dlg), hDlg, InpFolderWithMtpDlgProc, (LPARAM)&InpFileParam) == YES)
                         {
                             SetStrToListBox(Tmp, hDlg, PATSET_DSTLIST, DST_PATH_LEN+1, Cur);
                             GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
                             SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
+                            EnableDisableDestinationItems(hDlg, TmpPat.Dst);
                             TmpPat.NextDstNum = 0;
                         }
                     }
@@ -994,6 +1001,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                         }
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
                         SetDirButtonHide(hDlg, PATSET_DSTLIST, PATSET_EDIT, PATSET_UP, PATSET_DOWN, PATSET_DEL);
+                        EnableDisableDestinationItems(hDlg, TmpPat.Dst);
                         TmpPat.NextDstNum = 0;
                     }
                     break;
@@ -1046,6 +1054,7 @@ static LRESULT CALLBACK DestinationSettingProc(HWND hDlg, UINT message, WPARAM w
                     {
                         DoPathConvert(GetDlgItem(hDlg, PATSET_DSTLIST), &PathInfo, YES);
                         GetMultiTextFromList(hDlg, PATSET_DSTLIST, TmpPat.Dst, DST_PATH_LEN+1);
+                        EnableDisableDestinationItems(hDlg, TmpPat.Dst);
                         TmpPat.NextDstNum = 0;
                     }
                     break;
@@ -1136,6 +1145,106 @@ static LRESULT CALLBACK DstWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             return(CallWindowProc(DstProcPtr, hWnd, message, wParam, lParam));
     }
     return(0L);
+}
+
+
+/*----- フォルダ名入力ウインドウのメッセージ処理（MTPボタン付き） --------------------
+*
+*   Parameter
+*       HWND hWnd : ウインドウハンドル
+*       UINT message  : メッセージ番号
+*       WPARAM wParam : メッセージの WPARAM 引数
+*       LPARAM lParam : メッセージの LPARAM 引数
+*
+*   Return Value
+*       メッセージに対応する戻り値
+*----------------------------------------------------------------------------*/
+static LRESULT CALLBACK InpFolderWithMtpDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    static INPFILEPARAM* InpFileParam;
+    _TCHAR Tmp[MY_MAX_PATH + 1];
+    LPTSTR url;
+
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        InpFileParam = (INPFILEPARAM*)lParam;
+        SendDlgItemMessage(hDlg, INPFILE_FNAME, EM_LIMITTEXT, (WPARAM)MY_MAX_PATH, 0);
+        SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)InpFileParam->Buffer);
+        return(TRUE);
+
+    case WM_COMMAND:
+        switch (GET_WM_COMMAND_ID(wParam, lParam))
+        {
+        case IDOK:
+            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH + 1, (LPARAM)InpFileParam->Buffer);
+            EndDialog(hDlg, YES);
+            break;
+
+        case IDCANCEL:
+            EndDialog(hDlg, NO);
+            break;
+
+        case INPFILE_FOLDER_BR:
+            SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_GETTEXT, MY_MAX_PATH + 1, (LPARAM)Tmp);
+            if (SelectDir(hDlg, Tmp, MY_MAX_PATH, InpFileParam->Message) == TRUE)
+            {
+                SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)Tmp);
+            }
+            break;
+
+        case INPFILE_MTP_BR:
+            if (ShowMtpFolderSelectDialog(GetBupInst(), hDlg, &url) == SUCCESS)
+            {
+                SendDlgItemMessage(hDlg, INPFILE_FNAME, WM_SETTEXT, 0, (LPARAM)url);
+                DoPrintf(_T("URL=%s\t\n"), url);
+                free(url);
+            }
+            break;
+
+        case IDHELP:
+            HtmlHelp(NULL, AskHelpFilePath(), HH_HELP_CONTEXT, IDH_HELP_TOPIC_0000011);
+            break;
+        }
+        return(TRUE);
+    }
+    return(FALSE);
+}
+
+
+/*----- バックアップ先の指定によってアイテムを許可／禁止する処理 --------------------
+*
+*   Parameter
+*       HWND hDlg: ダイアログのウインドウハンドル
+*       LPTSTR destinationList : 転送先に指定されているパス名のリスト（マルチ文字列）
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+static void EnableDisableDestinationItems(HWND hDlg, LPTSTR destinationList)
+{
+    if (IsMtpDeviceMultiText(destinationList) == YES)
+    {
+        EnableWindow(GetDlgItem(hDlg, PATSET_CHK_LABEL), FALSE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_LABEL), FALSE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_LABEL_GET), FALSE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_DST_DROPBOX), FALSE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_DST_EFS), FALSE);
+        EnableWindow(GetDlgItem(SheetInfo[PAGE_FLG].hWndSheet, PATSET_USE_TRASHCAN), FALSE);
+        SendDlgItemMessage(hDlg, PATSET_CHK_LABEL, BM_SETCHECK, 0, 0);
+        SendDlgItemMessage(hDlg, PATSET_DST_DROPBOX, BM_SETCHECK, 0, 0);
+        SendDlgItemMessage(hDlg, PATSET_DST_EFS, BM_SETCHECK, 0, 0);
+        SendDlgItemMessage(SheetInfo[PAGE_FLG].hWndSheet, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+    }
+    else
+    {
+        EnableWindow(GetDlgItem(hDlg, PATSET_CHK_LABEL), TRUE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_LABEL), TRUE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_LABEL_GET), TRUE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_DST_DROPBOX), TRUE);
+        EnableWindow(GetDlgItem(hDlg, PATSET_DST_EFS), TRUE);
+        EnableWindow(GetDlgItem(SheetInfo[PAGE_FLG].hWndSheet, PATSET_USE_TRASHCAN), TRUE);
+    }
 }
 
 
@@ -1646,6 +1755,16 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
             {
                 SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
             }
+            else
+            {
+                EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
+                EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
+            }
+            if (IsMtpDeviceMultiText(TmpPat.Dst) == YES)
+            {
+                SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
+                EnableWindow(GetDlgItem(hDlg, PATSET_USE_TRASHCAN), FALSE);
+            }
             return(TRUE);
 
         case WM_NOTIFY:
@@ -1730,6 +1849,11 @@ static LRESULT CALLBACK FlagSettingProc(HWND hDlg, UINT message, WPARAM wParam, 
                         SendDlgItemMessage(hDlg, PATSET_USE_TRASHCAN, BM_SETCHECK, 0, 0);
                         EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), TRUE);
                         EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), TRUE);
+                    }
+                    else
+                    {
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER), FALSE);
+                        EnableWindow(GetDlgItem(hDlg, PATSET_DEL_MOVE_FOLDER_BR), FALSE);
                     }
                     break;
 
@@ -2125,5 +2249,31 @@ static void GetMultiTextFromList(HWND hDlg, int CtrlList, LPTSTR Buf, int BufSiz
         }
     }
     return;
+}
+
+
+/*----- マルチ文字列の中にMTPデバイスを指すURLがあるかチェック ---------------------
+*
+*   Parameter
+*       LPTSTR text: マルチ文字列
+*
+*   Return Value
+*       int ステータス (YES/NO) 
+*----------------------------------------------------------------------------*/
+static int IsMtpDeviceMultiText(LPTSTR text)
+{
+    LPTSTR url;
+    int status = NO;
+    int count = StrMultiCount(text);
+    for (int i = 0; i < count; i++)
+    {
+        url = GetSpecifiedStringFromMultiString(text, i);
+        status = IsMtpDevice(url);
+        if (status == YES)
+        {
+            break;
+        }
+    }
+    return status;
 }
 

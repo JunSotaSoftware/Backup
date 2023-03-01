@@ -4,7 +4,7 @@
 /                               ファイル転送
 /
 /============================================================================
-/ Copyright (C) 1997-2022 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -38,8 +38,14 @@
 #include <windowsx.h>
 #include <commctrl.h>
 #include <process.h>
+#include <portabledeviceapi.h>
+#include <portabledevice.h>
+#include <atlbase.h>
+#include <atlstr.h>
+#include <atlcoll.h>
 
 #include "common.h"
+#include "mtp_common.h"
 #include "resource.h"
 
 
@@ -59,22 +65,8 @@ typedef struct dirtree {
     struct dirtree *Next;
 } DIRTREE;
 
-
-typedef struct {
-    LPTSTR  IgnoreFiles;
-    LPTSTR  IgnoreDirs;
-    int     IgnSys;
-    int     IgnHid;
-    int     IgnBigSize;
-    int     IgnNoDel;
-    int     IgnAttr;
-    int     NewOnly;
-    int     Tole;
-    int     ForceCopy;
-    int     Wait;
-    int     AllowDecrypted;
-}PROC_OPTIONS;
-
+#define HIDWORD(x)  (((x)>>32) & 0xffffffff)
+#define LODWORD(x)  ((x) & 0xffffffff)
 
 
 
@@ -83,18 +75,18 @@ typedef struct {
 static void BackupThread(void *Dummy);
 static void SuppressSleepThread(void *Dummy);
 static int BackupProc(COPYPATLIST *Pat);
-static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *options);
-static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub, PROC_OPTIONS *options, int *DialogResult);
-static int DeleteSubDir(LPTSTR Name, int *DialogResult);
-static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options);
-static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options);
-static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr);
-static int GoMakeDir(LPTSTR Path);
-static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options);
-static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options);
+static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice);
+static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub, PROC_OPTIONS *options, int *DialogResult, IPortableDevice* pIPortableDevice);
+static int DeleteSubDir(LPTSTR Name, int* DialogResult, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice);
+static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice);
+static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static int GoMakeDir(LPTSTR Path, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice);
+static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice);
 static void CheckTimeTolerance(FILETIME *Src, FILETIME *Dst, int Tole);
-static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowDecrypted);
-static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult);
+static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static int GoDelete1(LPTSTR Fname, int ErrRep, int* DialogResult, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
 static BOOL CALLBACK DeleteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static BOOL CALLBACK OverWriteNotifyDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static void EraseSourceTree(HWND hWnd);
@@ -106,17 +98,26 @@ static int MoveNextItem(void);
 static int GetSrcType(void);
 static int GetSrcPath(LPTSTR Src, LPTSTR ScnName);
 static int GetDstPath(LPTSTR Dst, LPTSTR DstPath);
-static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type);
+static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type, PROC_OPTIONS* options);
 static void ReleaseDirList(DIRTREE **Base);
 static int CheckAbort(void);
-static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType);
-static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize);
+static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize, PROC_OPTIONS* options);
 static int DoCheckIgnSysHid(WIN32_FIND_DATA *FindBuf, int IgnSys, int IgnHid, int BigSize);
 static LPTSTR MakeLongPath(LPCTSTR path, int normalization);
 static LPTSTR MakeLongPathNFD(LPCTSTR path);
 static int CheckNormlization(LPCTSTR dest);
 static int FnameCompare(LPCTSTR src, LPCTSTR dst);
-static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo);
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, int ErrRep, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static BOOL ChangingCaseExistingFileName(LPCTSTR existingFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization, PROC_OPTIONS* options);
+static HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization);
+static BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization);
+static BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+static BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice);
+
 
 /*===== ローカルなワーク ======*/
 
@@ -130,7 +131,6 @@ static int NoMakeTopDir;
 static int MoveInsteadDelete;
 static LPTSTR MoveToFolder;
 
-int ErrorCount = 0;
 static int TotalErrorCount = 0;
 static int MkDirCount;
 static int RmFileCount;
@@ -147,10 +147,11 @@ int NormalizationType;
 
 /*===== グローバルなワーク ======*/
 
-extern int LogVerbose;
-extern int SleepSuppressAC;
-extern int SleepSuppressBattery;
-extern int SleepSuppressBatteryPercent;
+extern "C" int LogVerbose;
+extern "C" int SleepSuppressAC;
+extern "C" int SleepSuppressBattery;
+extern "C" int SleepSuppressBatteryPercent;
+extern "C" int ErrorCount;
 
 
 
@@ -266,6 +267,9 @@ void SetBackupRestart(void)
 
 static void BackupThread(void *Dummy)
 {
+    /* MTP対応 */
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
     while(WaitForSingleObject(hRunMutex, 200) == WAIT_TIMEOUT)
     {
         if(CopyPatList != NULL)
@@ -281,6 +285,10 @@ static void BackupThread(void *Dummy)
             CopyPatList = NULL;
         }
     }
+
+    /* MTP対応 */
+    CoUninitialize();
+
     _endthread();
 }
 
@@ -365,6 +373,8 @@ static int BackupProc(COPYPATLIST *Pat)
     UINT DestDriveType;
     PROC_OPTIONS    options;
 //  _TCHAR *DestPath;
+    CComPtr<IPortableDevice> pIPortableDevice;
+    LPTSTR deviceId;
 
     Sts = SUCCESS;
     while((Pat != NULL) && (Sts == SUCCESS))
@@ -446,41 +456,118 @@ static int BackupProc(COPYPATLIST *Pat)
             continue;
         }
 
-        /* バックアップ先の正規化のタイプをチェック */
-        // NormalizationType = CheckNormlization(Pat->Set.NextDst);
-        NormalizationType = NORMALIZATION_TYPE_NONE;
-        if (Pat->Set.DstDropbox)
+        /* バックアップ先がMTPデバイスかチェック */
+        pIPortableDevice = NULL;
+        options.MtpObjectTreeTop = NULL;
+        if (IsMtpDevice(Pat->Set.NextDst) == YES)
         {
-            NormalizationType = NORMALIZATION_TYPE_NFC;
+            SetTaskMsg(TASKMSG_NOR, MSGJPN_148);
+            MakeMtpProcessingWindow();
+
+            NormalizationType = NORMALIZATION_TYPE_NONE;
+            DestDriveType = DRIVE_UNKNOWN;
+
+            /* MTPデバイスのフォルダツリーを検索 */
+            MTP_MAKE_OBJECT_TREE_ERROR_INFO ErrorInfo;
+            Sts = MakeMtpObjectTree(Pat->Set.NextDst, ObjectTypeBoth, &options.MtpObjectTreeTop, &ErrorInfo, MtpTreeProcessingRoutine);
+            if (Sts == SUCCESS)
+            {
+                /* MTPデバイスをオープンしておく */
+                deviceId = options.MtpObjectTreeTop->Info.ObjectID;
+                Sts = OpenMtpDevice(deviceId, &pIPortableDevice);
+                if (Sts == SUCCESS)
+                {
+                    ReplaceAll(Pat->Set.NextDst, _tcslen(Pat->Set.NextDst), __T('/'), _T('\\'));
+                }
+                else
+                {
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_151, options.MtpObjectTreeTop->Info.ObjectName);
+                }
+            }
+            else if (Sts == FAIL)
+            {
+                ErrorCount++;
+                if (ErrorInfo.ErrorId == ErrorDeviceNotFound)
+                {
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_145, ErrorInfo.ObjectName);
+                    free(ErrorInfo.ObjectName);
+                }
+                else if (ErrorInfo.ErrorId == ErrorFolderNotFound)
+                {
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_146, ErrorInfo.ObjectName);
+                    free(ErrorInfo.ObjectName);
+                }
+                else if (ErrorInfo.ErrorId == ErrorCannotOpenDevice)
+                {
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_151, ErrorInfo.ObjectName);
+                    free(ErrorInfo.ObjectName);
+                }
+                else
+                {
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_147);
+                }
+            }
+            DestroyMtpProcessingWindow();
         }
 
-        /* バックアップ先の作成とチェック */
-        if((Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, Pat->Set.IgnAttr)) == SUCCESS)
+        /* MTPデバイスの時はバックアップ先チェックは上部のフォルダツリー検索で実行済み */
+        if (options.MtpObjectTreeTop == NULL)
         {
-            GetCurrentDirectory(MY_MAX_PATH+1, Tmp);
-            if(SetCurrentDirectory_My(Pat->Set.NextDst, YES) == TRUE)
+            if (Sts == SUCCESS)
             {
-                SetCurrentDirectory_My(Tmp, NO);
-                /* ボリュームラベルのチェック */
-                if(Pat->Set.ChkVolLabel)
+                /* バックアップ先の正規化のタイプをチェック */
+                // NormalizationType = CheckNormlization(Pat->Set.NextDst);
+                NormalizationType = NORMALIZATION_TYPE_NONE;
+                if (Pat->Set.DstDropbox)
                 {
-                    GetVolumeLabel(Pat->Set.NextDst, Tmp, MY_MAX_PATH+1);
-                    if(_tcscmp(Tmp, Pat->Set.VolLabel) != 0)
+                    NormalizationType = NORMALIZATION_TYPE_NFC;
+                }
+
+                /* バックアップ先の作成とチェック */
+                if ((Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, Pat->Set.IgnAttr, &options, pIPortableDevice)) == SUCCESS)
+                {
+                    /* カレントディレクトリをバックアップ先に設定してみることで、バックアップ先が存在するかチェック */
+                    /* この方法だとバックアップ先が C:\ のような場合もうまくいく */
+                    GetCurrentDirectory(MY_MAX_PATH + 1, Tmp);
+                    if (SetCurrentDirectory_My(Pat->Set.NextDst, YES) == TRUE)
+                    {
+                        /* カレントディレクトリは元に戻しておく */
+                        SetCurrentDirectory_My(Tmp, NO);
+                        /* ボリュームラベルのチェック */
+                        if (Pat->Set.ChkVolLabel)
+                        {
+                            GetVolumeLabel(Pat->Set.NextDst, Tmp, MY_MAX_PATH + 1);
+                            if (_tcscmp(Tmp, Pat->Set.VolLabel) != 0)
+                            {
+                                ErrorCount++;
+                                SetTaskMsg(TASKMSG_ERR, MSGJPN_61);
+                                Sts = FAIL;
+                            }
+                        }
+
+                        //              DestDriveType = GetDriveTypeFromPath(Pat->Set.NextDst);
+                        DestDriveType = DRIVE_UNKNOWN;
+                    }
+                    else
                     {
                         ErrorCount++;
-                        SetTaskMsg(TASKMSG_ERR, MSGJPN_61);
+                        SetTaskMsg(TASKMSG_ERR, MSGJPN_62, Pat->Set.NextDst);
                         Sts = FAIL;
                     }
                 }
-
-//              DestDriveType = GetDriveTypeFromPath(Pat->Set.NextDst);
-                DestDriveType = DRIVE_UNKNOWN;
             }
-            else
+        }
+        else
+        {
+            if (Sts == SUCCESS)
             {
-                ErrorCount++;
-                SetTaskMsg(TASKMSG_ERR, MSGJPN_62, Pat->Set.NextDst);
-                Sts = FAIL;
+                /* バックアップ先の作成とチェック */
+                Sts = MakeSubDir(Pat->Set.NextDst, _T(""), NO, YES, &options, pIPortableDevice);
+                if (Sts != SUCCESS)
+                {
+                    ErrorCount++;
+                    SetTaskMsg(TASKMSG_ERR, MSGJPN_62, Pat->Set.NextDst);
+                }
             }
         }
 
@@ -495,28 +582,52 @@ static int BackupProc(COPYPATLIST *Pat)
         {
             SelectPass(2);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_64);
-            Sts = RemoveDisappearedDir(Pat->Set.Src, Pat->Set.NextDst, &options);
+            Sts = RemoveDisappearedDir(Pat->Set.Src, Pat->Set.NextDst, &options, pIPortableDevice);
+#if 0
+            /* debug */
+            DoPrintf(_T("-----RMDIR--------------------\r\n"));
+            DispMtpObjectTree(options.MtpObjectTreeTop, 0);
+            DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if((Sts == SUCCESS) && (Pat->Set.DelFile == YES))
         {
             SelectPass(3);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_65);
-            Sts = RemoveDisappearedFile(Pat->Set.NextDst, &options);
+            Sts = RemoveDisappearedFile(Pat->Set.NextDst, &options, pIPortableDevice);
+#if 0
+            /* debug */
+            DoPrintf(_T("-----RMFILE-------------------\r\n"));
+            DispMtpObjectTree(options.MtpObjectTreeTop, 0);
+            DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
         {
             SelectPass(4);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_66);
-            Sts = MakeAllDirTree(Pat->Set.NextDst, &options);
+            Sts = MakeAllDirTree(Pat->Set.NextDst, &options, pIPortableDevice);
+#if 0
+            /* debug */
+            DoPrintf(_T("-----MKDIR--------------------\r\n"));
+            DispMtpObjectTree(options.MtpObjectTreeTop, 0);
+            DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
         {
             SelectPass(5);
             SetTaskMsg(TASKMSG_NOR, MSGJPN_67);
-            Sts = CopyUpdateFile(Pat->Set.NextDst, DestDriveType, &options);
+            Sts = CopyUpdateFile(Pat->Set.NextDst, DestDriveType, &options, pIPortableDevice);
+#if 0
+            /* debug */
+            DoPrintf(_T("-----Copy---------------------\r\n"));
+            DispMtpObjectTree(options.MtpObjectTreeTop, 0);
+            DoPrintf(_T("------------------------------\r\n"));
+#endif
         }
 
         if(Sts == SUCCESS)
@@ -549,6 +660,9 @@ static int BackupProc(COPYPATLIST *Pat)
         CloseLogfile();
         CloseErrorLogfile();
 
+        pIPortableDevice = NULL;
+        ReleaseMtpObjectTree(options.MtpObjectTreeTop);
+
         if(IgnoreErr == YES)
             Sts = SUCCESS;
 
@@ -565,14 +679,15 @@ static int BackupProc(COPYPATLIST *Pat)
 *   Parameter
 *       LPTSTR SrcPath : 設定上の転送元のパス名
 *       LPTSTR DstPath : 設定上の転送先のパス名
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *options)
+static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     _TCHAR DirName[MY_MAX_PATH+1];
@@ -585,7 +700,7 @@ static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *op
         _tcscpy(DirName, SrcPath);
         MakePathandFile(DirName, NULL, NO);
 
-        if((Sts = RemoveDisappearedDirOne(DirName, DstPath, _T(""), options, &DialogResult)) != SUCCESS)
+        if((Sts = RemoveDisappearedDirOne(DirName, DstPath, _T(""), options, &DialogResult, pIPortableDevice)) != SUCCESS)
             break;
 
         if(DialogResult == NO_ALL)
@@ -607,15 +722,16 @@ static int RemoveDisappearedDir(LPTSTR SrcPath, LPTSTR DstPath, PROC_OPTIONS *op
 *       LPTSTR SrcPath : 設定上の転送元のパス名
 *       LPTSTR DstPath : 設定上の転送先のパス名
 *       LPTSTR DstSub : サブディレクトリ
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
 *       int DialogResult : ダイアログで選ばれた選択肢
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub, PROC_OPTIONS *options, int *DialogResult)
+static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub, PROC_OPTIONS *options, int *DialogResult, IPortableDevice* pIPortableDevice)
 {
     _TCHAR Cur[MY_MAX_PATH2+1];
     _TCHAR Tmp[MY_MAX_PATH2+1];
@@ -624,7 +740,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
     DIRTREE *DstTreeBase;
     DIRTREE *Pos;
     int Sts;
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     DWORD Err;
     LPTSTR  lpBuffer;
 
@@ -646,7 +762,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
     _tcscat(Cur, _T("*"));
 
     DstTreeBase = NULL;
-    if(MakeDirTable(Cur, &DstTreeBase, 0) == SUCCESS)
+    if(MakeDirTable(Cur, &DstTreeBase, 0, options) == SUCCESS)
     {
         Pos = DstTreeBase;
         while(Pos != NULL)
@@ -663,19 +779,19 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
             _tcscat(Tmp, Pos->Fname);
 
             if((CheckFnameWithArray(Tmp, options->IgnoreDirs) == NO) &&
-               (CheckIgnSysHid(Tmp, options->IgnSys, options->IgnHid, -1) == NO))
+               (CheckIgnSysHid(Tmp, options->IgnSys, options->IgnHid, -1, options) == NO))
             {
                 /* 除外するフォルダではない */
-                if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
+                if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES, options)) != INVALID_HANDLE_VALUE)
                 {
-                    FindClose(fHnd);
+                    FindClose_My(fHnd);
                     if((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                     {
 #ifdef NO_OPERATION
                         DoPrintf(_T("    Delete %s\n"), Cur);
                         Sts = SUCCESS;
 #else
-                        Sts = DeleteSubDir(Cur, DialogResult);
+                        Sts = DeleteSubDir(Cur, DialogResult, options, pIPortableDevice);
 #endif
                     }
                     else
@@ -684,7 +800,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
                         SetYenTail(Tmp);
                         _tcscat(Tmp, Pos->Fname);
 
-                        if((Sts = RemoveDisappearedDirOne(SrcPath, DstPath, Tmp, options, DialogResult)) == FAIL)
+                        if((Sts = RemoveDisappearedDirOne(SrcPath, DstPath, Tmp, options, DialogResult, pIPortableDevice)) == FAIL)
                             break;
                     }
                 }
@@ -712,7 +828,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
                     DoPrintf(_T("    Delete %s\n"), Cur);
                     Sts = SUCCESS;
 #else
-                    Sts = DeleteSubDir(Cur, DialogResult);
+                    Sts = DeleteSubDir(Cur, DialogResult, options, pIPortableDevice);
 #endif
                 }
             }
@@ -723,7 +839,7 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
                 DoPrintf(_T("    Delete %s\n"), Cur);
                 Sts = SUCCESS;
 #else
-                Sts = DeleteSubDir(Cur, DialogResult);
+                Sts = DeleteSubDir(Cur, DialogResult, options, pIPortableDevice);
 #endif
             }
 
@@ -743,17 +859,19 @@ static int RemoveDisappearedDirOne(LPTSTR SrcPath, LPTSTR DstPath, LPTSTR DstSub
 *   Parameter
 *       LPTSTR Name : パス
 *       int DialogResult : ダイアログで選ばれた選択肢
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int DeleteSubDir(LPTSTR Name, int *DialogResult)
+static int DeleteSubDir(LPTSTR Name, int *DialogResult, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     _TCHAR Find[MY_MAX_PATH2+1];
     LPTSTR NamePos;
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     int Sts;
 
@@ -761,7 +879,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
 
     if(UseTrashCan)
     {
-        Sts = GoDelete1(Name, YES, DialogResult);
+        Sts = GoDelete1(Name, YES, DialogResult, options, pIPortableDevice);
     }
     else
     {
@@ -770,7 +888,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
         NamePos = _tcschr(Find, NUL);
 
         _tcscpy(NamePos, _T("*"));
-        if((fHnd = FindFirstFile_My(Find, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Find, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
         {
             do
             {
@@ -780,7 +898,7 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
                     {
                         /* ファイル */
                         _tcscpy(NamePos, FindBuf.cFileName);
-                        Sts = GoDelete1(Find, YES, DialogResult);
+                        Sts = GoDelete1(Find, YES, DialogResult, options, pIPortableDevice);
 
                         if(IgnoreErr == YES)
                             Sts = SUCCESS;
@@ -793,16 +911,16 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
                     {
                         /* サブディレクトリ */
                         _tcscpy(NamePos, FindBuf.cFileName);
-                        Sts = DeleteSubDir(Find, DialogResult);
+                        Sts = DeleteSubDir(Find, DialogResult, options, pIPortableDevice);
                     }
                 }
             }
-            while((Sts == SUCCESS) && (*DialogResult != NO_ALL) && (FindNextFile(fHnd, &FindBuf) == TRUE));
-            FindClose(fHnd);
+            while((Sts == SUCCESS) && (*DialogResult != NO_ALL) && (FindNextFile_My(fHnd, &FindBuf) == TRUE));
+            FindClose_My(fHnd);
         }
 
         if((Sts == SUCCESS) && (*DialogResult != NO_ALL))
-            Sts = GoDelete1(Name, YES, DialogResult);
+            Sts = GoDelete1(Name, YES, DialogResult, options, pIPortableDevice);
     }
 
     if(IgnoreErr == YES)
@@ -819,14 +937,15 @@ static int DeleteSubDir(LPTSTR Name, int *DialogResult)
 *
 *   Parameter
 *       LPTSTR DstPath : 設定上の転送先のパス名
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
+static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     _TCHAR Src[MY_MAX_PATH2+1];
@@ -836,7 +955,7 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
     LPTSTR DstFpos;
     DIRTREE *DstTreeBase;
     DIRTREE *Pos;
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     int DelFlg;
     int DialogResult;
@@ -859,7 +978,7 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
             DstFpos = _tcschr(Dst, NUL);
             _tcscpy(DstFpos, _T("*"));
 
-            if(MakeDirTable(Dst, &DstTreeBase, 1) == SUCCESS)
+            if(MakeDirTable(Dst, &DstTreeBase, 1, options) == SUCCESS)
             {
                 Pos = DstTreeBase;
                 while(Pos != NULL)
@@ -871,13 +990,13 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
 
                     DelFlg = YES;
                     if((CheckFnameWithArray(Src, options->IgnoreFiles) == NO) &&
-                       (CheckIgnSysHid(Src, options->IgnSys, options->IgnHid, options->IgnBigSize) == NO))
+                       (CheckIgnSysHid(Src, options->IgnSys, options->IgnHid, options->IgnBigSize, options) == NO))
                     {
                         if((_tcslen(ScnName) == 0) || (CheckFnameWithArray(Src, ScnName) == YES))
                         {
-                            if((fHnd = FindFirstFile_My(Src, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
+                            if((fHnd = FindFirstFile_My(Src, &FindBuf, YES, options)) != INVALID_HANDLE_VALUE)
                             {
-                                FindClose(fHnd);
+                                FindClose_My(fHnd);
                                 DelFlg = NO;
                             }
                             else if ((Err = GetLastError()) != ERROR_FILE_NOT_FOUND)
@@ -911,7 +1030,7 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
                         DoPrintf(_T("    Delete %s\n"), Dst);
                         Sts = SUCCESS;
 #else
-                        if((Sts = GoDelete1(Dst, YES, &DialogResult)) == FAIL)
+                        if((Sts = GoDelete1(Dst, YES, &DialogResult, options, pIPortableDevice)) == FAIL)
                             break;
 
                         if(CheckAbort() == FAIL)
@@ -946,14 +1065,15 @@ static int RemoveDisappearedFile(LPTSTR DstPath, PROC_OPTIONS *options)
 *
 *   Parameter
 *       LPTSTR DstPath : 設定上の転送先のパス名
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options)
+static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     _TCHAR Src[MY_MAX_PATH2+1];
@@ -988,7 +1108,7 @@ static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options)
                 DoPrintf(_T("    Make Dir %s (%s)\n"), Dst, Src);
                 Sts = SUCCESS;
 #else
-                if((Sts = MakeSubDir(Dst, Src, IgnoreErr, options->IgnAttr)) != SUCCESS)
+                if((Sts = MakeSubDir(Dst, Src, IgnoreErr, options->IgnAttr, options, pIPortableDevice)) != SUCCESS)
                     break;
 #endif
             }
@@ -1008,18 +1128,21 @@ static int MakeAllDirTree(LPTSTR DstPath, PROC_OPTIONS *options)
 *       LPTSTR Make : ディレクトリ名
 *       LPTSTR Org : コピー元のディレクトリ
 *       int IgnErr : エラーを無視するかどうか (YES/NO)
+*       int IgnAttr : 属性を無視するかどうか (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
+static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     int GoMake;
     int GoAttr;
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     _TCHAR Tmp[MY_MAX_PATH2+1];
     DWORD Attr;
@@ -1039,12 +1162,12 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
     else
     {
         GoMake = 1;
-        if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES)) != INVALID_HANDLE_VALUE)
+        if((fHnd = FindFirstFile_My(Tmp, &FindBuf, YES, options)) != INVALID_HANDLE_VALUE)
         {
-            FindClose(fHnd);
+            FindClose_My(fHnd);
             if((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
             {
-                if((Sts = GoDelete1(Tmp, NO, NULL)) == FAIL)
+                if((Sts = GoDelete1(Tmp, NO, NULL, options, pIPortableDevice)) == FAIL)
                 {
                     ErrorCount++;
                     SetTaskMsg(TASKMSG_ERR, MSGJPN_70, Tmp, MSGJPN_106);
@@ -1062,13 +1185,13 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
                 GoAttr = 0;
                 if(IgnAttr == 0)
                 {
-                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
+                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0) && (IsMtpDevice(Tmp) != YES))
                     {
-                        Attr = GetFileAttributes_My(Tmp, YES);
-                        Attr2 = GetFileAttributes_My(Org, NO);
+                        Attr = GetFileAttributes_My(Tmp, YES, options);
+                        Attr2 = GetFileAttributes_My(Org, NO, options);
 
-                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
-                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE);
+                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
                         if(Attr != Attr2)
                         {
                             GoAttr = 1;
@@ -1084,12 +1207,12 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
             {
                 MkDirCount++;
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_71, Tmp);
-                if(GoMakeDir(Tmp) == 0)
+                if(GoMakeDir(Tmp, options, pIPortableDevice) == 0)
                 {
-                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0))
+                    if((_tcslen(Org) > 2) && (_tcscmp(Org+1, _T(":\\")) != 0) && (IsMtpDevice(Tmp) != YES))
                     {
-                        Attr = GetFileAttributes_My(Org, NO);
-                        SetFileAttributes_My(Tmp, Attr, YES);
+                        Attr = GetFileAttributes_My(Org, NO, options);
+                        SetFileAttributes_My(Tmp, Attr, YES, options);
                     }
                 }
                 else
@@ -1112,15 +1235,19 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
             }
             else if(GoMake == 2)
             {
+                /* 大文字/小文字を合わせる */
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Tmp);
-                MoveFile_My(Tmp, Tmp, YES);  /* 大文字/小文字を合わせる */
+                if (ChangingCaseExistingFileName(Tmp, YES, options, pIPortableDevice) != TRUE)
+                {
+                    SetTaskMsg(TASKMSG_NOR, MSGJPN_149, GetFileName(Tmp), FindBuf.cFileName);
+                }
             }
 
             if(GoAttr == 1)
             {
                 SetTaskMsg(TASKMSG_NOR, MSGJPN_76, Tmp, Attr2, Attr);
-                Attr = GetFileAttributes_My(Org, NO);
-                SetFileAttributes_My(Tmp, Attr, YES);
+                Attr = GetFileAttributes_My(Org, NO, options);
+                SetFileAttributes_My(Tmp, Attr, YES, options);
             }
         }
     }
@@ -1136,6 +1263,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
 *
 *   Parameter
 *       LPTSTR Path : ディレクトリ名
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
@@ -1145,7 +1274,7 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr)
 *       複数階層のディレクトリを作成する
 *----------------------------------------------------------------------------*/
 
-static int GoMakeDir(LPTSTR Path)
+static int GoMakeDir(LPTSTR Path, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     LPTSTR Pos;
     _TCHAR Tmp[MY_MAX_PATH2+1];
@@ -1160,9 +1289,12 @@ static int GoMakeDir(LPTSTR Path)
             {
                 _tcsncpy(Tmp, Path, Pos - Path);
                 Tmp[Pos - Path] = NUL;
-                CreateDirectory_My(Tmp, NULL, YES);
+                CreateDirectory_My(Tmp, NULL, YES, options, pIPortableDevice);
             }
-            Sts = !CreateDirectory_My(Path, NULL, YES);
+            if (!CreateDirectory_My(Path, NULL, YES, options, pIPortableDevice))
+            {
+                Sts = 1;
+            }
         }
         else
         {
@@ -1179,14 +1311,15 @@ static int GoMakeDir(LPTSTR Path)
 *   Parameter
 *       LPTSTR DstPath : 設定上の転送先のパス名
 *       UINT DrvType : ドライブのタイプ
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
+static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     _TCHAR Src[MY_MAX_PATH2+1];
@@ -1224,7 +1357,7 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
             do
             {
                 _tcscpy(SrcFpos, ScnPos);
-                Sts = GoFileCopy(Src, SrcFpos, Dst, DstFpos, DrvType, options);
+                Sts = GoFileCopy(Src, SrcFpos, Dst, DstFpos, DrvType, options, pIPortableDevice);
 
                 ScnPos = _tcschr(ScnPos, NUL) + 1;
             }
@@ -1233,7 +1366,7 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
             /* フォルダのタイムスタンプをあわせる */
             *DstFpos = 0;
             *SrcFpos = 0;
-            SetFileTimeStamp(Src, Dst, DrvType);
+            SetFileTimeStamp(Src, Dst, DrvType, options, pIPortableDevice);
         }
         else if (Type == TREE_FILE)
         {
@@ -1251,7 +1384,7 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
             tmp_options.IgnSys = NO;
             tmp_options.IgnHid = NO;
 
-            Sts = GoFileCopy(Src, SrcFpos, Dst, DstFpos, DrvType, &tmp_options);
+            Sts = GoFileCopy(Src, SrcFpos, Dst, DstFpos, DrvType, &tmp_options, pIPortableDevice);
         }
     }
     while((Sts == SUCCESS) && (MoveNextItem() == SUCCESS));
@@ -1271,19 +1404,20 @@ static int CopyUpdateFile(LPTSTR DstPath, UINT DrvType, PROC_OPTIONS *options)
 *       LPTSTR Dst : コピー先のパス名
 *       LPTSTR DstFpos : コピー先のファイル名のセット位置
 *       UINT DrvType : ドライブのタイプ
-        PROC_OPTIONS options : 処理オプション
+*       PROC_OPTIONS options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options)
+static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UINT DrvType, PROC_OPTIONS *options, IPortableDevice* pIPortableDevice)
 {
     int Copy;
-    HANDLE fHndSrc;
+    FIND_FILE_HANDLE* fHndSrc;
     WIN32_FIND_DATA SrcFinfo;
-    HANDLE fHndDst;
+    FIND_FILE_HANDLE* fHndDst;
     WIN32_FIND_DATA DstFinfo;
 //  WORD SrcDate;
 //  WORD SrcTime;
@@ -1297,7 +1431,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
     OVERWRITENOTIFYDATA overWrite;
 
     Sts = SUCCESS;
-    if((fHndSrc = FindFirstFile_My(Src, &SrcFinfo, NO)) != INVALID_HANDLE_VALUE)
+    if((fHndSrc = FindFirstFile_My(Src, &SrcFinfo, NO, options)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -1317,9 +1451,9 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                 _tcscpy(DstFpos, SrcFinfo.cFileName);
 
                 if((options->ForceCopy == NO) &&
-                   ((fHndDst = FindFirstFile_My(Dst, &DstFinfo, YES)) != INVALID_HANDLE_VALUE))
+                   ((fHndDst = FindFirstFile_My(Dst, &DstFinfo, YES, options)) != INVALID_HANDLE_VALUE))
                 {
-                    FindClose(fHndDst);
+                    FindClose_My(fHndDst);
 
                     DstFinfo.dwFileAttributes &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
 
@@ -1357,18 +1491,23 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
 #ifdef NO_OPERATION
                             DoPrintf(MSGJPN_73, Dst);
 #else
+                            /* 大文字/小文字を合わせる */
                             SetTaskMsg(TASKMSG_NOR, MSGJPN_74, Dst);
-                            MoveFile_My(Dst, Dst, YES);  /* 大文字/小文字を合わせる */
+                            if (ChangingCaseExistingFileName(Dst, YES, options, pIPortableDevice) != TRUE)
+                            {
+                                SetTaskMsg(TASKMSG_NOR, MSGJPN_150);
+                                Copy = 2;
+                            }
 #endif
                         }
 
-                        if((options->IgnAttr == 0) && (SrcFinfo.dwFileAttributes != DstFinfo.dwFileAttributes))
+                        if((options->IgnAttr == 0) && (SrcFinfo.dwFileAttributes != DstFinfo.dwFileAttributes) && (IsMtpDevice(Dst) != YES))
                         {
 #ifdef NO_OPERATION
                             DoPrintf(MSGJPN_75, Dst);
 #else
                             SetTaskMsg(TASKMSG_NOR, MSGJPN_76, Dst, SrcFinfo.dwFileAttributes, DstFinfo.dwFileAttributes);
-                            SetFileAttributes_My(Dst, SrcFinfo.dwFileAttributes, YES);
+                            SetFileAttributes_My(Dst, SrcFinfo.dwFileAttributes, YES, options);
 #endif
                         }
                     }
@@ -1446,8 +1585,8 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                         SetTaskMsg(TASKMSG_NOR, MSGJPN_78, Src);
                     }
 
-                    GoDelete1(Dst, NO, NULL);
-                    if(CopyFile1(Src, Dst, options->Wait, DrvType, options->AllowDecrypted) != TRUE)
+                    GoDelete1(Dst, NO, NULL, options, pIPortableDevice);
+                    if(CopyFile1(Src, Dst, DrvType, options, pIPortableDevice) != TRUE)
                     {
                         ErrorCount++;
                         if((Err = GetLastError()) == ERROR_DISK_FULL)
@@ -1477,9 +1616,9 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                 }
             }
         }
-        while(FindNextFile(fHndSrc, &SrcFinfo) == TRUE);
+        while(FindNextFile_My(fHndSrc, &SrcFinfo) == TRUE);
 
-        FindClose(fHndSrc);
+        FindClose_My(fHndSrc);
     }
     return(Sts);
 }
@@ -1522,12 +1661,12 @@ static void CheckTimeTolerance(FILETIME *Src, FILETIME *Dst, int Tole)
 
 
 
-
 typedef struct {
     BOOL        Cancel;
     int         Wait;
 } COPYCALLBACKINFO;
 
+#if 0
 DWORD CALLBACK CopyProgressRoutine(
     LARGE_INTEGER TotalFileSize,
     LARGE_INTEGER TotalBytesTransferred,
@@ -1539,6 +1678,7 @@ DWORD CALLBACK CopyProgressRoutine(
     HANDLE hDestinationFile,
     LPVOID lpData
 );
+#endif
 
 
 /*----- ファイルをコピーする --------------------------------------------------
@@ -1546,301 +1686,370 @@ DWORD CALLBACK CopyProgressRoutine(
 *   Parameter
 *       LPTSTR Src : コピー元
 *       LPTSTR Dst : コピー先
-*       int Wait : 転送時のウエイト時間
 *       UINT DrvType : ドライブのタイプ
-*       int AllowDecrypted : EFSによる暗号化不可でも成功させる
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       BOOL ステータス
 *           TRUE/FALSE
 *----------------------------------------------------------------------------*/
 
-static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowDecrypted)
+static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
+    if ((options != NULL) && (IsMtpDevice(Dst) == YES))
+    {
+        /* MTPの場合 */
+        LPTSTR path;
+        LPTSTR name;
+        LPTSTR anchor;
+        MTP_OBJECT_TREE* found;
+        MTP_OBJECT_TREE* parent;
+        PWSTR deviceId;
+        PWSTR objectId;
+        BOOL sts = FALSE;
+        PWSTR newObjectId;
+        MTP_OBJECT_INFO newObject;
+        ULONGLONG fileSize;
+        FILETIME modifiedTime;
+
+        COPYCALLBACKINFO* info = (COPYCALLBACKINFO*)malloc(sizeof(COPYCALLBACKINFO));
+        info->Cancel = FALSE;
+        info->Wait = options->Wait;
+
+        path = GetFileName((LPTSTR)Dst);
+        name = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+        anchor = (LPTSTR)malloc(sizeof(_TCHAR) * ((path - Dst) + 1));
+        ZeroMemory(anchor, sizeof(_TCHAR) * ((path - Dst) + 1));
+        _tcscpy(name, path);
+        _tcsncpy(anchor, Dst, path - Dst);
+        RemoveYenTail(anchor);
+
+        /* ツリーを検索 */
+        found = FindObjectFromTree(anchor, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
+
+            /* ファイルコピー実行 */
+            if (TransferFileToMtpDevice(pIPortableDevice, objectId, name, Src, &newObjectId, &fileSize, &modifiedTime, CopyProgressRoutine, info) == SUCCESS)
+            {
+                /* コピーしたファイルをツリーに追加 */
+                newObject.ObjectID = newObjectId;
+                newObject.ObjectName = name;
+                newObject.ObjectModifiedTime = modifiedTime;
+                newObject.ObjectSize = fileSize;
+                newObject.ObjectType = ObjectTypeFile;
+                if (AddObjectToTree(&newObject, found) == SUCCESS)
+                {
+                    sts = TRUE;
+                }
+                free(newObjectId);
+            }
+            else
+            {
+                if (info->Cancel == TRUE)
+                {
+                    /* キャンセルによるコピー失敗は成功とする */
+                    sts = TRUE;
+                }
+            }
+        }
+        free(name);
+        free(anchor);
+        free(info);
+
+        return sts;
+    }
+    else
+    {
+        /* MTPでない場合 */
 #if FILECOPY_METHOD==READFILE_WRITEFILE
-    HANDLE hRead;
-    HANDLE hWrite;
-    SECURITY_ATTRIBUTES SecRead;
-    SECURITY_ATTRIBUTES SecWrite;
-    static _TCHAR Buf[COPY_SIZE];
-    DWORD nRead;
-    DWORD nWrite;
-    DWORD Attr;
-    BOOL Sts;
-    FILETIME CreTime;
-    FILETIME AccTime;
-    FILETIME ModTime;
-//  FILETIME CreTimeUTC;
-//  FILETIME AccTimeUTC;
-//  FILETIME ModTimeUTC;
-    DWORD SizeLow;
-    LONGLONG Size;
-    LONGLONG Copied;
-//  SYSTEMTIME sTime;
+        HANDLE hRead;
+        HANDLE hWrite;
+        SECURITY_ATTRIBUTES SecRead;
+        SECURITY_ATTRIBUTES SecWrite;
+        static _TCHAR Buf[COPY_SIZE];
+        DWORD nRead;
+        DWORD nWrite;
+        DWORD Attr;
+        BOOL Sts;
+        FILETIME CreTime;
+        FILETIME AccTime;
+        FILETIME ModTime;
+        //  FILETIME CreTimeUTC;
+        //  FILETIME AccTimeUTC;
+        //  FILETIME ModTimeUTC;
+        DWORD SizeLow;
+        LONGLONG Size;
+        LONGLONG Copied;
+        //  SYSTEMTIME sTime;
 
-    Sts = FALSE;
+        Sts = FALSE;
 
-    SetFileProgress(0, 0);
+        SetFileProgress(0, 0);
 
-    SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
-    SecRead.lpSecurityDescriptor = NULL;
-    SecRead.bInheritHandle = FALSE;
-    if((hRead = CreateFile_My(Src, GENERIC_READ,
-        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
-    {
-        SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
-        SecWrite.lpSecurityDescriptor = NULL;
-        SecWrite.bInheritHandle = FALSE;
-        if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
-        {
-            SizeLow = GetFileSize(hRead, &(DWORD)Size);
-            Size <<= 32;
-            Size |= SizeLow;
-            Copied = 0;
-            SetFileProgress(Size, Copied);
-
-            Sts = TRUE;
-            while(ReadFile(hRead, Buf, COPY_SIZE, &nRead, NULL) == TRUE)
-            {
-                if(nRead == 0)
-                    break;
-                if(CheckAbort() == FAIL)
-                    break;
-
-                if(WriteFile(hWrite, Buf, nRead, &nWrite, NULL) == FALSE)
-                {
-                    Sts = FALSE;
-                    break;
-                }
-                Copied += nRead;
-                SetFileProgress(Size, Copied);
-
-                if(Wait != 0)
-                    Sleep(Wait * WAIT_TIMER);
-            }
-
-            if(Wait != 0)
-                Sleep(Wait * WAIT_TIMER);
-
-            /* ファイルのタイムスタンプを合わせる */
-            if(Sts == TRUE)
-            {
-                if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
-                {
-//                  if(DrvType == DRIVE_CDROM)
-//                  {
-//                      LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
-//                      LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
-//                      LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
-//                      SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
-//                  }
-//                  else
-                        SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
-                }
-            }
-
-            CloseHandle(hWrite);
-        }
-        CloseHandle(hRead);
-    }
-
-    /* ファイルの属性を合わせる */
-    if(Sts == TRUE)
-    {
-        if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
-            SetFileAttributes_My(Dst, Attr, YES);
-    }
-//  SetFileProgress(0, 0);
-
-    return(Sts);
-#endif
-#if FILECOPY_METHOD==BACKUPREAD_BACKUPWRITE
-    HANDLE hRead;
-    HANDLE hWrite;
-    SECURITY_ATTRIBUTES SecRead;
-    SECURITY_ATTRIBUTES SecWrite;
-    static BYTE Buf[COPY_SIZE];
-    DWORD nRead;
-    DWORD nWrite;
-    DWORD Attr;
-    BOOL Sts;
-    FILETIME CreTime;
-    FILETIME AccTime;
-    FILETIME ModTime;
-//  FILETIME CreTimeUTC;
-//  FILETIME AccTimeUTC;
-//  FILETIME ModTimeUTC;
-    DWORD SizeLow;
-    LONGLONG Size;
-    LONGLONG Copied;
-//  SYSTEMTIME sTime;
-    LPVOID readContext;
-    LPVOID writeContext;
-
-    Sts = FALSE;
-
-    SetFileProgress(0, 0);
-
-    SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
-    SecRead.lpSecurityDescriptor = NULL;
-    SecRead.bInheritHandle = FALSE;
-    if((hRead = CreateFile_My(Src, GENERIC_READ,
-        FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
-    {
-        SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
-        SecWrite.lpSecurityDescriptor = NULL;
-        SecWrite.bInheritHandle = FALSE;
-        if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
-        {
-            SizeLow = GetFileSize(hRead, &(DWORD)Size);
-            Size <<= 32;
-            Size |= SizeLow;
-            Copied = 0;
-            SetFileProgress(Size, Copied);
-
-            Sts = TRUE;
-            readContext = NULL;
-            writeContext = NULL;
-            while(Sts)
-            {
-                if(!BackupRead(hRead, Buf, COPY_SIZE, &nRead, FALSE, FALSE, &readContext))
-                {
-                    Sts = FALSE;
-                    break;
-                }
-                if(nRead == 0)
-                    break;
-                if(CheckAbort() == FAIL)
-                    break;
-
-                if(!BackupWrite(hWrite, Buf, nRead, &nWrite, FALSE, FALSE, &writeContext))
-                {
-                    Sts = FALSE;
-                    break;
-                }
-                Copied += nRead;
-                SetFileProgress(Size, Copied);
-
-                if(Wait != 0)
-                    Sleep(Wait * WAIT_TIMER);
-            }
-
-            /* free context memory */
-            BackupRead(hRead, Buf, COPY_SIZE, &nRead, TRUE, FALSE, &readContext);
-            BackupWrite(hWrite, Buf, nRead, &nWrite, TRUE, FALSE, &writeContext);
-
-            if(Wait != 0)
-                Sleep(Wait * WAIT_TIMER);
-
-            /* ファイルのタイムスタンプを合わせる */
-            if(Sts == TRUE)
-            {
-                if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
-                {
-//                  if(DrvType == DRIVE_CDROM)
-//                  {
-//                      LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
-//                      LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
-//                      LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
-//                      SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
-//                  }
-//                  else
-                        SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
-                }
-            }
-
-            CloseHandle(hWrite);
-        }
-        CloseHandle(hRead);
-    }
-
-    /* ファイルの属性を合わせる */
-    if(Sts == TRUE)
-    {
-        if((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
-            SetFileAttributes_My(Dst, Attr, YES);
-    }
-//  SetFileProgress(0, 0);
-
-    return(Sts);
-#endif
-#if FILECOPY_METHOD==COPYFILEEX
-    HANDLE hRead;
-    HANDLE hWrite;
-    SECURITY_ATTRIBUTES SecRead;
-    SECURITY_ATTRIBUTES SecWrite;
-    FILETIME CreTime;
-    FILETIME AccTime;
-    FILETIME ModTime;
-    DWORD CopyFlags;
-
-    BOOL sts = TRUE;
-    LPTSTR lSrc = MakeLongPath(Src, NO);
-    LPTSTR lDst = MakeLongPath(Dst, YES);
-    COPYCALLBACKINFO *info = malloc(sizeof(COPYCALLBACKINFO));
-    info->Cancel = FALSE;
-    info->Wait = Wait;
-
-    CopyFlags = 0;
-    if (AllowDecrypted)
-    {
-        CopyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION;
-    }
-
-    if(CopyFileEx(lSrc, lDst, CopyProgressRoutine, info, &info->Cancel, CopyFlags) == 0)
-    {
-        if(info->Cancel == FALSE)
-        {
-            sts = FALSE;
-        }
-    }
-
-//  SetFileProgress(0, 0);
-
-    if (sts == TRUE)
-    {
         SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
         SecRead.lpSecurityDescriptor = NULL;
         SecRead.bInheritHandle = FALSE;
-        if((hRead = CreateFile_My(Src, GENERIC_READ,
-            FILE_SHARE_READ|FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
+        if ((hRead = CreateFile_My(Src, GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
         {
             SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
             SecWrite.lpSecurityDescriptor = NULL;
             SecWrite.bInheritHandle = FALSE;
-            if((hWrite = CreateFile_My(Dst, GENERIC_READ|GENERIC_WRITE,
-                FILE_SHARE_READ|FILE_SHARE_WRITE, &SecWrite, OPEN_EXISTING, 0, NULL, YES)) != INVALID_HANDLE_VALUE)
+            if ((hWrite = CreateFile_My(Dst, GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_READ | FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
             {
-                if(GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
+                SizeLow = GetFileSize(hRead, &(DWORD)Size);
+                Size <<= 32;
+                Size |= SizeLow;
+                Copied = 0;
+                SetFileProgress(Size, Copied);
+
+                Sts = TRUE;
+                while (ReadFile(hRead, Buf, COPY_SIZE, &nRead, NULL) == TRUE)
                 {
-//                  if(DrvType == DRIVE_CDROM)
-//                  {
-//                      LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
-//                      LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
-//                      LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
-//                      SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
-//                  }
-//                  else
-                        SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
+                    if (nRead == 0)
+                        break;
+                    if (CheckAbort() == FAIL)
+                        break;
+
+                    if (WriteFile(hWrite, Buf, nRead, &nWrite, NULL) == FALSE)
+                    {
+                        Sts = FALSE;
+                        break;
+                    }
+                    Copied += nRead;
+                    SetFileProgress(Size, Copied);
+
+                    if (options->Wait != 0)
+                        Sleep(options->Wait * WAIT_TIMER);
                 }
+
+                if (options->Wait != 0)
+                    Sleep(options->Wait * WAIT_TIMER);
+
+                /* ファイルのタイムスタンプを合わせる */
+                if (Sts == TRUE)
+                {
+                    if (GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
+                    {
+//                      if(DrvType == DRIVE_CDROM)
+//                      {
+//                          LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
+//                          LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
+//                          LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
+//                          SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
+//                      }
+//                      else
+                            SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
+                    }
+                }
+
+                CloseHandle(hWrite);
             }
-            CloseHandle(hWrite);
+            CloseHandle(hRead);
         }
-        CloseHandle(hRead);
-    }
 
-    free(info);
-    free(lDst);
-    free(lSrc);
+        /* ファイルの属性を合わせる */
+        if (Sts == TRUE)
+        {
+            if ((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
+                SetFileAttributes_My(Dst, Attr, YES);
+        }
+        //  SetFileProgress(0, 0);
 
-    return sts;
+        return(Sts);
 #endif
+#if FILECOPY_METHOD==BACKUPREAD_BACKUPWRITE
+        HANDLE hRead;
+        HANDLE hWrite;
+        SECURITY_ATTRIBUTES SecRead;
+        SECURITY_ATTRIBUTES SecWrite;
+        static BYTE Buf[COPY_SIZE];
+        DWORD nRead;
+        DWORD nWrite;
+        DWORD Attr;
+        BOOL Sts;
+        FILETIME CreTime;
+        FILETIME AccTime;
+        FILETIME ModTime;
+        //  FILETIME CreTimeUTC;
+        //  FILETIME AccTimeUTC;
+        //  FILETIME ModTimeUTC;
+        DWORD SizeLow;
+        LONGLONG Size;
+        LONGLONG Copied;
+        //  SYSTEMTIME sTime;
+        LPVOID readContext;
+        LPVOID writeContext;
+
+        Sts = FALSE;
+
+        SetFileProgress(0, 0);
+
+        SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
+        SecRead.lpSecurityDescriptor = NULL;
+        SecRead.bInheritHandle = FALSE;
+        if ((hRead = CreateFile_My(Src, GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
+        {
+            SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
+            SecWrite.lpSecurityDescriptor = NULL;
+            SecWrite.bInheritHandle = FALSE;
+            if ((hWrite = CreateFile_My(Dst, GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_READ | FILE_SHARE_WRITE, &SecWrite, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL, YES)) != INVALID_HANDLE_VALUE)
+            {
+                SizeLow = GetFileSize(hRead, &(DWORD)Size);
+                Size <<= 32;
+                Size |= SizeLow;
+                Copied = 0;
+                SetFileProgress(Size, Copied);
+
+                Sts = TRUE;
+                readContext = NULL;
+                writeContext = NULL;
+                while (Sts)
+                {
+                    if (!BackupRead(hRead, Buf, COPY_SIZE, &nRead, FALSE, FALSE, &readContext))
+                    {
+                        Sts = FALSE;
+                        break;
+                    }
+                    if (nRead == 0)
+                        break;
+                    if (CheckAbort() == FAIL)
+                        break;
+
+                    if (!BackupWrite(hWrite, Buf, nRead, &nWrite, FALSE, FALSE, &writeContext))
+                    {
+                        Sts = FALSE;
+                        break;
+                    }
+                    Copied += nRead;
+                    SetFileProgress(Size, Copied);
+
+                    if (options->Wait != 0)
+                        Sleep(options->Wait * WAIT_TIMER);
+                }
+
+                /* free context memory */
+                BackupRead(hRead, Buf, COPY_SIZE, &nRead, TRUE, FALSE, &readContext);
+                BackupWrite(hWrite, Buf, nRead, &nWrite, TRUE, FALSE, &writeContext);
+
+                if (options->Wait != 0)
+                    Sleep(options->Wait * WAIT_TIMER);
+
+                /* ファイルのタイムスタンプを合わせる */
+                if (Sts == TRUE)
+                {
+                    if (GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
+                    {
+//                      if(DrvType == DRIVE_CDROM)
+//                      {
+//                          LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
+//                          LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
+//                          LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
+//                          SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
+//                      }
+//                      else
+                            SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
+                    }
+                }
+
+                CloseHandle(hWrite);
+            }
+            CloseHandle(hRead);
+        }
+
+        /* ファイルの属性を合わせる */
+        if (Sts == TRUE)
+        {
+            if ((Attr = GetFileAttributes_My(Src, NO)) != 0xFFFFFFFF)
+                SetFileAttributes_My(Dst, Attr, YES);
+        }
+        //  SetFileProgress(0, 0);
+
+        return(Sts);
+#endif
+#if FILECOPY_METHOD==COPYFILEEX
+        HANDLE hRead;
+        HANDLE hWrite;
+        SECURITY_ATTRIBUTES SecRead;
+        SECURITY_ATTRIBUTES SecWrite;
+        FILETIME CreTime;
+        FILETIME AccTime;
+        FILETIME ModTime;
+        DWORD CopyFlags;
+
+        BOOL sts = TRUE;
+        LPTSTR lSrc = MakeLongPath(Src, NO);
+        LPTSTR lDst = MakeLongPath(Dst, YES);
+        COPYCALLBACKINFO* info = (COPYCALLBACKINFO*)malloc(sizeof(COPYCALLBACKINFO));
+        info->Cancel = FALSE;
+        info->Wait = options->Wait;
+
+        CopyFlags = 0;
+        if (options->AllowDecrypted)
+        {
+            CopyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION;
+        }
+
+        if (CopyFileEx(lSrc, lDst, CopyProgressRoutine, info, &info->Cancel, CopyFlags) == 0)
+        {
+            if (info->Cancel == FALSE)
+            {
+                sts = FALSE;
+            }
+        }
+
+        //  SetFileProgress(0, 0);
+
+        if (sts == TRUE)
+        {
+            SecRead.nLength = sizeof(SECURITY_ATTRIBUTES);
+            SecRead.lpSecurityDescriptor = NULL;
+            SecRead.bInheritHandle = FALSE;
+            if ((hRead = CreateFile_My(Src, GENERIC_READ,
+                FILE_SHARE_READ | FILE_SHARE_WRITE, &SecRead, OPEN_EXISTING, 0, NULL, NO)) != INVALID_HANDLE_VALUE)
+            {
+                SecWrite.nLength = sizeof(SECURITY_ATTRIBUTES);
+                SecWrite.lpSecurityDescriptor = NULL;
+                SecWrite.bInheritHandle = FALSE;
+                if ((hWrite = CreateFile_My(Dst, GENERIC_READ | GENERIC_WRITE,
+                    FILE_SHARE_READ | FILE_SHARE_WRITE, &SecWrite, OPEN_EXISTING, 0, NULL, YES)) != INVALID_HANDLE_VALUE)
+                {
+                    if (GetFileTime(hRead, &CreTime, &AccTime, &ModTime) != 0)
+                    {
+//                      if(DrvType == DRIVE_CDROM)
+//                      {
+//                          LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
+//                          LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
+//                          LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
+//                          SetFileTime(hWrite, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
+//                      }
+//                      else
+                            SetFileTime(hWrite, &CreTime, &AccTime, &ModTime);
+                    }
+                }
+                CloseHandle(hWrite);
+            }
+            CloseHandle(hRead);
+        }
+
+        free(info);
+        free(lDst);
+        free(lSrc);
+
+        return sts;
+#endif
+    }
 }
 
 
-#if FILECOPY_METHOD==COPYFILEEX
 /*----- CopyFileEx関数のコールバック ------------------------------------------
 *
 *   Parameter
@@ -1848,6 +2057,9 @@ static BOOL CopyFile1(LPTSTR Src, LPTSTR Dst, int Wait, UINT DrvType, int AllowD
 *
 *   Return Value
 *       CopyFileEx関数を参照
+*
+*   Note
+*       この関数はMTPデバイスへのファイルコピーでもコールバックされる
 *----------------------------------------------------------------------------*/
 DWORD CALLBACK CopyProgressRoutine(
     LARGE_INTEGER TotalFileSize,
@@ -1862,25 +2074,24 @@ DWORD CALLBACK CopyProgressRoutine(
 )
 {
     DWORD ret = PROGRESS_CONTINUE;
-    COPYCALLBACKINFO *info = (COPYCALLBACKINFO*)lpData;
+    COPYCALLBACKINFO* info = (COPYCALLBACKINFO*)lpData;
 
     SetFileProgress(TotalFileSize.QuadPart, TotalBytesTransferred.QuadPart);
 
-    if(CheckAbort() == FAIL)
+    if (CheckAbort() == FAIL)
     {
         info->Cancel = TRUE;
         ret = PROGRESS_CANCEL;
     }
     else
     {
-        if(info->Wait != 0)
+        if (info->Wait != 0)
         {
             Sleep(info->Wait * WAIT_TIMER);
         }
     }
     return ret;
 }
-#endif
 
 
 /*----- １つのファイル／ディレクトリの削除 ------------------------------------
@@ -1889,13 +2100,15 @@ DWORD CALLBACK CopyProgressRoutine(
 *       LPTSTR Fname : ファイル名
 *       int ErrRep : エラー報告するかどうか (YES/NO)
 *       int DialogResult : ダイアログで選ばれた選択肢
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
+static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     int Sts;
     DWORD Attr;
@@ -1931,25 +2144,30 @@ static int GoDelete1(LPTSTR Fname, int ErrRep, int *DialogResult)
         }
         else
         {
-            Attr = GetFileAttributes_My(Fname, YES);
-            if(Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
-                SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES);
+            Attr = GetFileAttributes_My(Fname, YES, options);
+            if (IsMtpDevice(Fname) != YES)
+            {
+                if (Attr & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM))
+                {
+                    SetFileAttributes_My(Fname, FILE_ATTRIBUTE_NORMAL, YES, options);
+                }
+            }
 
             if(Attr & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if(RemoveDirectory_My(Fname, YES) == FALSE)
+                if(RemoveDirectory_My(Fname, YES, options, pIPortableDevice) == FALSE)
                     Sts = FAIL;
             }
             else
             {
                 if(MoveInsteadDelete)
                 {
-                    if(MoveFileToDeletionFolder(Fname, MoveToFolder) != 0)
+                    if(MoveFileToDeletionFolder(Fname, MoveToFolder, ErrRep, options, pIPortableDevice) != 0)
                         Sts = FAIL;
                 }
                 else
                 {
-                    if(DeleteFile_My(Fname, YES) == FALSE)
+                    if(DeleteFile_My(Fname, YES, options, pIPortableDevice) == FALSE)
                         Sts = FAIL;
                 }
             }
@@ -2224,7 +2442,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     _TCHAR Dname[MY_MAX_PATH2+1];
     _TCHAR Fname[MY_MAX_PATH2+1];
     _TCHAR Tmp[MY_MAX_PATH2+1];
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     DWORD Type;
     LPTSTR Pos;
@@ -2253,7 +2471,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
                 // フォルダがあるかチェック (D:\src\*.txt のような場合に D:\src があるか）
                 Type = 0;
                 RemoveYenTail(Dname2);
-                if (GetFileAttributes_My(Dname2, NO) == 0xFFFFFFFF)
+                if (GetFileAttributes_My(Dname2, NO, options) == 0xFFFFFFFF)
                 {
                     Type = 0xFFFFFFFF;
                     ErrorCount++;
@@ -2274,12 +2492,12 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
                 }
             }
         }
-        else if((Type = GetFileAttributes_My(Dname, NO)) != 0xFFFFFFFF)
+        else if((Type = GetFileAttributes_My(Dname, NO, options)) != 0xFFFFFFFF)
         {
             /* 大文字／小文字を合わせるための処理 */
-            if((fHnd = FindFirstFile_My(Dname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+            if((fHnd = FindFirstFile_My(Dname, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
             {
-                FindClose(fHnd);
+                FindClose_My(fHnd);
                 _tcscpy(GetFileName(Dname), FindBuf.cFileName);
             }
         }
@@ -2294,7 +2512,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
     {
 //        if((GetDriveType(SrcRoot) == DRIVE_NO_ROOT_DIR) ||        //20150317 バックアップ元に D:\;*.mp3 などとした時の動作がおかしい
         if((GetDriveType(Dname) == DRIVE_NO_ROOT_DIR) ||
-           ((Type = GetFileAttributes_My(Dname, NO)) == 0xFFFFFFFF))
+           ((Type = GetFileAttributes_My(Dname, NO, options)) == 0xFFFFFFFF))
         {
             ErrorCount++;
             SetTaskMsg(TASKMSG_ERR, MSGJPN_83, Dname);
@@ -2357,7 +2575,7 @@ static int MakeSourceTreeOne(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Pa
 static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, HWND hWnd)
 {
     _TCHAR Src[MY_MAX_PATH2+1];
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     TV_INSERTSTRUCT TvIns;
     HTREEITEM hItem;
@@ -2370,7 +2588,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
     _tcscpy(Src, SrcRoot);
     SetYenTail(Src);
     _tcscat(Src, _T("*"));
-    if((fHnd = FindFirstFile_My(Src, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(Src, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -2419,7 +2637,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
                 }
             }
 
-            Next = FindNextFile(fHnd, &FindBuf);
+            Next = FindNextFile_My(fHnd, &FindBuf);
             if (Next != TRUE)
             {
                 Err = GetLastError();
@@ -2432,7 +2650,7 @@ static int MakeSubTree(LPTSTR SrcRoot, PROC_OPTIONS *options, HTREEITEM Parent, 
         }
         while(Next == TRUE);
 
-        FindClose(fHnd);
+        FindClose_My(fHnd);
     }
     else
     {
@@ -2695,21 +2913,22 @@ static int GetDstPath(LPTSTR Dst, LPTSTR DstPath)
 }
 
 
-/*----- カレントディレクトリのディレクトリリストを作成する --------------------
+/*----- ディレクトリリストを作成する（バックアップ先が対象） -------------------------
 *
 *   Parameter
 *       LPTSTR ScnPath : 検索パス名
 *       DIRTREE **Base : ディレクトリリストのベースポインタ
 *       int Type : リストのタイプ (0=フォルダ, 1=ファイル)
+*       PROC_OPTIONS *options : 処理オプション
 *
 *   Return Value
 *       int ステータス
 *           SUCCESS/FAIL
 *----------------------------------------------------------------------------*/
 
-static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
+static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type, PROC_OPTIONS* options)
 {
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     DIRTREE *Pos;
     DIRTREE *Prev;
@@ -2717,7 +2936,7 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
 
     Sts = SUCCESS;
     *Base = NULL;
-    if((fHnd = FindFirstFile_My(ScnPath, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(ScnPath, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -2728,7 +2947,7 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
                ((Type == 1) &&
                 ((FindBuf.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)))
             {
-                if((Pos = malloc(sizeof(DIRTREE))) != NULL)
+                if((Pos = (DIRTREE*)malloc(sizeof(DIRTREE))) != NULL)
                 {
                     if(*Base == NULL)
                         *Base = Pos;
@@ -2745,9 +2964,9 @@ static int MakeDirTable(LPTSTR ScnPath, DIRTREE **Base, int Type)
                 }
             }
         }
-        while(FindNextFile(fHnd, &FindBuf) == TRUE);
+        while(FindNextFile_My(fHnd, &FindBuf) == TRUE);
 
-        FindClose(fHnd);
+        FindClose_My(fHnd);
     }
 
     if(Sts == FAIL)
@@ -2864,12 +3083,14 @@ void MakePathandFile(LPTSTR Path, LPTSTR Fname, int Multi)
 *       LPTSTR Src : バックアップ元
 *       LPTSTR Dst : バックアップ先
 *       UINT DrvType : ドライブのタイプ
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       なし
 *----------------------------------------------------------------------------*/
 
-static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
+static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     HANDLE hFile;
     SECURITY_ATTRIBUTES Sec;
@@ -2881,6 +3102,10 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 //  FILETIME AccTimeUTC;
 //  FILETIME ModTimeUTC;
     DWORD Attr;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    PWSTR deviceId;
+    PWSTR objectId;
 
     if((_tcslen(Src) > 2) && (_tcscmp(Src+1, _T(":\\")) != 0))
     {
@@ -2893,27 +3118,49 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
             CloseHandle(hFile);
             if(Sts != 0)
             {
-                // GENERIC_WRITEを指定するためにReadOnlyを解除
-                if((Attr = GetFileAttributes_My(Dst, YES)) != 0xFFFFFFFF)
-                    SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY, YES);
-
-                if((hFile = CreateFile_My(Dst, GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL, YES)) != INVALID_HANDLE_VALUE)
+                if ((options != NULL) && (IsMtpDevice(Dst) == YES))
                 {
-//                  if(DrvType == DRIVE_CDROM)
-//                  {
-//                      LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
-//                      LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
-//                      LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
-//                      SetFileTime(hFile, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
-//                  }
-//                  else
-                        SetFileTime(hFile, &CreTime, &AccTime, &ModTime);
-                    CloseHandle(hFile);
+                    /* MTPの場合 */
+                    /* ツリーを検索 */
+                    found = FindObjectFromTree(Dst, options->MtpObjectTreeTop, &parent);
+                    if (found != NULL)
+                    {
+                        /* 最終的に探したいものが見つかった */
+                        deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+                        objectId = found->Info.ObjectID;
+                        /* タイムスタンプを変更 */
+                        ChangeObjectTimeStampOnMtpDevice(pIPortableDevice, objectId, &ModTime);
+                    }
+                    else
+                    {
+                        SetLastError(ERROR_FILE_NOT_FOUND);
+                    }
                 }
+                else
+                {
+                    /* MTPではない場合 */
+                    // GENERIC_WRITEを指定するためにReadOnlyを解除
+                    if ((Attr = GetFileAttributes_My(Dst, YES, options)) != 0xFFFFFFFF)
+                        SetFileAttributes_My(Dst, Attr & ~FILE_ATTRIBUTE_READONLY, YES, options);
 
-                // アトリビュートを元に戻しておく
-                if(Attr != 0xFFFFFFFF)
-                    SetFileAttributes_My(Dst, Attr, YES);
+                    if ((hFile = CreateFile_My(Dst, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &Sec, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL, YES)) != INVALID_HANDLE_VALUE)
+                    {
+//                      if(DrvType == DRIVE_CDROM)
+//                      {
+//                          LocalFileTimeToFileTime(&CreTime, &CreTimeUTC);
+//                          LocalFileTimeToFileTime(&AccTime, &AccTimeUTC);
+//                          LocalFileTimeToFileTime(&ModTime, &ModTimeUTC);
+//                          SetFileTime(hFile, &CreTimeUTC, &AccTimeUTC, &ModTimeUTC);
+//                      }
+//                      else
+                            SetFileTime(hFile, &CreTime, &AccTime, &ModTime);
+                        CloseHandle(hFile);
+                    }
+
+                    // アトリビュートを元に戻しておく
+                    if (Attr != 0xFFFFFFFF)
+                        SetFileAttributes_My(Dst, Attr, YES, options);
+                }
             }
         }
     }
@@ -2929,21 +3176,22 @@ static void SetFileTimeStamp(LPTSTR Src, LPTSTR Dst, UINT DrvType)
 *       int IgnSys : システムファイルを除外フラグ
 *       int IgnHid : 隠しファイルを除外フラグ
 *       int BigSize : このサイズ(MB)以上のファイルを除外(-1=除外しない)
+*       PROC_OPTIONS* options : 処理オプション
 *
 *   Return Value
 *       ステータス YES=除外する
 *----------------------------------------------------------------------------*/
 
-static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize)
+static int CheckIgnSysHid(LPTSTR Fname, int IgnSys, int IgnHid, int BigSize, PROC_OPTIONS* options)
 {
-    HANDLE              fHnd;
+    FIND_FILE_HANDLE*   fHnd;
     WIN32_FIND_DATA     FindBuf;
     int                 Sts;
 
     Sts = NO;
-    if((fHnd = FindFirstFile_My(Fname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+    if((fHnd = FindFirstFile_My(Fname, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
     {
-        FindClose(fHnd);
+        FindClose_My(fHnd);
         Sts = DoCheckIgnSysHid(&FindBuf, IgnSys, IgnHid, BigSize);
     }
     return(Sts);
@@ -3022,7 +3270,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
 
     if(_tcsncmp(path, _T("\\\\"), 2) != 0)
     {
-        newPath = malloc(sizeof(_TCHAR) * (length + 4));
+        newPath = (LPTSTR)malloc(sizeof(_TCHAR) * (length + 4));
         _tcscpy(newPath, _T("\\\\?\\"));
         if (toNFC)
         {
@@ -3035,7 +3283,7 @@ static LPTSTR MakeLongPath(LPCTSTR path, int normalization)
     }
     else
     {
-        newPath = malloc(sizeof(_TCHAR) * (length + 8));
+        newPath = (LPTSTR)malloc(sizeof(_TCHAR) * (length + 8));
         _tcscpy(newPath, _T("\\\\?\\UNC\\"));
         if (toNFC)
         {
@@ -3068,13 +3316,13 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
     {
         if(_tcsncmp(path, _T("\\\\"), 2) != 0)
         {
-            newPath = malloc(sizeof(_TCHAR) * (length + 4));
+            newPath = (LPTSTR)malloc(sizeof(_TCHAR) * (length + 4));
             _tcscpy(newPath, _T("\\\\?\\"));
             NormalizeString(NormalizationD, path, -1, newPath+4, length);
         }
         else
         {
-            newPath = malloc(sizeof(_TCHAR) * (length + 8));
+            newPath = (LPTSTR)malloc(sizeof(_TCHAR) * (length + 8));
             _tcscpy(newPath, _T("\\\\?\\UNC\\"));
             NormalizeString(NormalizationD, path+2, -1, newPath+8, length);     /* skip // */
         }
@@ -3082,7 +3330,7 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
     else
     {
         /* ここには来ないはず */
-        newPath = malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+        newPath = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
         _tcscpy(newPath, path);
     }
     return newPath;
@@ -3098,7 +3346,7 @@ static LPTSTR MakeLongPathNFD(LPCTSTR path)
 *   Return Value
 *       SetCurrentDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
+static BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
 {
     BOOL ret;
     LPTSTR path;
@@ -3110,50 +3358,208 @@ BOOL SetCurrentDirectory_My(LPCTSTR lpPathName, int normalization)
     return ret;
 }
 
-/*----- FindFirstFileのMAX_PATH以上への拡張 -----------------------------------
+/*----- FindFirstFileのMAX_PATH以上への拡張（MTP対応） ---------------------------
 *
 *   Parameter
-*       FindFirstFile関数と同じ
+*       LPCTSTR lpFileName : 検索するパス名
+*       LPWIN32_FIND_DATA lpFindFileData : 検索結果を返す変数へのポインタ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS *options : 処理オプション（NULL=MTPは考えない）
 *
 *   Return Value
-*       FindFirstFile関数と同じ
+*       FIND_FILE_HANDLE* : 擬似的なハンドル
+*           (もしくはINVALID_HANDLE_VALUE）
 *----------------------------------------------------------------------------*/
-HANDLE FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization)
+FIND_FILE_HANDLE* FindFirstFile_My(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData, int normalization, PROC_OPTIONS* options)
 {
-    HANDLE ret;
+    FIND_FILE_HANDLE* ret = (FIND_FILE_HANDLE*)INVALID_HANDLE_VALUE;
     LPTSTR path;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    HANDLE handle;
+    FILETIME utcTime;
 
-    path = MakeLongPath(lpFileName, normalization);
-    ret = FindFirstFile(path, lpFindFileData);
-    free(path);
-    if ((ret == INVALID_HANDLE_VALUE) && (normalization == YES) && (NormalizationType == NORMALIZATION_TYPE_NFC))
+    if ((options != NULL) && (IsMtpDevice(lpFileName) == YES))
     {
-        path = MakeLongPathNFD(lpFileName);
-        ret = FindFirstFile(path, lpFindFileData);
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            _tcsncpy(lpFindFileData->cFileName, found->Info.ObjectName, MAX_PATH - 1);
+            _tcscpy(lpFindFileData->cAlternateFileName, _T(""));
+            lpFindFileData->nFileSizeHigh = HIDWORD(found->Info.ObjectSize);
+            lpFindFileData->nFileSizeLow = LODWORD(found->Info.ObjectSize);
+            LocalFileTimeToFileTime(&found->Info.ObjectModifiedTime, &utcTime);
+            lpFindFileData->ftLastWriteTime = utcTime;
+            lpFindFileData->ftCreationTime.dwLowDateTime = 0;
+            lpFindFileData->ftCreationTime.dwHighDateTime = 0;
+            lpFindFileData->ftLastAccessTime.dwLowDateTime = 0;
+            lpFindFileData->ftLastAccessTime.dwHighDateTime = 0;
+            if (found->Info.ObjectType == ObjectTypeFolder)
+            {
+                lpFindFileData->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+            }
+            else
+            {
+                lpFindFileData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+            }
+            ret = (FIND_FILE_HANDLE*)malloc(sizeof(FIND_FILE_HANDLE));
+            ret->IsMtp = YES;
+            ret->tree = found;
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpFileName, normalization);
+        handle = FindFirstFile(path, lpFindFileData);
         free(path);
+        if ((handle == INVALID_HANDLE_VALUE) && (normalization == YES) && (NormalizationType == NORMALIZATION_TYPE_NFC))
+        {
+            path = MakeLongPathNFD(lpFileName);
+            handle = FindFirstFile(path, lpFindFileData);
+            free(path);
+        }
+        if (handle != INVALID_HANDLE_VALUE)
+        {
+            ret = (FIND_FILE_HANDLE*)malloc(sizeof(FIND_FILE_HANDLE));
+            ret->IsMtp = NO;
+            ret->hFindFirstFile = handle;
+        }
     }
     return ret;
 }
 
-/*----- GetFileAttributesのMAX_PATH以上への拡張 -----------------------------
+
+/*----- FindNextFileのMTP対応 -------------------------------------------------
+*
+*   Parameter
+*       FIND_FILE_HANDLE* hFindFile : 擬似的なハンドル
+*       LPWIN32_FIND_DATA lpFindFileData : 検索結果を返す変数へのポインタ
+*
+*   Return Value
+*       FindNextFile関数と同じ
+*----------------------------------------------------------------------------*/
+BOOL FindNextFile_My(FIND_FILE_HANDLE* hFindFile, LPWIN32_FIND_DATA lpFindFileData)
+{
+    BOOL status = FALSE;
+    MTP_OBJECT_TREE* next;
+    FILETIME utcTime;
+
+    if (hFindFile->IsMtp == YES)
+    {
+        /* MTPの場合 */
+        /* 次の兄弟にうつる */
+        next = FindNextSiblingObjectFromTree(hFindFile->tree);
+        if (next != NULL)
+        {
+            _tcsncpy(lpFindFileData->cFileName, next->Info.ObjectName, MAX_PATH - 1);
+            _tcscpy(lpFindFileData->cAlternateFileName, _T(""));
+            lpFindFileData->nFileSizeHigh = HIDWORD(next->Info.ObjectSize);
+            lpFindFileData->nFileSizeLow = LODWORD(next->Info.ObjectSize);
+            LocalFileTimeToFileTime(&next->Info.ObjectModifiedTime, &utcTime);
+            lpFindFileData->ftLastWriteTime = utcTime;
+            lpFindFileData->ftCreationTime.dwLowDateTime = 0;
+            lpFindFileData->ftCreationTime.dwHighDateTime = 0;
+            lpFindFileData->ftLastAccessTime.dwLowDateTime = 0;
+            lpFindFileData->ftLastAccessTime.dwHighDateTime = 0;
+            if (next->Info.ObjectType == ObjectTypeFolder)
+            {
+                lpFindFileData->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+            }
+            else
+            {
+                lpFindFileData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+            }
+            hFindFile->tree = next;
+            status = TRUE;
+        }
+        else
+        {
+            SetLastError(ERROR_NO_MORE_FILES);
+        }
+    }
+    else
+    {
+        /* MTPでない場合 */
+        status = FindNextFile(hFindFile->hFindFirstFile, lpFindFileData);
+    }
+    return status;
+}
+
+
+/*----- FindCloseのMTP対応 ----------------------------------------------------
+*
+*   Parameter
+*       FIND_FILE_HANDLE* hFindFile : 擬似的なハンドル
+*
+*   Return Value
+*       FindClose関数と同じ
+*----------------------------------------------------------------------------*/
+BOOL FindClose_My(FIND_FILE_HANDLE* hFindFile)
+{
+    BOOL status = TRUE;
+
+    if (hFindFile->IsMtp == NO)
+    {
+        /* MTPでない場合 */
+        status = FindClose(hFindFile->hFindFirstFile);
+    }
+    free(hFindFile);
+
+    return status;
+}
+
+
+/*----- GetFileAttributesのMAX_PATH以上への拡張(MTP対応) -----------------------
 *
 *   Parameter
 *       GetFileAttributes関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
 *
 *   Return Value
 *       GetFileAttributes関数と同じ
 *----------------------------------------------------------------------------*/
-DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization)
+DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options)
 {
     DWORD ret;
     LPTSTR path;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
 
-    path = MakeLongPath(lpFileName, normalization);
-    ret = GetFileAttributes(path);
-    free(path);
-
+    if ((options != NULL) && (IsMtpDevice(lpFileName) == YES))
+    {
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            ret = FILE_ATTRIBUTE_NORMAL;
+            if (found->Info.ObjectType == ObjectTypeFolder)
+            {
+                ret = FILE_ATTRIBUTE_DIRECTORY;
+            }
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpFileName, normalization);
+        ret = GetFileAttributes(path);
+        free(path);
+    }
     return ret;
 }
 
@@ -3165,6 +3571,9 @@ DWORD GetFileAttributes_My(LPCTSTR lpFileName, int normalization)
 *
 *   Return Value
 *       GetFileAttributes関数と同じ
+*
+*   Note
+*       MTP対応の必要なし
 *----------------------------------------------------------------------------*/
 DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
 {
@@ -3186,43 +3595,101 @@ DWORD GetFileAttributes_My2(LPCTSTR lpFileName, DWORD * pLastError)
 *   Parameter
 *       SetFileAttributes関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
 *
 *   Return Value
 *       SetFileAttributes関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization)
+static BOOL SetFileAttributes_My(LPCTSTR lpFileName, DWORD dwFileAttributes, int normalization, PROC_OPTIONS* options)
 {
     BOOL ret;
     LPTSTR path;
 
-    path = MakeLongPath(lpFileName, normalization);
-    ret = SetFileAttributes(path, dwFileAttributes);
-    free(path);
-
+    if ((options != NULL) && (IsMtpDevice(lpFileName) == YES))
+    {
+        /* MTPの場合 */
+        ret = TRUE;     /* なにもしない */
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpFileName, normalization);
+        ret = SetFileAttributes(path, dwFileAttributes);
+        free(path);
+    }
     return ret;
 }
 
-/*----- MoveFileのMAX_PATH以上への拡張 -----------------------------
+/*----- MoveFileのMAX_PATH以上への拡張（MTP対応） ---------------------------------
 *
 *   Parameter
 *       MoveFile関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       MoveFile関数と同じ
+*
+*   Note
+*       現状では移動元ファイルのほうをMTP対応とする。
+*       ファイルを削除する代わりに特定のフォルダー（PC上）へファイルを移動して削除の代わりとする目的にのみ使用しているため
 *----------------------------------------------------------------------------*/
-BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization)
+static BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
-    BOOL ret;
+    BOOL ret = FALSE;
     LPTSTR path1;
     LPTSTR path2;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    PWSTR deviceId;
+    PWSTR objectId;
+    COPYCALLBACKINFO* info;
 
-    path1 = MakeLongPath(lpExistingFileName, normalization);
-    path2 = MakeLongPath(lpNewFileName, normalization);
-    ret = MoveFile(path1, path2);
-    free(path1);
-    free(path2);
+    if ((options != NULL) && (IsMtpDevice(lpExistingFileName) == YES))
+    {
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpExistingFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
 
+            /* ツリーから移動（削除）するオブジェクトを消す */
+            if (DeleteObjectFromTree(found, parent) == SUCCESS)
+            {
+                info = (COPYCALLBACKINFO*)malloc(sizeof(COPYCALLBACKINFO));
+                info->Cancel = FALSE;
+                info->Wait = options->Wait;
+
+                /* 移動実行 */
+                if (TransferFileFromMtpDevice(pIPortableDevice, objectId, lpNewFileName, CopyProgressRoutine, info) == SUCCESS)
+                {
+                    /* 移動に成功したら元のファイルは削除 */
+                    if (DeleteObjectFromMtpDevice(pIPortableDevice, objectId) == SUCCESS)
+                    {
+                        ret = TRUE;
+                    }
+                }
+                free(info);
+            }
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path1 = MakeLongPath(lpExistingFileName, normalization);
+        path2 = MakeLongPath(lpNewFileName, normalization);
+        ret = MoveFile(path1, path2);
+        free(path1);
+        free(path2);
+    }
     return ret;
 }
 
@@ -3235,7 +3702,7 @@ BOOL MoveFile_My(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, int normaliz
 *   Return Value
 *       CreateFile関数と同じ
 *----------------------------------------------------------------------------*/
-HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization)
+static HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile, int normalization)
 {
     HANDLE ret;
     LPTSTR path;
@@ -3247,24 +3714,59 @@ HANDLE CreateFile_My(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMod
     return ret;
 }
 
-/*----- RemoveDirectoryのMAX_PATH以上への拡張 -----------------------------
+/*----- RemoveDirectoryのMAX_PATH以上への拡張（MTP対応） -----------------------
 *
 *   Parameter
 *       RemoveDirectory関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       RemoveDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization)
+static BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     BOOL ret;
     LPTSTR path;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    PWSTR deviceId;
+    PWSTR objectId;
 
-    path = MakeLongPath(lpPathName, normalization);
-    ret = RemoveDirectory(path);
-    free(path);
+    if ((options != NULL) && (IsMtpDevice(lpPathName) == YES))
+    {
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpPathName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
 
+            /* ツリーから削除するオブジェクトを消す */
+            if (DeleteObjectFromTree(found, parent) == SUCCESS)
+            {
+                /* 削除実行 */
+                if (DeleteObjectFromMtpDevice(pIPortableDevice, objectId) == SUCCESS)
+                {
+                    ret = TRUE;
+                }
+            }
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpPathName, normalization);
+        ret = RemoveDirectory(path);
+        free(path);
+    }
     return ret;
 }
 
@@ -3273,40 +3775,145 @@ BOOL RemoveDirectory_My(LPCTSTR lpPathName, int normalization)
 *   Parameter
 *       CreateDirectory関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       CreateDirectory関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization)
+static BOOL CreateDirectory_My(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
-    BOOL ret;
+    BOOL ret = FALSE;
     LPTSTR path;
+    LPTSTR name;
+    LPTSTR anchor;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    MTP_OBJECT_INFO newObject;
+    LPTSTR deviceId;
+    LPTSTR parentId;
+    LPTSTR newObjectId;
 
-    path = MakeLongPath(lpPathName, normalization);
-    ret = CreateDirectory(path, lpSecurityAttributes);
-    free(path);
+    if ((options != NULL) && (IsMtpDevice(lpPathName) == YES))
+    {
+        /* MTPの場合 */
+        if (_tcscmp(lpPathName, _T("mtp:\\")) == 0)
+        {
+            /* 処理の都合で mtp:\\ だけ来る場合があるのでとりあえず成功とする */
+            ret = TRUE;
+        }
+        else
+        {
+            path = GetFileName((LPTSTR)lpPathName);
+            name = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+            anchor = (LPTSTR)malloc(sizeof(_TCHAR) * ((path - lpPathName) + 1));
+            ZeroMemory(anchor, sizeof(_TCHAR) * ((path - lpPathName) + 1));
+            _tcscpy(name, path);
+            _tcsncpy(anchor, lpPathName, path - lpPathName);
+            RemoveYenTail(anchor);
 
+            if (_tcscmp(anchor, _T("mtp:\\")) == 0)
+            {
+                /* 作成しようとしているのはフォルダではなくデバイス名なのでとりあえず成功とする */
+                ret = TRUE;
+            }
+            else
+            {
+                /* ツリーを検索 */
+                found = FindObjectFromTree(anchor, options->MtpObjectTreeTop, &parent);
+                if (found != NULL)
+                {
+                    if (FindSpecifiedChildObjectFromTree(name, found) == NULL)
+                    {
+                        /* 指定のフォルダーは存在しない */
+                        /* デバイス上にフォルダーを作成 */
+                        deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+                        parentId = found->Info.ObjectID;
+                        if (CreateFolderOnMtpDevice(pIPortableDevice, parentId, name, &newObjectId) == SUCCESS)
+                        {
+                            /* 作成したフォルダをツリーに追加 */
+                            newObject.ObjectID = newObjectId;
+                            newObject.ObjectName = name;
+                            newObject.ObjectModifiedTime.dwLowDateTime = 0;
+                            newObject.ObjectModifiedTime.dwHighDateTime = 0;
+                            newObject.ObjectSize = 0;
+                            newObject.ObjectType = ObjectTypeFolder;
+                            if (AddObjectToTree(&newObject, found) == SUCCESS)
+                            {
+                                ret = TRUE;
+                            }
+                            free(newObjectId);
+                        }
+                    }
+                }
+            }
+            free(name);
+            free(anchor);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpPathName, normalization);
+        ret = CreateDirectory(path, lpSecurityAttributes);
+        free(path);
+    }
     return ret;
 }
 
-/*----- DeleteFileのMAX_PATH以上への拡張 -----------------------------
+/*----- DeleteFileのMAX_PATH以上への拡張（MTP対応） ----------------------------
 *
 *   Parameter
 *       DeleteFile関数と同じ
 *       normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       DeleteFile関数と同じ
 *----------------------------------------------------------------------------*/
-BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization)
+static BOOL DeleteFile_My(LPCTSTR lpFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
-    BOOL ret;
+    BOOL ret = FALSE;
     LPTSTR path;
+    MTP_OBJECT_TREE* found = NULL;
+    MTP_OBJECT_TREE* parent;
+    PWSTR deviceId;
+    PWSTR objectId;
 
-    path = MakeLongPath(lpFileName, normalization);
-    ret = DeleteFile(path);
-    free(path);
+    if ((options != NULL) && (IsMtpDevice(lpFileName) == YES))
+    {
+        /* MTPの場合 */
+        /* ツリーを検索 */
+        found = FindObjectFromTree(lpFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
 
+            /* ツリーから削除するオブジェクトを消す */
+            if (DeleteObjectFromTree(found, parent) == SUCCESS)
+            {
+                /* 削除実行 */
+                if (DeleteObjectFromMtpDevice(pIPortableDevice, objectId) == SUCCESS)
+                {
+                    ret = TRUE;
+                }
+            }
+        }
+        else
+        {
+            SetLastError(ERROR_FILE_NOT_FOUND);
+        }
+    }
+    else
+    {
+        /* MTPではない場合 */
+        path = MakeLongPath(lpFileName, normalization);
+        ret = DeleteFile(path);
+        free(path);
+    }
     return ret;
 }
 
@@ -3407,38 +4014,123 @@ static int FnameCompare(LPCTSTR src, LPCTSTR dst)
 *   Parameter
 *       LPCTSTR path : 削除するファイル
 *       LPCTSTR moveTo : 移動先
+*       int ErrRep : エラー報告するかどうか (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
 *
 *   Return Value
 *       int ステータス (0=正常終了)
 *----------------------------------------------------------------------------*/
-static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo)
+static int MoveFileToDeletionFolder(LPTSTR path, LPTSTR moveTo, int ErrRep, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
 {
     int sts = 0;
-    _TCHAR destFolder[MY_MAX_PATH+1];
-    _TCHAR destFname[MY_MAX_PATH+1];
-    HANDLE fHnd;
+    FIND_FILE_HANDLE* fHnd;
     WIN32_FIND_DATA FindBuf;
     LPCTSTR fname;
     int num;
+    LPTSTR buffer;
+    LPTSTR original;
 
+    /* 移動先のファイル名（番号なし）をoriginalに作成 */
     fname = GetFileName(path);
-    _tcscpy(destFolder, moveTo);
-    SetYenTail(destFolder);
-    _stprintf(destFname, _T("%s%s"), destFolder, fname);
+    original = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(moveTo) + _tcslen(fname) + 1 + 1));
+    _tcscpy(original, moveTo);
+    SetYenTail(original);
+    _tcscat(original, fname);
+
+    /* bufferは移動先のファイル名（番号あり C:\trash\file(1).exe のような）を指す */
+    buffer = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(original) + 1));
+    _tcscpy(buffer, original);
+
     num = 1;
-    while((fHnd = FindFirstFile_My(destFname, &FindBuf, NO)) != INVALID_HANDLE_VALUE)
+    while((fHnd = FindFirstFile_My(buffer, &FindBuf, NO, options)) != INVALID_HANDLE_VALUE)
     {
-        FindClose(fHnd);
-        _stprintf(destFname, _T("%s%s(%d)"), destFolder, fname, num);
+        /* 移動先に同じ名前のファイルがあったので括弧付きの番号を付ける */
+        FindClose_My(fHnd);
+        free(buffer);
+        buffer = InsertNumberBeforeExtension(original, num);
         num++;
     }
-    SetTaskMsg(TASKMSG_ERR, MSGJPN_131, destFname);
-    if(MoveFile_My(path, destFname, NO) == 0)
+    if (ErrRep == YES)
     {
-        SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, destFname);
+        SetTaskMsg(TASKMSG_NOR, MSGJPN_131, buffer);
+    }
+    if(MoveFile_My(path, buffer, NO, options, pIPortableDevice) == 0)
+    {
+        if (ErrRep == YES)
+        {
+            SetTaskMsg(TASKMSG_ERR, MSGJPN_132, path, buffer);
+        }
         sts = 1;
     }
+    free(buffer);
+    free(original);
+
     return sts;
 }
 
+
+/*----- ファイル名の大文字小文字を変更する ---------------------------------------
+*
+*   Parameter
+*       LPCTSTR existingFileName : ファイル名
+*       int normalization : 正規化フラグ (YES/NO)
+*       PROC_OPTIONS* options : 処理オプション
+*       IPortableDevice* pIPortableDevice : MTPデバイスへのインターフェース
+*
+*   Return Value
+*       BOOL TRUE=成功/FALSE=失敗
+*
+*   Note
+*       指定されたファイル名で現在存在するファイルを検索し（大文字／小文字無視）、そのファイルの名前を指定されたファイル名に置き換える
+*       MTP対応
+*----------------------------------------------------------------------------*/
+static BOOL ChangingCaseExistingFileName(LPCTSTR existingFileName, int normalization, PROC_OPTIONS* options, IPortableDevice* pIPortableDevice)
+{
+    BOOL ret = FALSE;
+    LPTSTR path1;
+    LPTSTR path2;
+
+    if ((options != NULL) && (IsMtpDevice(existingFileName) == YES))
+    {
+        LPTSTR path;
+        LPTSTR name;
+        MTP_OBJECT_TREE* found;
+        MTP_OBJECT_TREE* parent;
+        PWSTR deviceId;
+        PWSTR objectId;
+        BOOL sts = FALSE;
+
+        /* MTPの場合 */
+        path = GetFileName((LPTSTR)existingFileName);
+        name = (LPTSTR)malloc(sizeof(_TCHAR) * (_tcslen(path) + 1));
+        _tcscpy(name, path);
+
+        /* ツリーを検索 */
+        found = FindObjectFromTree(existingFileName, options->MtpObjectTreeTop, &parent);
+        if (found != NULL)
+        {
+            /* 最終的に探したいものが見つかった */
+            deviceId = options->MtpObjectTreeTop->Info.ObjectID;
+            objectId = found->Info.ObjectID;
+
+            /* 名前を変更 */
+            if (ChangeObjectNameOnMtpDevice(pIPortableDevice, objectId, name) == SUCCESS)
+            {
+                ret = TRUE;
+            }
+        }
+        free(name);
+    }
+    else
+    {
+        /* MTPでない場合 */
+        path1 = MakeLongPath(existingFileName, normalization);
+        path2 = MakeLongPath(existingFileName, normalization);
+        ret = MoveFile(path1, path2);
+        free(path1);
+        free(path2);
+    }
+    return ret;
+}
 

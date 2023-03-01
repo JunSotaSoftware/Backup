@@ -4,7 +4,7 @@
 /                               メインプログラム
 /
 /============================================================================
-/ Copyright (C) 1997-2018 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -77,8 +77,6 @@ static _TCHAR HelpPath[MY_MAX_PATH+1];
 static _TCHAR IniPath[MY_MAX_PATH+1];
 static int TmpTrayIcon;
 
-extern int ErrorCount;
-
 static const int IconData[] = {
     /* 静止時用 */
     backup,
@@ -118,6 +116,7 @@ _TCHAR LastWroteLogFname[MY_MAX_PATH+10+1] = { _T("") };
 _TCHAR LastErrorLogFname[MY_MAX_PATH+1] = { _T("") };
 int ListWindowType = 0;
 
+int ErrorCount = 0;
 
 
 /*----- メインルーチン --------------------------------------------------------
@@ -137,6 +136,7 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
     MSG Msg;
     int Ret;
     LPTSTR  cmdLine;
+    HWND hWndProcessing = NULL;
 
     Ret = FALSE;
     hInstBup = hInstance;
@@ -148,8 +148,12 @@ int PASCAL _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCm
             if((IsDialogMessage(GetMainDlgHwnd(), &Msg) == FALSE) &&
                (IsDialogMessage(GetTransDlgHwnd(), &Msg) == FALSE))
             {
-                TranslateMessage(&Msg);
-                DispatchMessage(&Msg);
+                hWndProcessing = GetProcessingDlgHwnd();
+                if ((hWndProcessing == NULL) || (IsDialogMessage(hWndProcessing, &Msg) == FALSE))
+                {
+                    TranslateMessage(&Msg);
+                    DispatchMessage(&Msg);
+                }
             }
         }
         Ret = Msg.wParam;
@@ -208,9 +212,12 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
         MainPosY = 0;
     }
 
-#if 0
+#if SHOW_CONSOLE
     AllocConsole();
 #endif
+
+    /* MTP対応 */
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
     /* メインウインドウを作成 */
     wClass.cbSize        = sizeof(WNDCLASSEX);
@@ -237,8 +244,12 @@ static int InitApp(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpszCmdL
         {
             ShowWindow(hWndBup, SW_HIDE);
             GetWindowRect(GetMainDlgHwnd(), &Rect);
+            DoPrintf(_T("Init Window Rect=%d %d %d %d Size=%d %d\r\n"), Rect.left, Rect.right, Rect.top, Rect.bottom, Rect.right-Rect.left, Rect.bottom-Rect.top);
             AdjustWindowRect(&Rect, WS_THICKFRAME | WS_CAPTION | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPCHILDREN, TRUE);
             SetWindowPos(hWndBup, 0, 0, 0, Rect.right - Rect.left, Rect.bottom - Rect.top, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOZORDER | SWP_HIDEWINDOW);
+
+            DoPrintf(_T("RECT LEFT=%d RIGHT=%d TOP=%d BOTTOM=%d W=%d H=%d\r\n"),
+                Rect.left, Rect.right, Rect.top, Rect.bottom, Rect.right - Rect.left, Rect.bottom - Rect.top);
 
             TmpTrayIcon = TrayIcon;
             LoadTrayIcon();
@@ -657,16 +668,16 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
             if(wParam == SIZE_RESTORED)
             {
                 Rect = malloc(sizeof(RECT));
-                if(Rect != NULL)
+                if (Rect != NULL)
                 {
                     GetClientRect(hWnd, Rect);
-                    SendMessage(GetMainDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
+                    SendMessage(GetMainDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT | WMSZ_BOTTOM, (LPARAM)Rect);
                 }
                 Rect = malloc(sizeof(RECT));
-                if(Rect != NULL)
+                if (Rect != NULL)
                 {
                     GetClientRect(hWnd, Rect);
-                    SendMessage(GetTransDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT|WMSZ_BOTTOM, (LPARAM)Rect);
+                    SendMessage(GetTransDlgHwnd(), WM_SIZE_CHANGE, WMSZ_RIGHT | WMSZ_BOTTOM, (LPARAM)Rect);
                 }
             }
             if(TmpTrayIcon == YES)
@@ -755,6 +766,10 @@ static void ExitProc(HWND hWnd)
     DeleteLogFilename();
     DeleteErrorLogFilename();
     HtmlHelp(NULL, NULL, HH_UNINITIALIZE, (DWORD_PTR)&dwCookie);
+
+    /* MTP対応 */
+    CoUninitialize();
+
     return;
 }
 
@@ -1065,14 +1080,22 @@ void SetMenuHide(int Win)
 {
     int Flg;
     int Flg2;
+    int Flg3;
     HMENU hMenu;
 
     Flg = MF_ENABLED;
     Flg2 = MF_ENABLED;
+    Flg3 = MF_ENABLED;
     if(Win == WIN_TRANS)
     {
         Flg = MF_GRAYED;
     }
+    else if (Win == WIN_MTP_PROCESSING)
+    {
+        Flg = MF_GRAYED;
+        Flg3 = MF_GRAYED;
+    }
+
     if(LogSwitch == LOG_SW_OFF)
     {
         Flg2 = MF_GRAYED;
@@ -1082,8 +1105,17 @@ void SetMenuHide(int Win)
     EnableMenuItem(hMenu, MENU_BACKUP, Flg);
     EnableMenuItem(hMenu, MENU_QUICK_BACKUP, Flg);
     EnableMenuItem(hMenu, MENU_SETENV, Flg);
+    EnableMenuItem(hMenu, MENU_REGSAVE, Flg);
+    EnableMenuItem(hMenu, MENU_REGLOAD, Flg);
+    EnableMenuItem(hMenu, MENU_REGINIT, Flg);
 
     EnableMenuItem(hMenu, MENU_DISPLOG, Flg2);
+
+    EnableMenuItem(hMenu, MENU_FILE_EXIT, Flg3);
+
+    hMenu = GetSystemMenu(hWndBup, FALSE);
+    EnableMenuItem(hMenu, SC_CLOSE, Flg3);
+
     return;
 }
 
@@ -1149,14 +1181,20 @@ void DispErrorBox(LPTSTR szFormat,...)
 
 void DoPrintf(LPTSTR szFormat,...)
 {
-#if 0
+#if SHOW_CONSOLE
     va_list vaArgs;
-    static _TCHAR szBuf[256];
     DWORD Tmp;
+    int len;
+    _TCHAR* buffer;
 
-    va_start(vaArgs,szFormat);
-    if(_vstprintf(szBuf,szFormat,vaArgs)!=EOF)
-        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), szBuf, _tcslen(szBuf), &Tmp, NULL);
+    va_start(vaArgs, szFormat);
+    len = _vsctprintf(szFormat, vaArgs) + 1;
+    buffer = (_TCHAR*)malloc(len * sizeof(_TCHAR));
+    if (_vstprintf(buffer, szFormat, vaArgs) != EOF)
+    {
+        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buffer, _tcslen(buffer), &Tmp, NULL);
+    }
+    free(buffer);
     va_end(vaArgs);
 #endif
 }

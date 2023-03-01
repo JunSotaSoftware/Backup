@@ -4,7 +4,7 @@
 /                               転送ダイアログ
 /
 /============================================================================
-/ Copyright (C) 1997-2015 Sota. All rights reserved.
+/ Copyright (C) 1997-2023 Sota. All rights reserved.
 /
 / Redistribution and use in source and binary forms, with or without
 / modification, are permitted provided that the following conditions
@@ -50,6 +50,7 @@
 
 static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK LogWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+static INT_PTR CALLBACK ProcessingDlgWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 /*===== ローカルなワーク ======*/
 
@@ -59,6 +60,9 @@ static COPYPATLIST *CopyPatList;
 static WNDPROC LogProcPtr;
 static HBITMAP ProcPicture[3] = { NULL, NULL, NULL };
 static HIMAGELIST hImage = NULL;
+static HWND hWndProcessing = NULL;
+static int MtpTreeProcessingCounter = 0;
+static BOOL MtpTreeProcessingAbort = FALSE;
 
 static DIALOGSIZE DlgSize = {
     { TRANS_TITLE2, TRANS_BOX1, TRANS_PREPARE, TRANS_SCAN, TRANS_RMDIR, TRANS_RMFILE, TRANS_MKDIR, TRANS_COPY, TRANS_PIC_PREPARE, TRANS_PIC_SCAN, TRANS_PIC_RMDIR, TRANS_PIC_RMFILE, TRANS_PIC_MKDIR, TRANS_PIC_COPY, TRANS_GRIP, -1 },
@@ -343,6 +347,8 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
     POINT Point;
     RECT *pRect;
     int sts;
+    RECT p_rect;
+    RECT c_rect;
 
     switch (message)
     {
@@ -375,6 +381,10 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             DlgSizeInit(hDlg, &DlgSize, &TransDlgSize, FALSE);
             Processing = PROCESSING_STOP;
             NextTo = NEXT_TO_STAY;
+
+            hWndProcessing = NULL;
+            MtpTreeProcessingCounter = 0;
+            MtpTreeProcessingAbort = FALSE;
             return(TRUE);
 
         case WM_BACKUP_START :
@@ -586,6 +596,45 @@ static LRESULT CALLBACK TransferDlgWndProc(HWND hDlg, UINT message, WPARAM wPara
             DlgSizeChange(hDlg, &DlgSize, pRect, (int)wParam);
             free((void*)lParam);
             break;
+
+        case WM_MAKE_PROCESSING_WINDOW:
+            if (hWndProcessing == NULL)
+            {
+                MtpTreeProcessingCounter = 0;
+                MtpTreeProcessingAbort = FALSE;
+                hWndProcessing = CreateDialog(GetBupInst(), MAKEINTRESOURCE(mtp_searching_progress), hWndTransDlg, (DLGPROC)ProcessingDlgWndProc);
+                ShowWindow(hWndProcessing, SW_SHOW);
+
+                /* ウインドウを親ウインドウの中央に移動 */
+                GetWindowRect(hDlg, &p_rect);
+                GetClientRect(hWndProcessing, &c_rect);
+                p_rect.right = p_rect.right - p_rect.left;  /* parent width */
+                p_rect.bottom = p_rect.bottom - p_rect.top; /* parent height */
+                p_rect.left = p_rect.left + ((p_rect.right - c_rect.right) / 2);
+                p_rect.top = p_rect.top + ((p_rect.bottom - c_rect.bottom) / 2);
+                MoveWindow(hWndProcessing, p_rect.left, p_rect.top, c_rect.right, c_rect.bottom, TRUE);
+
+                /* 親ウインドウのボタン／メニューを無効に */
+                EnableWindow(GetDlgItem(hDlg, TRANS_STOP), FALSE);
+                EnableWindow(GetDlgItem(hDlg, TRANS_RETURN), FALSE);
+                EnableWindow(GetDlgItem(hDlg, TRANS_QUIT), FALSE);
+                SetMenuHide(WIN_MTP_PROCESSING);
+            }
+            return(TRUE);
+
+        case WM_DESTROY_PROCESSING_WINDOW:
+            if (hWndProcessing != NULL)
+            {
+                DestroyWindow(hWndProcessing);
+                hWndProcessing = NULL;
+
+                /* 親ウインドウのボタン／メニューを有効に */
+                EnableWindow(GetDlgItem(hDlg, TRANS_STOP), TRUE);
+                EnableWindow(GetDlgItem(hDlg, TRANS_RETURN), TRUE);
+                EnableWindow(GetDlgItem(hDlg, TRANS_QUIT), TRUE);
+                SetMenuHide(WIN_TRANS);
+            }
+            return(TRUE);
     }
     return(FALSE);
 }
@@ -655,31 +704,34 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
 {
     int Pos;
     va_list vaArgs;
-    _TCHAR szBuf[MY_MAX_PATH2 + 100];
+    int len;
+    _TCHAR* buffer;
 
-    va_start(vaArgs,szFormat);
-    if(_vstprintf(szBuf, szFormat, vaArgs)!=EOF)
+    va_start(vaArgs, szFormat);
+    len = _vsctprintf(szFormat, vaArgs) + 1 + 2;    /* +2はあとで "\\r\\n" を付ける分 */
+    buffer = (_TCHAR*)malloc(len * sizeof(_TCHAR));
+    if(_vstprintf(buffer, szFormat, vaArgs) != EOF)
     {
         /* debug window */
-        DoPrintf(_T("%s\n"), szBuf);
+        DoPrintf(_T("%s\n"), buffer);
 
         /* log file */
-        WriteMsgToLogfile(szBuf);
+        WriteMsgToLogfile(buffer);
 
         if(Type == TASKMSG_ERR)
         {
-            WriteMsgToErrorLogfile(szBuf);
+            WriteMsgToErrorLogfile(buffer);
         }
 
         /* ウインドウの横幅に合わせて整形 */
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)szBuf);
-        _tcscat(szBuf, _T("\r\n"));
+        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, WM_FORMAT_TEXT, 0, (LPARAM)buffer);
+        _tcscat(buffer, _T("\r\n"));
 
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_GETLINECOUNT, 0, 0);
         Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
 
         /* テキストサイズのリミット値をチェック */
-        if((Pos + _tcslen(szBuf)) >= TASK_BUFSIZE)
+        if((Pos + _tcslen(buffer)) >= TASK_BUFSIZE)
         {
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEFROMCHAR, TASK_BUFSIZE/10, 0) + 1;
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos, 0);
@@ -690,9 +742,11 @@ void SetTaskMsg(int Type, LPTSTR szFormat,...)
             Pos = SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_LINEINDEX, Pos-1, 0);
         }
         SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_SETSEL, Pos, Pos);
-        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)szBuf);
+        SendDlgItemMessage(hWndTransDlg, TRANS_EXEC, EM_REPLACESEL, FALSE, (LPARAM)buffer);
     }
+    free(buffer);
     va_end(vaArgs);
+
     return;
 }
 
@@ -783,4 +837,104 @@ void SaveTransDlgSize(void)
 }
 
 
+/*----- MTPツリー処理中ウインドウを表示 ------------------------------------------
+*
+*   Parameter
+*       なし
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+void MakeMtpProcessingWindow(void)
+{
+    PostMessage(hWndTransDlg, WM_MAKE_PROCESSING_WINDOW, 0, 0);
+}
+
+
+/*----- MTPツリー処理中ウインドウを消去 ------------------------------------------
+*
+*   Parameter
+*       なし
+*
+*   Return Value
+*       なし
+*----------------------------------------------------------------------------*/
+void DestroyMtpProcessingWindow(void)
+{
+    SendMessage(hWndTransDlg, WM_DESTROY_PROCESSING_WINDOW, 0, 0);
+}
+
+
+/*----- MTPツリー処理中のウインドウのメッセージ処理 -------------------------------
+*
+*   Parameter
+*       HWND hWnd : ウインドウハンドル
+*       UINT message  : メッセージ番号
+*       WPARAM wParam : メッセージの WPARAM 引数
+*       LPARAM lParam : メッセージの LPARAM 引数
+*
+*   Return Value
+*       メッセージに対応する戻り値
+*----------------------------------------------------------------------------*/
+static INT_PTR CALLBACK ProcessingDlgWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    INT_PTR ret = FALSE;
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        ret = TRUE;
+        break;
+
+    case WM_COMMAND:
+        switch (GET_WM_COMMAND_ID(wParam, lParam))
+        {
+        case PROCESSING_CANCEL:
+            MtpTreeProcessingAbort = TRUE;
+            ret = TRUE;
+            break;
+        }
+        break;
+
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        ret = TRUE;
+        break;
+    }
+    return ret;
+}
+
+
+/*----- MTPツリー処理中のウインドウのウインドウハンドルを返す ----------------------
+*
+*   Parameter
+*       なし
+*
+*   Return Value
+*       HWND ウインドウハンドル
+*----------------------------------------------------------------------------*/
+HWND GetProcessingDlgHwnd(void)
+{
+    return hWndProcessing;
+}
+
+
+/*----- MTPツリー処理中の進捗状況を表示 ------------------------------------------
+*
+*   Parameter
+*       LPTSTR filename : ツリーに登録したオブジェクトの名前
+*
+*   Return Value
+*       BOOL ユーザーによって処理を中止されたかどうか (FALSE=継続、TRUE=中止）
+*----------------------------------------------------------------------------*/
+BOOL CALLBACK MtpTreeProcessingRoutine(LPTSTR filename)
+{
+    _TCHAR buffer[80];
+
+    SendMessage(GetDlgItem(hWndProcessing, PROCESSING_FILE), WM_SETTEXT, 0, (LPARAM)filename);
+    _stprintf_s(buffer, 80, _T("%d"), MtpTreeProcessingCounter);
+    MtpTreeProcessingCounter++;
+    SendMessage(GetDlgItem(hWndProcessing, PROCESSING_COUNT), WM_SETTEXT, 0, (LPARAM)buffer);
+
+    return MtpTreeProcessingAbort;
+}
 

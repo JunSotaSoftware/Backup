@@ -45,6 +45,24 @@
 			<param name="Name" value="パス名一括置換">
 			<param name="Local" value="HTML\H0000033.HTM">
 			</OBJECT>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="MTPの利用">
+			<param name="Local" value="HTML\H0000038.HTM">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="MTPとは">
+				<param name="Local" value="HTML\H0000037.HTM">
+				</OBJECT>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="バックアップ先の指定方法">
+				<param name="Local" value="HTML\H0000039.HTM">
+				</OBJECT>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="選ぶことが出来ない項目">
+				<param name="Local" value="HTML\H0000040.HTM">
+				</OBJECT>
+		</UL>
 	</UL>
 	<LI><OBJECT type="text/sitemap">
 		<param name="Name" value="パターン設定">

@@ -58,6 +58,9 @@
 #define box_bmp                         149
 #define current_bmp                     150
 #define done_bmp                        151
+#define mtp_folder_select_dlg           165
+#define device_bmp                      168
+#define mtp_searching_progress          171
 #define MAIN_SRC                        1000
 #define NOBACK_DIR                      1001
 #define TRANS_DIRLIST                   1002
@@ -113,6 +116,8 @@
 #define IDC_BUTTON1                     1048
 #define LOG_FNAME_INIT                  1048
 #define PATSET_DEL_MOVE_FOLDER_BR       1048
+#define INPFILE_MTP_BR                  1048
+#define PROCESSING_CANCEL               1048
 #define TRANS_LOGWRITE                  1049
 #define BMAIN_EDIT                      1050
 #define PATSET_ADD                      1051
@@ -334,10 +339,15 @@
 #define PATSET_DST_COMMENT              1246
 #define MISC_LIST_NEW_TYPE              1249
 #define MISC_LIST_OLD_TYPE              1250
+#define MTP_FOLDER_TREE                 1251
+#define MTP_FOLDER_DESC                 1252
+#define PROCESSING_FILE                 1253
+#define PROCESSING_COUNT                1254
 #define FILEOPENORD                     1536
 #define main_dlg_old                    1537
 #define main_comment_dlg1               1538
 #define main_comment_dlg_old            1538
+#define inpfolder_with_mtp_dlg          1539
 #define MENU_EXIT                       40001
 #define MENU_FILE_EXIT                  40002
 #define MENU_HELP_CONTENT               40003
@@ -358,14 +368,15 @@
 #define MENU_PATHCONVERT2               40018
 #define ID_40019                        40019
 #define MENU_LOGFOLDER                  40020
+#define MTP_FOLDER_MSG                  65535
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        165
+#define _APS_NEXT_RESOURCE_VALUE        173
 #define _APS_NEXT_COMMAND_VALUE         40021
-#define _APS_NEXT_CONTROL_VALUE         1251
+#define _APS_NEXT_CONTROL_VALUE         1255
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
