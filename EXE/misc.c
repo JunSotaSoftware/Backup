@@ -42,6 +42,8 @@
 #include "resource.h"
 
 
+static int SortCompare(const void* data1, const void* data2);
+
 
 /*----- 文字列の最後に "\" を付ける（""には付けない）--------------------------
 *
@@ -775,7 +777,7 @@ void SortListBoxItem(HWND hWnd)
                 Tmp += MY_MAX_PATH+1;
             }
 
-            qsort(Buf, Num, (MY_MAX_PATH+1) * sizeof(_TCHAR), _tcscmp);
+            qsort(Buf, Num, (MY_MAX_PATH+1) * sizeof(_TCHAR), SortCompare);
 
             SendMessage(hWnd, LB_RESETCONTENT, 0, 0);
             Tmp = Buf;
@@ -789,6 +791,37 @@ void SortListBoxItem(HWND hWnd)
         }
     }
     return;
+}
+
+
+/*----- リストボックスソート用の文字列比較関数 -----------------------------------
+*
+*   Parameter
+*       const void* data1 : データ1
+*       const void* data2 : データ2
+*
+*   Return Value
+*       int 比較結果　(-1 / 0 / 1)
+*----------------------------------------------------------------------------*/
+static int SortCompare(const void* data1, const void* data2)
+{
+    int ret;
+
+    ret = CompareString(LOCALE_USER_DEFAULT, LINGUISTIC_IGNORECASE | NORM_IGNOREWIDTH, data1, -1, data2, -1);
+    if (ret == CSTR_EQUAL)
+    {
+        ret = 0;
+    }
+    else if (ret == CSTR_LESS_THAN)
+    {
+        ret = -1;
+    }
+    else if (ret == CSTR_GREATER_THAN)
+    {
+        ret = 1;
+    }
+
+    return ret;
 }
 
 
