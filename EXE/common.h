@@ -53,8 +53,8 @@
 
 #define SIZING
 
-#define PROGRAM_VERSION         _T("1.21")      /* バージョン */
-#define PROGRAM_VERSION_NUM     0x01150000      /* バージョン */
+#define PROGRAM_VERSION         _T("1.22")      /* バージョン */
+#define PROGRAM_VERSION_NUM     0x01160000      /* バージョン */
 
 #define TIMER_INTERVAL      1
 #define TIMER_ANIM          2

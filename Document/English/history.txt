@@ -1,5 +1,14 @@
 Backup version history.
 
+Changes in Ver.1.22
+--------------------
+-- Backup patterns and other settings were saved when the application 
+   was closed, but are now also saved immediately after setting changes.
+
+-- The sort order when sorting backup source or exclusion settings has 
+   been changed. (Changed to consider upper/lower case and 
+   one-byte/multi-bytes characters the same.)
+
 Changes in Ver.1.21
 --------------------
 -- MTP devices (USB-connected smartphones) can now be specified as backup 

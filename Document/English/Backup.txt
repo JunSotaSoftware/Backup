@@ -1,13 +1,17 @@
 ============================================================
-[Software Name]  Backup Ver.1.21
+[Software Name]  Backup Ver.1.22
 [Environment]    Windows 11, 10
 [Support]        http://www2.biglobe.ne.jp/~sota/index-e.html
 ============================================================
 
-Changes in Ver.1.21
+Changes in Ver.1.22
 --------------------
--- MTP devices (USB-connected smartphones) can now be specified as 
-   backup destination.
+-- Backup patterns and other settings were saved when the application 
+   was closed, but are now also saved immediately after setting changes.
+
+-- The sort order when sorting backup source or exclusion settings has 
+   been changed. (Changed to consider upper/lower case and 
+   one-byte/multi-bytes characters the same.)
 
 Outline
 -------
