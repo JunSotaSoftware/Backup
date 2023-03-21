@@ -410,6 +410,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
                         SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+
+                        /* ここで設定を保存する　*/
+                        SaveMainDlgSize();
+                        SaveTransDlgSize();
+                        SaveRegistory();
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);
@@ -428,6 +433,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                             free(Name);
                             ResetAllSel(hDlg, MAIN_LIST);
                             SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+
+                            /* ここで設定を保存する　*/
+                            SaveMainDlgSize();
+                            SaveTransDlgSize();
+                            SaveRegistory();
                         }
                     }
                     DispCommentToWin(hDlg);
@@ -445,6 +455,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                         Cur = Patterns - 1;
                         ResetAllSel(hDlg, MAIN_LIST);
                         SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
+
+                        /* ここで設定を保存する　*/
+                        SaveMainDlgSize();
+                        SaveTransDlgSize();
+                        SaveRegistory();
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);
@@ -464,6 +479,12 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                                     SendDlgItemMessage(hDlg, MAIN_LIST, LB_DELETESTRING, Cur, 0);
                                 }
                             }
+
+                            /* ここで設定を保存する　*/
+                            SaveMainDlgSize();
+                            SaveTransDlgSize();
+                            SaveRegistory();
+
                             DispCommentToWin(hDlg);
                             SetMainDlgButtonHide(hDlg);
                         }
@@ -480,6 +501,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                             Cur--;
                             SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
+
+                        /* ここで設定を保存する　*/
+                        SaveMainDlgSize();
+                        SaveTransDlgSize();
+                        SaveRegistory();
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);
@@ -495,6 +521,11 @@ static LRESULT CALLBACK MainDlgWndProc(HWND hDlg, UINT message, WPARAM wParam, L
                             Cur++;
                             SendDlgItemMessage(hDlg, MAIN_LIST, LB_SETSEL, TRUE, Cur);
                         }
+
+                        /* ここで設定を保存する　*/
+                        SaveMainDlgSize();
+                        SaveTransDlgSize();
+                        SaveRegistory();
                     }
                     DispCommentToWin(hDlg);
                     SetMainDlgButtonHide(hDlg);

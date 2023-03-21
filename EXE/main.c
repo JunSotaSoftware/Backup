@@ -592,6 +592,11 @@ static LRESULT CALLBACK BupWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
                 case MENU_SETENV :
                     SetOption(hWnd);
+
+                    /* ここで設定を保存する　*/
+                    SaveMainDlgSize();
+                    SaveTransDlgSize();
+                    SaveRegistory();
                     break;
 
                 case MENU_HELP_CONTENT :
