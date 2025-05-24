@@ -1,17 +1,16 @@
 ============================================================
-[Software Name]  Backup Ver.1.22
+[Software Name]  Backup Ver.1.23
 [Environment]    Windows 11, 10
 [Support]        http://www2.biglobe.ne.jp/~sota/index-e.html
 ============================================================
 
-Changes in Ver.1.22
+Changes in Ver.1.23
 --------------------
--- Backup patterns and other settings were saved when the application 
-   was closed, but are now also saved immediately after setting changes.
+-- Fixed a bug where the function to suppress sleep did not work properly 
+   on Windows 11.
 
--- The sort order when sorting backup source or exclusion settings has 
-   been changed. (Changed to consider upper/lower case and 
-   one-byte/multi-bytes characters the same.)
+-- The FILE_ATTRIBUTE_PINNED and FILE_ATTRIBUTE_UNPINNED attributes are 
+   now ignored.
 
 Outline
 -------
@@ -37,7 +36,7 @@ Use Add/Remove Program icon on the Control Panel.
 License
 -------------------
 
-Copyright(C) 1997-2023, Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2025, Sota and cooperators. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions 

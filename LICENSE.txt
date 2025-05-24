@@ -1,7 +1,7 @@
 ﻿ソフトウエアおよびそのソースコードは、修正BSDライセンスに従うものとします。
 (日本語訳は後半にあります。）
 
-Copyright(C) 1997-2017, Sota. All rights reserved.
+Copyright(C) 1997-2025, Sota. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -12,7 +12,7 @@ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED WAR
 
 *** 以下は日本語訳(参考) ***
 
-Copyright(C) 1997-2017 Sota. All rights reserved.
+Copyright(C) 1997-2025 Sota. All rights reserved.
 
 ソースコード形式でもバイナリ形式でも、変更の有無に関わらず、以下の条件を満たす場合に、再配布および使用を許可します。
 

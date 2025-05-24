@@ -1,18 +1,18 @@
 ============================================================
-【ソフト名】　バックアップツール Backup Ver.1.22
+【ソフト名】　バックアップツール Backup Ver.1.23
 【動作確認環境】　Windows 11, 10
-                （Windows 8.1は環境がないため未確認）
 【サポート】　http://www2.biglobe.ne.jp/~sota/
 ============================================================
 
 
-●Ver.1.22
+■Ver.1.23
 
-・バックアップパターンなどの設定はアプリ終了時に保存していましたが、
-　設定変更直後にも保存するように変更しました。
+・Windows 11においてスリープを抑制する機能が正しく動作しなかったのを修正
+　しました。
+　（オプション ー 環境設定 ー その他 ー バックアップ中のスリープの抑止）
 
-・バックアップ元や除外の設定をソートする時の並べ替え順序を変更しました。
-　（大文字/小文字や半角/全角を同一視するように変更)
+・FILE_ATTRIBUTE_PINNED属性、FILE_ATTRIBUTE_UNPINNED属性を無視するように
+　しました。
 
 ●概要
 
@@ -22,12 +22,11 @@
 
 ●動作確認環境について
 
-　Backup Ver.1.22 は以下のOSで動作を確認しています。
+　Backup Ver.1.23 は以下のOSで動作を確認しています。
 
 　動作確認OS
 　　－Windows 11(64bit)
 　　－Windows 10(64bit)
-　　－動作確認はしていませんがWindows 8.1でも動作すると思います
 
 ●ファイル構成
 
@@ -58,7 +57,7 @@
 本ソフトウエアおよびそのソースコードは、修正BSDライセンスに従うものと
 します。
 
-Copyright(C) 1997-2023, Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2025, Sota and cooperators. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions 
@@ -83,7 +82,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 *** 以下は日本語訳(参考) ***
 
-Copyright(C) 1997-2023 Sota and cooperators. All rights reserved.
+Copyright(C) 1997-2025 Sota and cooperators. All rights reserved.
 
 ソースコード形式でもバイナリ形式でも、変更の有無に関わらず、以下の条件を
 満たす場合に、再配布および使用を許可します。

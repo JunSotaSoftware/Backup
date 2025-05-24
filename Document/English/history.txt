@@ -1,5 +1,13 @@
 Backup version history.
 
+Changes in Ver.1.23
+--------------------
+-- Fixed a bug where the function to suppress sleep did not work properly 
+   on Windows 11.
+
+-- The FILE_ATTRIBUTE_PINNED and FILE_ATTRIBUTE_UNPINNED attributes are 
+   now ignored.
+
 Changes in Ver.1.22
 --------------------
 -- Backup patterns and other settings were saved when the application 

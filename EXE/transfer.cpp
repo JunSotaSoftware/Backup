@@ -338,6 +338,8 @@ static BOOL CheckSuppressSleep()
 
 static void SuppressSleepThread(void *Dummy)
 {
+    int SysReqOnce = 0;
+
     /*
         ウェイト時間を 30 秒にしているのはスリープに入るまでの時間の最短が1分なので
         それより短い間隔で SetThreadExecutionState() を呼び出せるようにするため
@@ -347,12 +349,20 @@ static void SuppressSleepThread(void *Dummy)
         if (CopyPatList != NULL)
         {
             BOOL IsSuppressSleep = CheckSuppressSleep();
-            if (IsSuppressSleep)
+            if (IsSuppressSleep && (SysReqOnce == 0))
             {
-                SetThreadExecutionState(ES_SYSTEM_REQUIRED);
+                SysReqOnce = 1;
+                SetThreadExecutionState(ES_SYSTEM_REQUIRED | ES_CONTINUOUS);
             }
         }
+        else if (SysReqOnce == 1)
+        {
+            SysReqOnce = 0;
+            SetThreadExecutionState(ES_CONTINUOUS);
+        }
     }
+    SysReqOnce = 0;
+    SetThreadExecutionState(ES_CONTINUOUS);
     _endthread();
 }
 
@@ -1190,8 +1200,8 @@ static int MakeSubDir(LPTSTR Make, LPTSTR Org, int IgnErr, int IgnAttr, PROC_OPT
                         Attr = GetFileAttributes_My(Tmp, YES, options);
                         Attr2 = GetFileAttributes_My(Org, NO, options);
 
-                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
-                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+                        Attr &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_ATTRIBUTE_PINNED | FILE_ATTRIBUTE_UNPINNED);
+                        Attr2 &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_ATTRIBUTE_PINNED | FILE_ATTRIBUTE_UNPINNED);
                         if(Attr != Attr2)
                         {
                             GoAttr = 1;
@@ -1435,7 +1445,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
     {
         do
         {
-            SrcFinfo.dwFileAttributes &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+            SrcFinfo.dwFileAttributes &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_ATTRIBUTE_PINNED | FILE_ATTRIBUTE_UNPINNED);
             if((Sts = CheckAbort()) == FAIL)
                 break;
 
@@ -1455,7 +1465,7 @@ static int GoFileCopy(LPTSTR Src, LPTSTR SrcFpos, LPTSTR Dst, LPTSTR DstFpos, UI
                 {
                     FindClose_My(fHndDst);
 
-                    DstFinfo.dwFileAttributes &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
+                    DstFinfo.dwFileAttributes &= ~(FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_ATTRIBUTE_PINNED | FILE_ATTRIBUTE_UNPINNED);
 
                     Copy = 0;
                     if(options->Tole == -1)
